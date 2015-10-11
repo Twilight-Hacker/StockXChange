@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">StockXchange</string>
+
+    <string name="Share_Activity_Tittle">Share Analysis</string>
+    <string name="Share_Name">Name: </string>
+    <string name="Share_Current_Price">Current Price: </string>
+    <string name="Share_Owned">Shares Owned: </string>
+    <string name="Shares_Owned_Value">Owned Shares Value: </string>
+    <string name="Share_Prev_Close">Last Close: </string>
+    <string name="Buy_Button">Buy</string>
+    <string name="Sell_Button">Sell</string>
+
+    <string name="Amount">Number of Shares: </string>
+
+    <string name="Company_Activity_Tittle">Company Analysis</string>
+    <string name="Company_Name">Shortened Name: </string>
+    <string name="Company_Sector">Industry: </string>
+    <string name="Company_Total_Value">Total Value Reported: </string>
+    <string name="Total_Shares">Total Number of Shares: </string>
+
+    <string name="Player_Activity_Tittle">Player Info</string>
+    <string name="Player_Money">Money: </string>
+    <string name="Player_Assets">Assets: </string>
+    <string name="Player_Net_Value">Net Value: </string>
+    <string name="Player_Level">Current Level: </string>
+
+    <string name="action_settings">Settings</string>
+
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+
+    <string name="title_activity_share">ShareActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="title_activity_activity__info">Activity_Info</string>
+    <string name="title_activity_info">InfoActivity</string>
+
+    <string name="title_activity_buy">BuyActivity</string>
+    <string name="CancelButton">Cancel</string>
+    <string name="SettleDate">Settle:</string>
+    <string name="Cost">Price:</string>
+    <string name="Add">+1 Share</string>
+    <string name="Remove">-1 Share</string>
+    <string name="Max">Max</string>
+    <string name="Reset">Reset</string>
+    <string name="title_activity_sell">SellActivity</string>
+    <string name="title_activity_company">Company Info</string>
+    <string name="CompanyInfo">Info</string>
+    <string name="LastTermRev">Last Term Revenue:</string>
+    <string name="ScamCheck">Report</string>
+    <string name="OK">Back</string>
+    <string name="title_activity_player_info">PlayerInfoActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="PlayerNameLbl">Name</string>
+    <string name="PlayerButton">Player</string>
+    <string name="InfoButton">INFO</string>
+</resources>
