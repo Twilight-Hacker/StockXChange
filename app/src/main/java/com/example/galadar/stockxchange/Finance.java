@@ -1,5 +1,7 @@
 package com.example.galadar.stockxchange;
 
+import android.content.SharedPreferences;
+
 import java.util.HashSet;
 import java.util.Random;
 
@@ -17,23 +19,27 @@ public class Finance {
     int day;
 
 
-    public Finance(int size) {
+    public Finance(MemoryDB DBHandler, int size) {
         int numComp = size*10;
         CompaniesNames = new HashSet();
         CompaniesList = new Company[numComp];
-        SharesList = new Share[CompaniesList.length];
         int totShares;
-        for(int i=1;i<numComp;i++){
+        //SharedPreferences.Editor editor2 = Ownerships.edit();
+        for(int i=0;i<numComp;i++){
             String name = randomName();
-            boolean go = CompaniesNames.add(new Company(name) );
+            boolean go = CompaniesNames.add(name);
             if(go) {
                 CompaniesList[i]=new Company(name);
                 totShares = CompaniesList[i].shareStart();
-                SharesList[i]=new Share(name, i, totShares);
+                DBHandler.addShare(new Share(name, i, totShares));
+
+                //editor2.putInt(Integer.toString(i), 0);
+
             } else {
                 i--;
             }
         }
+        //editor2.commit();
 
         outlooks = new double[11];
 
@@ -43,6 +49,10 @@ public class Finance {
 
         term =1;
         day=1;
+    }
+
+    public Share getShare(int i){
+        return this.SharesList[i];
     }
 
     private String randomName() {

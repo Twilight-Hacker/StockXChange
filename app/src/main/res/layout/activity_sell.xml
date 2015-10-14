@@ -127,7 +127,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/SharesOwnedDt"
-                android:text="0" />
+                android:text="@string/Zero" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -138,7 +138,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/ShareAmountDt"
                 android:id="@+id/TotalValueDt"
-                android:text="@string/Cost" />
+                android:text="@string/Zero" />
 
         </RelativeLayout>
 

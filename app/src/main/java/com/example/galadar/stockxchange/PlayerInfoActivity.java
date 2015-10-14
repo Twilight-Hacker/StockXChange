@@ -17,10 +17,24 @@ public class PlayerInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_player_info);
 
         Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
+        Bundle data = intent.getExtras();
+        String name = data.getString("name");
+        int money = data.getInt("money");
+        int assets = data.getInt("assets");
+        int level = data.getInt("level");
 
         TextView NameView = (TextView)findViewById(R.id.PlayerNameDt);
         NameView.setText(name);
+
+        TextView MoneyView = (TextView)findViewById(R.id.PlayerMoneyDt);
+        MoneyView.setText(Double.toString((double)money / 100));
+
+        TextView AssetsView = (TextView)findViewById(R.id.AssetsDt);
+        AssetsView.setText(Integer.toString(assets));
+
+        TextView LevelView = (TextView)findViewById(R.id.PlLevelDt);
+        LevelView.setText(Integer.toString(level));
+
 
         Button Back = (Button)findViewById(R.id.OK);
         Back.setOnClickListener(new View.OnClickListener() {

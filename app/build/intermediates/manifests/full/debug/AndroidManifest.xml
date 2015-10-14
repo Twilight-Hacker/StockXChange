@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.galadar.stockxchange"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="23" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.example.galadar.stockxchange.MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.galadar.stockxchange.ShareActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_share"
+            android:parentActivityName="com.example.galadar.stockxchange.MainActivity"
+            android:theme="@style/FullscreenTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.galadar.stockxchange.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.galadar.stockxchange.InfoActivity"
+            android:label="@string/title_activity_info"
+            android:parentActivityName="com.example.galadar.stockxchange.MainActivity"
+            android:theme="@style/FullscreenTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.galadar.stockxchange.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.galadar.stockxchange.BuyActivity"
+            android:label="@string/title_activity_buy"
+            android:parentActivityName="com.example.galadar.stockxchange.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.galadar.stockxchange.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.galadar.stockxchange.SellActivity"
+            android:label="@string/title_activity_sell"
+            android:parentActivityName="com.example.galadar.stockxchange.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.galadar.stockxchange.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.galadar.stockxchange.CompanyActivity"
+            android:label="@string/title_activity_company"
+            android:parentActivityName="com.example.galadar.stockxchange.ShareActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.galadar.stockxchange.ShareActivity" />
+        </activity>
+        <activity
+            android:name="com.example.galadar.stockxchange.PlayerInfoActivity"
+            android:label="@string/title_activity_player_info"
+            android:parentActivityName="com.example.galadar.stockxchange.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.galadar.stockxchange.MainActivity" />
+        </activity>
+    </application>
+
+</manifest>

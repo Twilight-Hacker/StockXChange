@@ -7,14 +7,38 @@ public class Share {
 
     int currentSharePrice;
     int prevDayClose;
-    int id;
+    int sid;
     String name;
 
-    public Share(String name, int id, int currentSharePrice) {
+    public Share(String name, int sid, int currentSharePrice) {
         this.name = name;
-        this.id = id;
+        this.sid = sid;
         this.currentSharePrice = currentSharePrice;
         this.prevDayClose = currentSharePrice;
     }
 
+    public int getId() {
+        return sid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPrevDayClose() {
+        return prevDayClose;
+    }
+
+    public void setPrevDayClose(int prevDayClose) {
+        this.prevDayClose = prevDayClose;
+    }
+
+    public int getCurrentSharePrice() {
+
+        return currentSharePrice;
+    }
+
+    public void setCurrentSharePrice(int currentSharePrice) {
+        this.currentSharePrice = currentSharePrice;
+    }
 }

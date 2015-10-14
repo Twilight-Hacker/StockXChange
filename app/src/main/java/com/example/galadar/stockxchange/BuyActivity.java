@@ -1,6 +1,8 @@
 package com.example.galadar.stockxchange;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,19 +19,32 @@ public class BuyActivity extends AppCompatActivity {
     int total;
     int max;
 
+    //SharedPreferences Ownerships;
+    //SharedPreferences sharedPref;
+    MemoryDB DBHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy);
 
+        Context context = getApplicationContext();
+        DBHandler = new MemoryDB(this);
+        //sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        //Ownerships = context.getSharedPreferences(("com.example.galadar.stockxchange.Owner"), Context.MODE_PRIVATE);
+
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String name = data.getString("name");
-        price = data.getInt("price");
-        int money = data.getInt("money");
+        final int SID = data.getInt("SID");
+        final int money = 10000; //data.getInt("money");
+
+        String name = DBHandler.getDBShareName(SID); //data.getString("name");
+        price = DBHandler.getDBCurrPrice(SID); //data.getInt("price");
+
 
         TextView ShareName = (TextView)findViewById(R.id.ShareNameDt);
         ShareName.setText(name);
+
         TextView SharePrice = (TextView) findViewById(R.id.ShareCurrPriDt);
         SharePrice.setText(Double.toString(((double)price)/100));
 
@@ -101,6 +116,19 @@ public class BuyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO Buy Shares
+                int temp = 0; //Ownerships.getInt(Integer.toString(SID), 0);
+                temp = temp+amount;
+
+                //SharedPreferences.Editor editor = Ownerships.edit();
+                //editor.putInt(Integer.toString(SID), temp);
+                //editor.commit();
+
+                //money -= total;
+                //SharedPreferences.Editor editor1 = sharedPref.edit();
+                //editor.putInt(getString(R.string.Player_Money), temp);
+                //editor1.commit();
+
+                DBHandler.close();
                 BuyActivity.this.finish();
             }
         });
@@ -108,6 +136,7 @@ public class BuyActivity extends AppCompatActivity {
         Cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DBHandler.close();
                 BuyActivity.this.finish();
             }
         });

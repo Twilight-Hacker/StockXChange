@@ -1,5 +1,8 @@
 package com.example.galadar.stockxchange;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 /**
  * Created by Galadar on 29/9/2015.
  */
@@ -11,13 +14,15 @@ public class Gamer {
     private int fame;
     int[][] owned;
 
-    public Gamer(String name, int OwnedSize) {
+
+
+    public Gamer(String name, int m) {
         this.name = name;
         this.money = 10000;
         this.assets = 0;
         this.fame = 0;
 
-        owned = new int[OwnedSize][2];
+        owned = new int[m][2];
 
         for(int i=0;i<owned.length;i++){
             owned[i][0]=0;

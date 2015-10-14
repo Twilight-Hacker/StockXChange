@@ -56,4 +56,16 @@
         android:text="@string/PlayerButton"
         android:id="@+id/PlayerInfo" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/PlayerInfo"
+        android:layout_toEndOf="@id/PlayerInfo"
+        android:onClick="ExitClicked"
+        android:background="@color/black"
+        android:textColor="@color/white"
+        android:text="@string/Exit"
+        android:id="@+id/Exit" />
+
 </RelativeLayout>

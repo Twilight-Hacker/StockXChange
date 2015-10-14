@@ -56,4 +56,10 @@
     <string name="PlayerNameLbl">Name</string>
     <string name="PlayerButton">Player</string>
     <string name="InfoButton">INFO</string>
+    <string name="Player_Name">Player Name:</string>
+    <string name="preference_file_key">com.example.galadar.stockxchange.gamedata</string>
+    <string name="Player_Fame">Fame:</string>
+    <string name="Zero">0</string>
+    <string name="Ownership_file_key">com.example.galadar.stockxchange.ownerdata</string>
+    <string name="Exit">Exit</string>
 </resources>

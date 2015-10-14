@@ -5,20 +5,20 @@ package com.example.galadar.stockxchange;
  */
 public class Company {
     String name;
-    double totalValue;
-    double currentValue;
-    double percentageValue;
-    double investment;
+    int totalValue;
+    int currentValue;
+    int percentageValue;
+    int investment;
     int totalShares;
     double outlook;
     enum Sectors{Construction, Transportation, Oil, Technology, Food, Telecommunications, Defence, Entertainment, Education, Tourism};
     Sectors Sector;
     double marketShare;
-    double revenue;
+    int revenue;
 
     public Company(String name) {
         this.name = name;
-        totalValue = Math.random()*1000000;
+        totalValue = (int) Math.round( Math.random()*100000000 );
         currentValue = totalValue;
         percentageValue = 0;
         totalShares = (int)Math.round(Math.random()*10000);
@@ -30,9 +30,11 @@ public class Company {
     }
 
     private Sectors RandomSector(){
-        //int i = (int)Math.round(Math.random()*1000%Sectors.values().length)+1;
+        int i = (int)Math.round(Math.random()*100)%(Sectors.values().length);
 
-        return Sectors.Construction;
+        return Sectors.values()[i];
+
+        //return Sectors.Construction;
     }
 
     public int shareStart(){
