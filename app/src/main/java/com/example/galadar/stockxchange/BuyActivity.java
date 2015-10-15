@@ -1,10 +1,8 @@
 package com.example.galadar.stockxchange;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,9 +16,8 @@ public class BuyActivity extends AppCompatActivity {
     int price;
     int total;
     int max;
+    int money;
 
-    //SharedPreferences Ownerships;
-    //SharedPreferences sharedPref;
     MemoryDB DBHandler;
 
     @Override
@@ -28,18 +25,15 @@ public class BuyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy);
 
-        Context context = getApplicationContext();
         DBHandler = new MemoryDB(this);
-        //sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        //Ownerships = context.getSharedPreferences(("com.example.galadar.stockxchange.Owner"), Context.MODE_PRIVATE);
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         final int SID = data.getInt("SID");
-        final int money = 10000; //data.getInt("money");
+        money = DBHandler.getPlayerMoney();
 
-        String name = DBHandler.getDBShareName(SID); //data.getString("name");
-        price = DBHandler.getDBCurrPrice(SID); //data.getInt("price");
+        String name = DBHandler.getDBShareName(SID);
+        price = DBHandler.getDBCurrPrice(SID);
 
 
         TextView ShareName = (TextView)findViewById(R.id.ShareNameDt);
@@ -48,8 +42,8 @@ public class BuyActivity extends AppCompatActivity {
         TextView SharePrice = (TextView) findViewById(R.id.ShareCurrPriDt);
         SharePrice.setText(Double.toString(((double)price)/100));
 
-        amount = 0;
-        total = 0;
+        amount = 0; //Amount of shares to Buy
+        total = 0; //Amount of money to give - total price of the transaction
 
         max = (int) Math.floor( money/price );
 
@@ -115,19 +109,8 @@ public class BuyActivity extends AppCompatActivity {
         Execute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO Buy Shares
-                int temp = 0; //Ownerships.getInt(Integer.toString(SID), 0);
-                temp = temp+amount;
-
-                //SharedPreferences.Editor editor = Ownerships.edit();
-                //editor.putInt(Integer.toString(SID), temp);
-                //editor.commit();
-
-                //money -= total;
-                //SharedPreferences.Editor editor1 = sharedPref.edit();
-                //editor.putInt(getString(R.string.Player_Money), temp);
-                //editor1.commit();
-
+                int temp = DBHandler.getOwnedShare(SID);
+                DBHandler.BuyShare(SID, temp+amount, money-total);
                 DBHandler.close();
                 BuyActivity.this.finish();
             }

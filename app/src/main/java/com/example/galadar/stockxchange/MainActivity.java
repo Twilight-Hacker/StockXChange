@@ -25,13 +25,16 @@ public class MainActivity extends AppCompatActivity {
     int UpdateInterval = 15;
 
     Finance f;
+    Gamer p;
     MemoryDB DBHandler;
 
+    /*
     String name;
     int level;
     int money;
     int assets;
     int fame;
+    */
 
     //SharedPreferences Ownerships;
     //SharedPreferences sharedPref;
@@ -53,57 +56,19 @@ public class MainActivity extends AppCompatActivity {
 
         if(DBHandler.numberOfShares()<1) {
             f = new Finance(DBHandler, 5);
-        }
-
-        String name = "Bill";
-
-        money = (int)Math.round(Math.random()*1000000);
-
-        /*
-        if (!sharedPref.contains(getString(R.string.Player_Name))) {
-
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(getString(R.string.Player_Name), name);
-            editor.putInt(getString(R.string.Player_Level), 1);
-            editor.putInt(getString(R.string.Player_Money), money);
-            editor.putInt(getString(R.string.Player_Assets), 0);
-            editor.putInt(getString(R.string.Player_Fame), 0);
-            editor.commit();
-            level = 1;
-            assets = 0;
-            fame = 0;
+            p = new Gamer(DBHandler);
         } else {
-            name = sharedPref.getString(getString(R.string.Player_Name), "Jack");
-            level = sharedPref.getInt(getString(R.string.Player_Level), 1);
-            money = sharedPref.getInt(getString(R.string.Player_Money), money);
-            assets = sharedPref.getInt(getString(R.string.Player_Assets), 0);
-            fame = sharedPref.getInt(getString(R.string.Player_Fame), 0);
+            f = new Finance(DBHandler);
+            p = new Gamer( DBHandler.getPlayerMoney(), DBHandler.getLevel(), DBHandler.getAssets(), DBHandler.getFame());
         }
-        */
-
 
         //Daytime time = new Daytime();
 
-
-        //LinearLayout barLayout = (LinearLayout)findViewById(R.id.layout);
 
         LinearLayout parentLayout = (LinearLayout)findViewById(R.id.layout);
 
         LayoutInflater layoutInflater = getLayoutInflater();
         View view;
-
-        /*
-        Names = new String[15];
-        for(int i=0;i<Names.length;i++){
-            Names[i]=randomName() ;
-        }
-
-        Prices = new int[15];
-        for(int i=0;i<Prices.length;i++){
-            Prices[i] = (int)Math.round((Math.random()*100000)+(Math.random()*1000));
-        }
-
-        */
 
         for(int i=0;i<DBHandler.numberOfShares();i++){
             view = layoutInflater.inflate(R.layout.main_share, parentLayout, false);
@@ -132,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
         upD.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //Toast.makeText(getApplicationContext(), "Clicked Update Button", Toast.LENGTH_SHORT).show();
 
                 int temp;
                 int old;
@@ -162,17 +126,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Button PlayerButton = (Button)findViewById(R.id.PlayerInfo);
-        final String finalName = name;
         PlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, PlayerInfoActivity.class);
-                Bundle data = new Bundle();
-                data.putString("name", finalName);
-                data.putInt("money", money);
-                data.putInt("assets", assets);
-                data.putInt("level", level);
-                i.putExtras(data);
                 startActivity(i);
             }
         });
@@ -191,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
         Bundle data = new Bundle();
         //data.putString("name", DBHandler.getDBShareName(v.getId()-300000)); //f.SharesList[v.getId() - 300000].name);
         //data.putInt("price", DBHandler.getDBCurrPrice(v.getId() - 300000)); //f.SharesList[v.getId() - 300000].currentSharePrice);
-        data.putInt("money", money);
         data.putInt("SID", (v.getId() - 300000) );
         intent.putExtras(data);
         startActivity(intent);
@@ -200,9 +156,6 @@ public class MainActivity extends AppCompatActivity {
     public void SellClick(View v){
         Intent intent = new Intent(this, SellActivity.class);
         Bundle data = new Bundle();
-        //data.putString("name", f.SharesList[v.getId()-400000].name);
-        //data.putInt("price", f.SharesList[v.getId() - 400000].currentSharePrice);
-        //data.putInt("max", 250); //Ownerships.getInt(Integer.toString(v.getId() - 400000),0));
         data.putInt("SID", (v.getId() - 400000) );
         intent.putExtras(data);
         startActivity(intent);
@@ -211,9 +164,6 @@ public class MainActivity extends AppCompatActivity {
     public void clickPrice(View v){
         Intent intent = new Intent(this, ShareActivity.class);
         Bundle data = new Bundle();
-        //data.putString("name", f.SharesList[v.getId()-100000].name);
-        //data.putInt("price", f.SharesList[v.getId() - 100000].currentSharePrice);
-        //data.putInt("owned", 250); //Ownerships.getInt(Integer.toString(v.getId() - 100000), 0));
         data.putInt("SID", (v.getId() - 100000) );
         intent.putExtras(data);
         startActivity(intent);
@@ -222,13 +172,12 @@ public class MainActivity extends AppCompatActivity {
     public void clickName(View v){
         Intent intent = new Intent(this, ShareActivity.class);
         Bundle data = new Bundle();
-        //data.putString("name", f.SharesList[v.getId()-200000].name);
-        //data.putInt("price", f.SharesList[v.getId() - 200000].currentSharePrice);
-        //data.putInt("owned", 250); //Ownerships.getInt(Integer.toString(v.getId() - 200000), 0));
         data.putInt("SID", (v.getId() - 200000) );
         intent.putExtras(data);
         startActivity(intent);
     }
+
+    /*
     private String randomName() {
 
         final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -241,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return value;
     }
+    */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

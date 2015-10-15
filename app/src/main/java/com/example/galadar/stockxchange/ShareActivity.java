@@ -34,7 +34,7 @@ public class ShareActivity extends Activity {
         SharePrice.setText(Double.toString(((double)price)/100));
 
         TextView ShareOwned = (TextView)findViewById((R.id.ShareOwnedData));
-        int owned = 250; //data.getInt("owned",0);
+        int owned = DBHandler.getOwnedShare(SID); //data.getInt("owned",0);
         ShareOwned.setText(Integer.toString(owned));
 
         TextView SharesValue = (TextView)findViewById(R.id.ShareOwnedVData);

@@ -8,57 +8,54 @@ import android.content.SharedPreferences;
  */
 public class Gamer {
 
-    String name;
     int money;
     int assets;
+    int level;
     private int fame;
-    int[][] owned;
 
 
 
-    public Gamer(String name, int m) {
-        this.name = name;
-        this.money = 10000;
-        this.assets = 0;
-        this.fame = 0;
-
-        owned = new int[m][2];
-
-        for(int i=0;i<owned.length;i++){
-            owned[i][0]=0;
-            owned[i][1]=0;
-        }
+    public Gamer(MemoryDB DBHandler) {
+        this.assets = DBHandler.getAssets();
+        DBHandler.PrepGamer(this.assets);
     }
 
-    public String getName() {
-        return name;
+    public Gamer(int money, int level, int assets, int fame) {
+        this.money = money;
+        this.level = level;
+        this.assets = assets;
+        this.fame = fame;
     }
 
-    public double getMoney() {
+    public int getMoney() {
         return money;
     }
 
-    public void setMoney(double money) {
-        this.money += money;
+    public void setMoney(int money) {
+        this.money = money;
     }
 
     public int getAssets() {
         return assets;
     }
 
-    public void incAssets() {
-        this.assets++;
+    public void setAssets(int assets) {
+        this.assets = assets;
     }
 
-    public void decAssets() {
-        this.assets--;
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public int getFame() {
         return fame;
     }
 
-    public void setFame(int fame) {
+    public void alterFame(int alteration) {
         this.fame += fame;
     }
 }

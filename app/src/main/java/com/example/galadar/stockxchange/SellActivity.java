@@ -15,14 +15,11 @@ import android.widget.Toast;
 public class SellActivity extends AppCompatActivity {
 
     int price;
-    int max;
     int amount;
     int total;
     int SID;
     int money;
 
-    //SharedPreferences Ownerships;
-    //SharedPreferences sharedPref;
     MemoryDB DBHandler;
 
 
@@ -31,20 +28,17 @@ public class SellActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sell);
 
-        Context context = getApplicationContext();
-        //sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        //Ownerships = context.getSharedPreferences(("com.example.galadar.stockxchange.Owner"), Context.MODE_PRIVATE);
         DBHandler = new MemoryDB(this);
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         SID = data.getInt("SID");
 
-        String name = DBHandler.getDBShareName(SID); //data.getString("name");
-        price = DBHandler.getDBCurrPrice(SID); //data.getInt("price");
-        max = 250; //data.getInt("owned");
+        String name = DBHandler.getDBShareName(SID);
+        price = DBHandler.getDBCurrPrice(SID);
+        final int max = DBHandler.getOwnedShare(SID);
 
-        money = 10000; //sharedPref.getInt(getString(R.string.Player_Money), 1000000);
+        money = DBHandler.getPlayerMoney();
 
         TextView ShareName = (TextView)findViewById(R.id.ShareNameDt);
         ShareName.setText(name);
@@ -116,19 +110,7 @@ public class SellActivity extends AppCompatActivity {
         Execute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO Sell Shares
-                //int temp = Ownerships.getInt(Integer.toString(SID), 0);
-                //temp = temp-amount;
-
-                //SharedPreferences.Editor editor = Ownerships.edit();
-                //editor.putInt(Integer.toString(SID), temp);
-                //editor.commit();
-
-                //temp = money + total;
-                //SharedPreferences.Editor editor1 = sharedPref.edit();
-                //editor.putInt(getString(R.string.Player_Money), temp);
-                //editor1.commit();
-
+                DBHandler.sellShare(SID, max+amount, money+total);
                 DBHandler.close();
                 SellActivity.this.finish();
             }

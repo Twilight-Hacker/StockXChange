@@ -1,0 +1,306 @@
+<html>
+<head>
+<title>MemoryDB.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+MemoryDB.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">com.example.galadar.stockxchange; 
+ 
+</span><span class="s0">import </span><span class="s1">android.content.ContentValues; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.database.Cursor; 
+</span><span class="s0">import </span><span class="s1">android.database.DatabaseUtils; 
+</span><span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteDatabase; 
+</span><span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteOpenHelper; 
+ 
+</span><span class="s2">/** 
+ * Created by Galadar on 11/10/2015. 
+ */</span><span class="s1"> 
+ 
+ 
+</span><span class="s0">public class </span><span class="s1">MemoryDB </span><span class="s0">extends </span><span class="s1">SQLiteOpenHelper { 
+ 
+    </span><span class="s0">public static final </span><span class="s1">String DATABASE_NAME = </span><span class="s3">&quot;Stocks.db&quot;</span><span class="s1">; 
+ 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_TABLE_NAME = </span><span class="s3">&quot;Companies&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_NAME = </span><span class="s3">&quot;Name&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_ID = </span><span class="s3">&quot;id&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_TOTAL_VALUE = </span><span class="s3">&quot;TotalValue&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_CURRENT_VALUE = </span><span class="s3">&quot;CurrValue&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_PERCENTAGE_VALUE = </span><span class="s3">&quot;PercValue&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_TOTAL_SHARES = </span><span class="s3">&quot;TotalShares&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_INVESTMENT = </span><span class="s3">&quot;Investment&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_OUTLOOK = </span><span class="s3">&quot;Outlook&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_SECTOR = </span><span class="s3">&quot;Sector&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_MARKET_SHARE = </span><span class="s3">&quot;MarketShare&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_REVENUE = </span><span class="s3">&quot;Revenue&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String COMPANIES_COLUMN_FAME = </span><span class="s3">&quot;Fame&quot;</span><span class="s1">; 
+ 
+    </span><span class="s0">public static final </span><span class="s1">String SHARES_TABLE_NAME = </span><span class="s3">&quot;sharestock&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String SHARES_COLUMN_ID = </span><span class="s3">&quot;_id&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String SHARES_COLUMN_NAME = </span><span class="s3">&quot;name&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String SHARES_COLUMN_SID = </span><span class="s3">&quot;sid&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String SHARES_COLUMN_CURRENT_PRICE = </span><span class="s3">&quot;currvalue&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String SHARES_COLUMN_LAST_CLOSE = </span><span class="s3">&quot;Lastllose&quot;</span><span class="s1">; 
+ 
+    </span><span class="s0">public static final </span><span class="s1">String OUTLOOK_TABLE_NAME = </span><span class="s3">&quot;sharestock&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String OUTLOOK_COLUMN_ID = </span><span class="s3">&quot;_id&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String OUTLOOK_COLUMN_NAME = </span><span class="s3">&quot;Sector&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String OUTLOOK_COLUMN_OUTLOOK = </span><span class="s3">&quot;Value&quot;</span><span class="s1">; 
+ 
+    </span><span class="s0">public static final </span><span class="s1">String DATA_TABLE_NAME = </span><span class="s3">&quot;GameData&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String DATA_COLUMN_ID = </span><span class="s3">&quot;_id&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String DATA_COLUMN_ENTRY_NAME = </span><span class="s3">&quot;Name&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String DATA_COLUMN_ENTRY_VALUE = </span><span class="s3">&quot;Value&quot;</span><span class="s1">; 
+ 
+    </span><span class="s0">public static final </span><span class="s1">String PROPERTY_TABLE_NAME = </span><span class="s3">&quot;Ownership&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String PROPERTY_TABLE_ID = </span><span class="s3">&quot;_id&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String PROPERTY_TABLE_SHARE = </span><span class="s3">&quot;Share&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String PROPERTY_TABLE_AMOUNT = </span><span class="s3">&quot;Amount&quot;</span><span class="s1">; 
+ 
+    </span><span class="s0">public </span><span class="s1">MemoryDB(Context context) 
+    { 
+        </span><span class="s0">super</span><span class="s1">(context, DATABASE_NAME, </span><span class="s0">null</span><span class="s1">, </span><span class="s4">1</span><span class="s1">); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onCreate(SQLiteDatabase db) { 
+ 
+        db.execSQL( 
+                </span><span class="s3">&quot;CREATE TABLE &quot; </span><span class="s1">+ COMPANIES_TABLE_NAME + </span><span class="s3">&quot;(&quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_ID + </span><span class="s3">&quot; INTEGER PRIMARY KEY AUTOINCREMENT, &quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_NAME + </span><span class="s3">&quot; CHAR(4), &quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_TOTAL_VALUE + </span><span class="s3">&quot; INTEGER, &quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_CURRENT_VALUE + </span><span class="s3">&quot; INTEGER, &quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_PERCENTAGE_VALUE + </span><span class="s3">&quot; INTEGER, &quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_TOTAL_SHARES + </span><span class="s3">&quot; INTEGER, &quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_INVESTMENT + </span><span class="s3">&quot; INTEGER, &quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_OUTLOOK + </span><span class="s3">&quot; REAL, &quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_SECTOR + </span><span class="s3">&quot; TEXT, &quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_MARKET_SHARE + </span><span class="s3">&quot; REAL, &quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_REVENUE + </span><span class="s3">&quot; INTEGER, &quot; </span><span class="s1">+ 
+                        COMPANIES_COLUMN_FAME + </span><span class="s3">&quot; INTEGER &quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;):&quot;</span><span class="s1"> 
+        ); 
+ 
+        </span><span class="s2">//The game data table will include Player money, assets, fame, as well as economy size and various other numeric values not belonging to companies, shares or outlooks.</span><span class="s1"> 
+        db.execSQL( 
+                </span><span class="s3">&quot;CREATE TABLE &quot; </span><span class="s1">+ DATA_TABLE_NAME + </span><span class="s3">&quot;(&quot; </span><span class="s1">+ 
+                        DATA_COLUMN_ID + </span><span class="s3">&quot; INTEGER PRIMARY KEY AUTOINCREMENT, &quot; </span><span class="s1">+ 
+                        DATA_COLUMN_ENTRY_NAME + </span><span class="s3">&quot; TEXT, &quot; </span><span class="s1">+ 
+                        DATA_COLUMN_ENTRY_VALUE + </span><span class="s3">&quot; REAL &quot; </span><span class="s1">+ 
+                        </span><span class="s3">&quot;);&quot;</span><span class="s1"> 
+        ); 
+ 
+ 
+        db.execSQL( 
+                </span><span class="s3">&quot;CREATE TABLE &quot; </span><span class="s1">+ OUTLOOK_TABLE_NAME + </span><span class="s3">&quot;(&quot; </span><span class="s1">+ 
+                        OUTLOOK_COLUMN_ID + </span><span class="s3">&quot; INTEGER PRIMARY KEY AUTOINCREMENT, &quot; </span><span class="s1">+ 
+                        OUTLOOK_COLUMN_NAME + </span><span class="s3">&quot; TEXT, &quot; </span><span class="s1">+ 
+                        OUTLOOK_COLUMN_OUTLOOK + </span><span class="s3">&quot; REAL &quot; </span><span class="s1">+ 
+                        </span><span class="s3">&quot;);&quot;</span><span class="s1"> 
+        ); 
+ 
+        db.execSQL( 
+                </span><span class="s3">&quot;CREATE TABLE &quot; </span><span class="s1">+ SHARES_TABLE_NAME + </span><span class="s3">&quot;(&quot; </span><span class="s1">+ 
+                        SHARES_COLUMN_ID + </span><span class="s3">&quot; INTEGER PRIMARY KEY AUTOINCREMENT, &quot; </span><span class="s1">+ 
+                        SHARES_COLUMN_NAME + </span><span class="s3">&quot; CHAR(4), &quot; </span><span class="s1">+ 
+                        SHARES_COLUMN_SID + </span><span class="s3">&quot; INTEGER, &quot; </span><span class="s1">+ 
+                        SHARES_COLUMN_CURRENT_PRICE + </span><span class="s3">&quot; INTEGER, &quot; </span><span class="s1">+ 
+                        SHARES_COLUMN_LAST_CLOSE + </span><span class="s3">&quot; INTEGER&quot; </span><span class="s1">+ 
+                        </span><span class="s3">&quot;);&quot;</span><span class="s1"> 
+        ); 
+ 
+        db.execSQL( 
+                </span><span class="s3">&quot;CREATE TABLE &quot; </span><span class="s1">+ PROPERTY_TABLE_NAME + </span><span class="s3">&quot;(&quot; </span><span class="s1">+ 
+                        PROPERTY_TABLE_ID + </span><span class="s3">&quot; INTEGER PRIMARY KEY AUTOINCREMENT, &quot; </span><span class="s1">+ 
+                        PROPERTY_TABLE_SHARE + </span><span class="s3">&quot; CHAR(4), &quot; </span><span class="s1">+ 
+                        PROPERTY_TABLE_AMOUNT + </span><span class="s3">&quot; INTEGER, &quot; </span><span class="s1">+ 
+                        </span><span class="s3">&quot; FOREIGN KEY (&quot; </span><span class="s1">+ PROPERTY_TABLE_SHARE + </span><span class="s3">&quot;) REFERENCES &quot; </span><span class="s1">+ SHARES_TABLE_NAME + </span><span class="s3">&quot;(&quot; </span><span class="s1">+ SHARES_COLUMN_SID + </span><span class="s3">&quot;)&quot; </span><span class="s1">+ 
+                        </span><span class="s3">&quot;);&quot;</span><span class="s1"> 
+        ); 
+ 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onUpgrade(SQLiteDatabase db, </span><span class="s0">int </span><span class="s1">oldVersion, </span><span class="s0">int </span><span class="s1">newVersion) { 
+        onCreate(db); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">sellShare(</span><span class="s0">int </span><span class="s1">sid, </span><span class="s0">int </span><span class="s1">NewAmount, </span><span class="s0">int </span><span class="s1">newCash){ 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getWritableDatabase(); 
+        String query = </span><span class="s3">&quot;UPDATE &quot; </span><span class="s1">+ PROPERTY_TABLE_NAME + </span><span class="s3">&quot; SET &quot; </span><span class="s1">+ PROPERTY_TABLE_AMOUNT + </span><span class="s3">&quot;=&quot; </span><span class="s1">+ NewAmount + </span><span class="s3">&quot; WHERE &quot; </span><span class="s1">+ PROPERTY_TABLE_SHARE +</span><span class="s3">&quot; = &quot; </span><span class="s1">+sid+ </span><span class="s3">&quot;;&quot; </span><span class="s1">; 
+        db.execSQL(query); 
+        </span><span class="s2">//TODO update player money (afer setting gamer class)</span><span class="s1"> 
+        db.close(); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">BuyShare(</span><span class="s0">int </span><span class="s1">SID, </span><span class="s0">int </span><span class="s1">NewAmount, </span><span class="s0">int </span><span class="s1">newCash){ 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getWritableDatabase(); 
+        String query = </span><span class="s3">&quot;UPDATE &quot; </span><span class="s1">+ PROPERTY_TABLE_NAME + </span><span class="s3">&quot; SET &quot; </span><span class="s1">+ PROPERTY_TABLE_AMOUNT + </span><span class="s3">&quot;=&quot; </span><span class="s1">+ NewAmount + </span><span class="s3">&quot; WHERE &quot; </span><span class="s1">+ PROPERTY_TABLE_SHARE +</span><span class="s3">&quot; = &quot; </span><span class="s1">+SID+ </span><span class="s3">&quot;;&quot; </span><span class="s1">; 
+        db.execSQL(query); 
+        </span><span class="s2">//TODO update player money (afer setting gamer class)</span><span class="s1"> 
+        db.close(); 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">getOwnedShare(</span><span class="s0">int </span><span class="s1">sid){ 
+        </span><span class="s0">int </span><span class="s1">amount=</span><span class="s4">0</span><span class="s1">; 
+ 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getReadableDatabase(); 
+        Cursor c =  db.rawQuery(</span><span class="s3">&quot;select * from &quot; </span><span class="s1">+ PROPERTY_TABLE_NAME + </span><span class="s3">&quot; where &quot; </span><span class="s1">+ PROPERTY_TABLE_SHARE + </span><span class="s3">&quot;=&quot; </span><span class="s1">+ sid + </span><span class="s3">&quot;&quot;</span><span class="s1">, </span><span class="s0">null</span><span class="s1">); 
+        c.moveToFirst(); 
+ 
+        </span><span class="s0">if</span><span class="s1">(c.isNull(c.getColumnIndex(PROPERTY_TABLE_AMOUNT))){ 
+            </span><span class="s0">return </span><span class="s4">0</span><span class="s1">; 
+        } 
+ 
+        </span><span class="s0">while </span><span class="s1">(!c.isAfterLast()){ 
+            amount=c.getInt(c.getColumnIndex(PROPERTY_TABLE_AMOUNT)); 
+            c.moveToNext(); 
+        } 
+        c.close(); 
+        db.close(); 
+ 
+        </span><span class="s0">return </span><span class="s1">amount; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">addCompany(Company company){ 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getWritableDatabase(); 
+        ContentValues values = </span><span class="s0">new </span><span class="s1">ContentValues(); 
+        values.put(COMPANIES_COLUMN_NAME, company.getName()); 
+        values.put(COMPANIES_COLUMN_TOTAL_VALUE, company.getTotalValue()); 
+        values.put(COMPANIES_COLUMN_CURRENT_VALUE, company.getCurrentValue()); 
+        values.put(COMPANIES_COLUMN_PERCENTAGE_VALUE, company.getPercentageValue()); 
+        values.put(COMPANIES_COLUMN_TOTAL_SHARES, company.getTotalShares()); 
+        values.put(COMPANIES_COLUMN_INVESTMENT, company.getInvestment()); 
+        values.put(COMPANIES_COLUMN_OUTLOOK, company.getOutlook()); 
+        values.put(COMPANIES_COLUMN_SECTOR, company.getSector()); 
+        values.put(COMPANIES_COLUMN_MARKET_SHARE, company.getMarketShare()); 
+        values.put(COMPANIES_COLUMN_REVENUE, company.getRevenue()); 
+        values.put(COMPANIES_COLUMN_FAME, company.getFame()); 
+        db.insert(COMPANIES_TABLE_NAME, </span><span class="s0">null</span><span class="s1">, values); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">addSector(String sector){ 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getWritableDatabase(); 
+        ContentValues values = </span><span class="s0">new </span><span class="s1">ContentValues(); 
+        values.put(OUTLOOK_COLUMN_NAME, sector); 
+        values.put(OUTLOOK_COLUMN_OUTLOOK, </span><span class="s4">0.0</span><span class="s1">); 
+        db.insert(OUTLOOK_TABLE_NAME, </span><span class="s0">null</span><span class="s1">, values); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setOutlook(String name, </span><span class="s0">double </span><span class="s1">outlook){ 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getWritableDatabase(); 
+        String query = </span><span class="s3">&quot;UPDATE &quot; </span><span class="s1">+ OUTLOOK_TABLE_NAME + </span><span class="s3">&quot; SET &quot; </span><span class="s1">+ OUTLOOK_COLUMN_OUTLOOK + </span><span class="s3">&quot;=&quot; </span><span class="s1">+ outlook + </span><span class="s3">&quot; WHERE &quot; </span><span class="s1">+ OUTLOOK_COLUMN_NAME +</span><span class="s3">&quot; = </span><span class="s0">\&quot;</span><span class="s3">&quot; </span><span class="s1">+name+ </span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">;&quot; </span><span class="s1">; 
+        db.execSQL(query); 
+        db.close(); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">addShare  (Share share) { 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getWritableDatabase(); 
+        ContentValues values = </span><span class="s0">new </span><span class="s1">ContentValues(); 
+        values.put(SHARES_COLUMN_NAME, share.getName()); 
+        values.put(SHARES_COLUMN_SID, share.getId()); 
+        values.put(SHARES_COLUMN_CURRENT_PRICE, share.getCurrentSharePrice()); 
+        values.put(SHARES_COLUMN_LAST_CLOSE, share.getPrevDayClose()); 
+        db.insert(SHARES_TABLE_NAME, </span><span class="s0">null</span><span class="s1">, values); 
+ 
+        values = </span><span class="s0">new </span><span class="s1">ContentValues(); 
+        values.put(PROPERTY_TABLE_NAME, share.getId()); 
+        values.put(PROPERTY_TABLE_AMOUNT, </span><span class="s4">0</span><span class="s1">); 
+        db.insert(SHARES_TABLE_NAME, </span><span class="s0">null</span><span class="s1">, values); 
+        db.close(); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">DayCloseShare(</span><span class="s0">int </span><span class="s1">id, </span><span class="s0">int </span><span class="s1">price){ 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getWritableDatabase(); 
+        String query = </span><span class="s3">&quot;UPDATE &quot; </span><span class="s1">+ SHARES_TABLE_NAME + </span><span class="s3">&quot; SET &quot; </span><span class="s1">+ SHARES_COLUMN_LAST_CLOSE + </span><span class="s3">&quot;=&quot; </span><span class="s1">+ price + </span><span class="s3">&quot; WHERE &quot; </span><span class="s1">+ SHARES_COLUMN_SID +</span><span class="s3">&quot; = &quot; </span><span class="s1">+id+</span><span class="s3">&quot;;&quot;</span><span class="s1">; 
+        db.execSQL(query); 
+        db.close(); 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">numberOfShares(){ 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getReadableDatabase(); 
+        </span><span class="s0">int </span><span class="s1">numRows = (</span><span class="s0">int</span><span class="s1">) DatabaseUtils.queryNumEntries(db, SHARES_TABLE_NAME); 
+        </span><span class="s0">return </span><span class="s1">numRows; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">String getDBShareName(</span><span class="s0">int </span><span class="s1">sid){ 
+        String name = </span><span class="s3">&quot;&quot;</span><span class="s1">; 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getReadableDatabase(); 
+        Cursor c =  db.rawQuery(</span><span class="s3">&quot;select * from &quot; </span><span class="s1">+ SHARES_TABLE_NAME + </span><span class="s3">&quot; where &quot; </span><span class="s1">+ SHARES_COLUMN_SID + </span><span class="s3">&quot;=&quot; </span><span class="s1">+ sid + </span><span class="s3">&quot;&quot;</span><span class="s1">, </span><span class="s0">null</span><span class="s1">); 
+        c.moveToFirst(); 
+        </span><span class="s0">while </span><span class="s1">(!c.isAfterLast()){ 
+            name=c.getString(c.getColumnIndex(SHARES_COLUMN_NAME)); 
+            c.moveToNext(); 
+        } 
+        c.close(); 
+        db.close(); 
+        </span><span class="s0">return </span><span class="s1">name; 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">getDBCurrPrice(</span><span class="s0">int </span><span class="s1">sid){ 
+        </span><span class="s0">int </span><span class="s1">curr = -</span><span class="s4">1</span><span class="s1">; 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getReadableDatabase(); 
+        Cursor c =  db.rawQuery(</span><span class="s3">&quot;select * from &quot; </span><span class="s1">+ SHARES_TABLE_NAME + </span><span class="s3">&quot; where &quot; </span><span class="s1">+ SHARES_COLUMN_SID + </span><span class="s3">&quot;=&quot; </span><span class="s1">+ sid + </span><span class="s3">&quot;&quot;</span><span class="s1">, </span><span class="s0">null</span><span class="s1">); 
+        c.moveToFirst(); 
+        </span><span class="s0">while </span><span class="s1">(!c.isAfterLast()){ 
+            curr = c.getInt(c.getColumnIndex(SHARES_COLUMN_CURRENT_PRICE)); 
+            c.moveToNext(); 
+        } 
+        c.close(); 
+        db.close(); 
+        </span><span class="s0">return </span><span class="s1">curr; 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">getDBLastClose(</span><span class="s0">int </span><span class="s1">sid){ 
+        </span><span class="s0">int </span><span class="s1">last = -</span><span class="s4">1</span><span class="s1">; 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getReadableDatabase(); 
+        Cursor c =  db.rawQuery(</span><span class="s3">&quot;select * from &quot; </span><span class="s1">+ SHARES_TABLE_NAME + </span><span class="s3">&quot; where &quot; </span><span class="s1">+ SHARES_COLUMN_SID + </span><span class="s3">&quot;=&quot; </span><span class="s1">+ sid + </span><span class="s3">&quot;&quot;</span><span class="s1">, </span><span class="s0">null</span><span class="s1">); 
+        c.moveToFirst(); 
+        </span><span class="s0">while </span><span class="s1">(!c.isAfterLast()){ 
+            last = c.getInt(c.getColumnIndex(SHARES_COLUMN_LAST_CLOSE)); 
+            c.moveToNext(); 
+        } 
+        c.close(); 
+        db.close(); 
+        </span><span class="s0">return </span><span class="s1">last; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setDBCurrPrice(</span><span class="s0">int </span><span class="s1">id, </span><span class="s0">int </span><span class="s1">newP) { 
+        SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getWritableDatabase(); 
+        String query = </span><span class="s3">&quot;UPDATE &quot; </span><span class="s1">+ SHARES_TABLE_NAME + </span><span class="s3">&quot; SET &quot; </span><span class="s1">+ SHARES_COLUMN_CURRENT_PRICE + </span><span class="s3">&quot;=&quot; </span><span class="s1">+ newP + </span><span class="s3">&quot; WHERE &quot; </span><span class="s1">+ SHARES_COLUMN_SID +</span><span class="s3">&quot; = &quot; </span><span class="s1">+id+</span><span class="s3">&quot;;&quot;</span><span class="s1">; 
+        db.execSQL(query); 
+        db.close(); 
+    } 
+ 
+ 
+    </span><span class="s2">//DELETE SHARES, COMPANIES, SECTORS OUTLOOKS AND GAME DATA, EVERYTHING EXCEPT ASSETS - TO START A NEW GAME</span><span class="s1"> 
+    </span><span class="s0">public void </span><span class="s1">clearData(){ 
+        SQLiteDatabase db = getWritableDatabase(); 
+        db.execSQL(</span><span class="s3">&quot;DELETE FROM &quot; </span><span class="s1">+ PROPERTY_TABLE_NAME + </span><span class="s3">&quot; WHERE 1;&quot;</span><span class="s1">); 
+        db.execSQL(</span><span class="s3">&quot;DELETE FROM &quot; </span><span class="s1">+ COMPANIES_TABLE_NAME + </span><span class="s3">&quot; WHERE 1;&quot;</span><span class="s1">); 
+        db.execSQL(</span><span class="s3">&quot;DELETE FROM &quot; </span><span class="s1">+ OUTLOOK_TABLE_NAME-</span><span class="s4">0</span><span class="s1">P;</span><span class="s4">0</span><span class="s1">=-</span><span class="s4">769E </span><span class="s1">+ </span><span class="s3">&quot; WHERE 1;&quot;</span><span class="s1">); 
+        db.execSQL(</span><span class="s3">&quot;DELETE FROM &quot; </span><span class="s1">+ SHARES_TABLE_NAME + </span><span class="s3">&quot; WHERE 1;&quot;</span><span class="s1">); 
+        db.execSQL(</span><span class="s3">&quot;DELETE FROM &quot; </span><span class="s1">+ SHARES_TABLE_NAME + </span><span class="s3">&quot; WHERE 1;&quot;</span><span class="s1">); 
+ 
+    } 
+} 
+</span></pre>
+</body>
+</html>

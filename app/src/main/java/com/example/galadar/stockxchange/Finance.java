@@ -13,24 +13,39 @@ public class Finance {
     int EconomySize;
     double[] outlooks;
     HashSet CompaniesNames;
-    Company[] CompaniesList;
-    Share[] SharesList;
+    Company company;
+    Share share;
     int term;
     int day;
 
+    public Finance(MemoryDB DBHandler){
+        String name;
+        CompaniesNames = new HashSet();
+        for(int i=0; i<DBHandler.numberOfShares();i++){
+            name = DBHandler.getDBShareName(i);
+            boolean ok = CompaniesNames.add(name);
+            while(!ok){
+                String newName = randomName();
+                ok = CompaniesNames.add(newName);
+                if(ok) {
+                    DBHandler.setDBShareName(i, newName);
+                    DBHandler.setDBCompName(name, newName);
+                }
+            }
+        }
+    }
 
     public Finance(MemoryDB DBHandler, int size) {
         int numComp = size*10;
         CompaniesNames = new HashSet();
-        CompaniesList = new Company[numComp];
         int totShares;
-        //SharedPreferences.Editor editor2 = Ownerships.edit();
         for(int i=0;i<numComp;i++){
             String name = randomName();
             boolean go = CompaniesNames.add(name);
             if(go) {
-                CompaniesList[i]=new Company(name);
-                totShares = CompaniesList[i].shareStart();
+                company = new Company(name);
+                DBHandler.addCompany(company);
+                totShares = company.shareStart();
                 DBHandler.addShare(new Share(name, i, totShares));
 
                 //editor2.putInt(Integer.toString(i), 0);
@@ -49,10 +64,6 @@ public class Finance {
 
         term =1;
         day=1;
-    }
-
-    public Share getShare(int i){
-        return this.SharesList[i];
     }
 
     private String randomName() {

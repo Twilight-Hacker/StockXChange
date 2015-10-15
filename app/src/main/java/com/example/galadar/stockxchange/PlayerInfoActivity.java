@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.concurrent.BlockingDeque;
+
 public class PlayerInfoActivity extends AppCompatActivity {
 
     @Override
@@ -16,12 +18,12 @@ public class PlayerInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_info);
 
-        Intent intent = getIntent();
-        Bundle data = intent.getExtras();
-        String name = data.getString("name");
-        int money = data.getInt("money");
-        int assets = data.getInt("assets");
-        int level = data.getInt("level");
+        final MemoryDB DBHandler = new MemoryDB(this);
+
+        String name = "William";
+        int money = DBHandler.getPlayerMoney(); //data.getInt("money");
+        int assets = DBHandler.getAssets(); //data.getInt("assets");
+        int level = DBHandler.getLevel(); //data.getInt("level");
 
         TextView NameView = (TextView)findViewById(R.id.PlayerNameDt);
         NameView.setText(name);
@@ -40,6 +42,7 @@ public class PlayerInfoActivity extends AppCompatActivity {
         Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DBHandler.close();
                 PlayerInfoActivity.this.finish();
             }
         });
