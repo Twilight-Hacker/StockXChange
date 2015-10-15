@@ -25,7 +25,7 @@
 
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_weight="0.7"
+            android:layout_weight="0.6"
             android:layout_marginTop="10dp"
             android:id="@+id/CenterLayoutLabels"
             android:layout_height="wrap_content">
@@ -94,7 +94,7 @@
 
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_weight="0.3"
+            android:layout_weight="0.4"
             android:layout_marginTop="10dp"
             android:id="@+id/CenterLayoutDt"
             android:layout_height="wrap_content">

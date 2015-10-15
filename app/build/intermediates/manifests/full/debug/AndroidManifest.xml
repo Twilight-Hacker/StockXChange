@@ -27,8 +27,7 @@
             android:name="com.example.galadar.stockxchange.ShareActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_share"
-            android:parentActivityName="com.example.galadar.stockxchange.MainActivity"
-            android:theme="@style/FullscreenTheme" >
+            android:parentActivityName="com.example.galadar.stockxchange.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.galadar.stockxchange.MainActivity" />
@@ -36,8 +35,7 @@
         <activity
             android:name="com.example.galadar.stockxchange.InfoActivity"
             android:label="@string/title_activity_info"
-            android:parentActivityName="com.example.galadar.stockxchange.MainActivity"
-            android:theme="@style/FullscreenTheme" >
+            android:parentActivityName="com.example.galadar.stockxchange.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.galadar.stockxchange.MainActivity" />
@@ -73,6 +71,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.galadar.stockxchange.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.galadar.stockxchange.WelcomeActivity"
+            android:label="@string/title_activity_welcome" >
         </activity>
     </application>
 

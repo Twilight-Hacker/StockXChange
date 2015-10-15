@@ -11,12 +11,23 @@ import android.widget.TextView;
 
 public class CompanyActivity extends AppCompatActivity {
 
+
+    MemoryDB DBHandler;
+    Daytime time;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company);
         Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
+        Bundle data = intent.getExtras();
+        String name = data.getString("name");
+        DBHandler = new MemoryDB(this);
+        time = data.getParcelable("DT");
+
+        TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
+        TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
+        UpdateTopBar(topBarPlayer, topBarDaytime);
 
         TextView NameView = (TextView)findViewById(R.id.CompNameDt);
         NameView.setText(name);
@@ -59,5 +70,15 @@ public class CompanyActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void UpdateTopBar(TextView player, TextView daytime){
+        int money = DBHandler.getPlayerMoney();
+        int level = DBHandler.getLevel();
+        int assets = DBHandler.getAssets();
+        String TBPlayer = "Lvl "+level+": $"+money+" ("+assets+") ";
+        player.setText(TBPlayer);
+        daytime.setText(time.DTtoString());
+
     }
 }

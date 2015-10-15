@@ -19,6 +19,7 @@ public class SellActivity extends AppCompatActivity {
     int total;
     int SID;
     int money;
+    Daytime time;
 
     MemoryDB DBHandler;
 
@@ -33,12 +34,18 @@ public class SellActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         SID = data.getInt("SID");
+        time = data.getParcelable("DT");
 
         String name = DBHandler.getDBShareName(SID);
         price = DBHandler.getDBCurrPrice(SID);
         final int max = DBHandler.getOwnedShare(SID);
 
         money = DBHandler.getPlayerMoney();
+
+        TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
+        TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
+        UpdateTopBar(topBarPlayer, topBarDaytime);
+
 
         TextView ShareName = (TextView)findViewById(R.id.ShareNameDt);
         ShareName.setText(name);
@@ -148,5 +155,15 @@ public class SellActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void UpdateTopBar(TextView player, TextView daytime){
+        int money = DBHandler.getPlayerMoney();
+        int level = DBHandler.getLevel();
+        int assets = DBHandler.getAssets();
+        String TBPlayer = "Lvl "+level+": $"+money+" ("+assets+") ";
+        player.setText(TBPlayer);
+        daytime.setText(time.DTtoString());
+
     }
 }

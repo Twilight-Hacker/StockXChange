@@ -16,8 +16,6 @@ public class Gamer {
 
 
     public Gamer(MemoryDB DBHandler) {
-        this.assets = DBHandler.getAssets();
-        DBHandler.PrepGamer(this.assets);
     }
 
     public Gamer(int money, int level, int assets, int fame) {

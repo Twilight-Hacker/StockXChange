@@ -1,6 +1,7 @@
 package com.example.galadar.stockxchange;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,18 @@ import android.widget.Toast;
 
 public class InfoActivity extends Activity {
 
+    MemoryDB DBHandler;
+    Daytime time;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
+        DBHandler = new MemoryDB(this);
+
+        Intent intent = getIntent();
+        Bundle data = intent.getExtras();
+        time = data.getParcelable("DT");
 
         final int NumInfo = (int) Math.round(Math.random() * 8 + 7);
 
@@ -38,6 +47,10 @@ public class InfoActivity extends Activity {
             parentLayout.addView(info);
         }
 
+        TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
+        TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
+        UpdateTopBar(topBarPlayer, topBarDaytime);
+
         final Button upD = (Button) findViewById(R.id.UpdateInfo);
 
         upD.setOnClickListener(new View.OnClickListener() {
@@ -53,5 +66,15 @@ public class InfoActivity extends Activity {
             }
 
         });
+    }
+
+    public void UpdateTopBar(TextView player, TextView daytime){
+        int money = DBHandler.getPlayerMoney();
+        int level = DBHandler.getLevel();
+        int assets = DBHandler.getAssets();
+        String TBPlayer = "Lvl "+level+": $"+money+" ("+assets+") ";
+        player.setText(TBPlayer);
+        daytime.setText(time.DTtoString());
+
     }
 }

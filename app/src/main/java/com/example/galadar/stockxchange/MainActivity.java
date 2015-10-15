@@ -1,45 +1,41 @@
 package com.example.galadar.stockxchange;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.Random;
+import java.util.logging.Handler;
 
-public class MainActivity extends AppCompatActivity {
 
-    private boolean playing = false;
-    private boolean on = false;
-    int UpdateInterval = 15;
+public class MainActivity extends Activity {
 
     Finance f;
     Gamer p;
     MemoryDB DBHandler;
+    Daytime time;
+    TextView topBarPlayer;
+    TextView topBarDaytime;
+    TextView sharePrices;
+    Thread upd;
 
-    /*
-    String name;
-    int level;
-    int money;
-    int assets;
-    int fame;
-    */
 
-    //SharedPreferences Ownerships;
-    //SharedPreferences sharedPref;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUI();
+    }
 
-//    int[] Prices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,28 +43,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         DBHandler = new MemoryDB(this);
 
-        Context context = getApplicationContext();
-        //sharedPref = context.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        //Ownerships = context.getSharedPreferences(("com.example.galadar.stockxchange.Owner"), Context.MODE_PRIVATE);
-
-        //f = new Finance(5, Ownerships);
-        //player = new Gamer("Bill", f.SharesList.length);
-
         if(DBHandler.numberOfShares()<1) {
             f = new Finance(DBHandler, 5);
             p = new Gamer(DBHandler);
+            time = new Daytime();
+            DBHandler.PrepGamer(0);
         } else {
             f = new Finance(DBHandler);
             p = new Gamer( DBHandler.getPlayerMoney(), DBHandler.getLevel(), DBHandler.getAssets(), DBHandler.getFame());
+            time = new Daytime(DBHandler.getTerm(), DBHandler.getDay());
         }
 
-        //Daytime time = new Daytime();
+        topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
+        topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
 
+        UpdateTopBar(topBarPlayer, topBarDaytime);
 
         LinearLayout parentLayout = (LinearLayout)findViewById(R.id.layout);
-
         LayoutInflater layoutInflater = getLayoutInflater();
         View view;
+        int intprice;
+        double dprice;
 
         for(int i=0;i<DBHandler.numberOfShares();i++){
             view = layoutInflater.inflate(R.layout.main_share, parentLayout, false);
@@ -77,9 +72,12 @@ public class MainActivity extends AppCompatActivity {
             TextView shareInfo = (TextView)shareData.findViewById(R.id.shareInfo);
             shareInfo.setText(DBHandler.getDBShareName(i));
             shareInfo.setId(200000 + i);
-
+            intprice = DBHandler.getDBCurrPrice(i);
+            dprice = (double)intprice/100;
+            String zerodigit = "";
+            if(intprice%10==0){zerodigit="0";}
             TextView sharePrices = (TextView)shareData.findViewById(R.id.sharePrice);
-            sharePrices.setText(Double.toString(((double)DBHandler.getDBCurrPrice(i))/100));
+            sharePrices.setText(Double.toString(dprice)+zerodigit);
             sharePrices.setId(100000 + i);
 
             Button Buy = (Button)shareData.findViewById(R.id.BuyButton);
@@ -90,65 +88,140 @@ public class MainActivity extends AppCompatActivity {
             Sell.setId(400000 + i);
 
             parentLayout.addView(shareData);
-
         }
-
-        final Button upD = (Button)findViewById(R.id.pricesUpdate);
-
-        upD.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                int temp;
-                int old;
-                TextView sharePrices;
-
-                for(int i=0;i<DBHandler.numberOfShares();i++){
-                    sharePrices = (TextView)findViewById(100000 + i);
-
-                    old = DBHandler.getDBCurrPrice(i);
-                    DBHandler.DayCloseShare(i, old);
-                    temp = (int)Math.round( Math.random() * 100000 );
-                    DBHandler.setDBCurrPrice(i, temp);
-
-                    if (temp>old){
-                        sharePrices.setTextColor( 0xff00ff00 ); //Color green for price going up
-                    } else if  (temp<old){
-                        sharePrices.setTextColor( 0xffff0000 ); //Color red for price going down
-                    } else {
-                        sharePrices.setTextColor( 0xffffffff ); //Color white for price unchanged
-                    }
-
-                    sharePrices.setText(Double.toString( (double)temp/100 ));
-                }
-                Toast.makeText(getApplicationContext(), Double.toString((double)DBHandler.getDBCurrPrice(0)/100), Toast.LENGTH_SHORT).show();
-            }
-
-        });
 
         Button PlayerButton = (Button)findViewById(R.id.PlayerInfo);
         PlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, PlayerInfoActivity.class);
-                startActivity(i);
+                Intent intent = new Intent(MainActivity.this, PlayerInfoActivity.class);
+                Bundle data = new Bundle();
+                data.putInt("SID", (v.getId() - 300000) );
+                data.putParcelable("DT", time);
+                intent.putExtras(data);
+                startActivity(intent);
             }
         });
 
+        //New thread update time
+        final Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                boolean running = true;
+                while (running) {
+                    try {
+                        synchronized (this) {
+                            //TODO change wait from 5000ms to 15000ms (15 seconds)
+                            wait(5000);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    updatePrices();
+                }
+            }
+        };
+
+        upd = new Thread(r);
+        upd.start();
+
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(PricesUpdateMessageRec, new IntentFilter("DBPricesUpdated"));
+    }
+
+    private BroadcastReceiver PricesUpdateMessageRec = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateUI();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(PricesUpdateMessageRec);
+        upd.interrupt();
+        super.onDestroy();
+    }
+
+    public void updateUI(View v) {
+        updateUI();
+    }
+
+    public void updateUI(){
+        int intprice;
+        double dprice;
+        int old;
+
+        for(int i=0;i<DBHandler.numberOfShares();i++) {
+            intprice = DBHandler.getDBCurrPrice(i);
+            sharePrices = (TextView) findViewById(100000 + i);
+            old = (int)Math.round(Double.parseDouble(sharePrices.getText().toString()) * 100);
+
+            if (intprice > old) {
+                sharePrices.setTextColor(0xff00ff00); //Color green for price going up
+            } else if (intprice < old) {
+                sharePrices.setTextColor(0xffff0000); //Color red for price going down
+            } else {
+                sharePrices.setTextColor(0xffffffff); //Color white for price unchanged
+            }
+
+            intprice = DBHandler.getDBCurrPrice(i);
+            dprice = (double)intprice/100;
+            String zerodigit = "";
+            if(intprice%10==0){zerodigit="0";}
+            sharePrices.setText(Double.toString(dprice)+zerodigit);
+        }
+
+        UpdateTopBar(topBarPlayer, topBarDaytime);
+    }
+
+    public void updatePrices(){
+        int temp;
+
+        for(int i=0;i<DBHandler.numberOfShares();i++){
+            temp = getNewSharePrice(DBHandler.getDBCurrPrice(i));
+            DBHandler.setDBCurrPrice(i, temp);
+        }
+        //Toast.makeText(getApplicationContext(), Double.toString((double)DBHandler.getDBCurrPrice(0)/100), Toast.LENGTH_SHORT).show();
+        time.increment(10);
+        sendPriceUpdMessage();
+    }
+
+    private void sendPriceUpdMessage() {
+        Intent i = new Intent("DBPricesUpdated");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+    }
+
+    public int getNewSharePrice(int old){
+        //TODO the real share price update function
+        return (int)Math.round( Math.random() * 100000 );
     }
 
     public void clickInfo(View v){
 
-        Intent InfoIntent = new Intent(this, InfoActivity.class );
-        startActivity(InfoIntent);
+        Intent intent = new Intent(this, InfoActivity.class );
+        Bundle data = new Bundle();
+        data.putInt("SID", (v.getId() - 300000) );
+        data.putParcelable("DT", time);
+        intent.putExtras(data);
+        startActivity(intent);
+    }
+
+    public void UpdateTopBar(TextView player, TextView daytime){
+        int money = DBHandler.getPlayerMoney();
+        int level = DBHandler.getLevel();
+        int assets = DBHandler.getAssets();
+        String TBPlayer = "Lvl "+level+": $"+(money/100)+" ("+assets+") ";
+        player.setText(TBPlayer);
+        daytime.setText(time.DTtoString());
 
     }
 
     public void BuyClick(View v){
         Intent intent = new Intent(this, BuyActivity.class);
         Bundle data = new Bundle();
-        //data.putString("name", DBHandler.getDBShareName(v.getId()-300000)); //f.SharesList[v.getId() - 300000].name);
-        //data.putInt("price", DBHandler.getDBCurrPrice(v.getId() - 300000)); //f.SharesList[v.getId() - 300000].currentSharePrice);
         data.putInt("SID", (v.getId() - 300000) );
+        data.putParcelable("DT", time);
         intent.putExtras(data);
         startActivity(intent);
     }
@@ -157,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SellActivity.class);
         Bundle data = new Bundle();
         data.putInt("SID", (v.getId() - 400000) );
+        data.putParcelable("DT", time);
         intent.putExtras(data);
         startActivity(intent);
     }
@@ -165,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ShareActivity.class);
         Bundle data = new Bundle();
         data.putInt("SID", (v.getId() - 100000) );
+        data.putParcelable("DT", time);
         intent.putExtras(data);
         startActivity(intent);
     }
@@ -173,6 +248,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ShareActivity.class);
         Bundle data = new Bundle();
         data.putInt("SID", (v.getId() - 200000) );
+        data.putParcelable("DT", time);
         intent.putExtras(data);
         startActivity(intent);
     }
@@ -218,4 +294,5 @@ public class MainActivity extends AppCompatActivity {
         DBHandler.close();
         MainActivity.this.finish();
     }
+
 }

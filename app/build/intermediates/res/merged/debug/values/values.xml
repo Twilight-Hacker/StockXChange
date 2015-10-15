@@ -294,6 +294,7 @@
     <string name="title_activity_player_info">PlayerInfoActivity</string>
     <string name="title_activity_sell">SellActivity</string>
     <string name="title_activity_share">ShareActivity</string>
+    <string name="title_activity_welcome">WelcomeActivity</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>

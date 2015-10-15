@@ -13,6 +13,7 @@ public class ShareActivity extends Activity {
 
     //SharedPreferences Ownerships;
     MemoryDB DBHandler;
+    Daytime time;
 
 
     @Override
@@ -24,6 +25,11 @@ public class ShareActivity extends Activity {
         Bundle data = i.getExtras();
         final int SID = data.getInt("SID");
         DBHandler = new MemoryDB(this);
+        time = data.getParcelable("DT");
+
+        TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
+        TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
+        UpdateTopBar(topBarPlayer, topBarDaytime);
 
         TextView ShareName = (TextView)findViewById(R.id.ShareNameData);
         final String name = DBHandler.getDBShareName(SID); //data.getString("name");
@@ -66,7 +72,10 @@ public class ShareActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ShareActivity.this, CompanyActivity.class);
-                intent.putExtra("name", name);
+                Bundle data = new Bundle();
+                data.putString("name", name );
+                data.putParcelable("DT", time);
+                intent.putExtras(data);
                 startActivity(intent);
                 DBHandler.close();
                 ShareActivity.this.finish();
@@ -78,10 +87,8 @@ public class ShareActivity extends Activity {
     public void BuyShare(int SID){
         Intent intent = new Intent(this, BuyActivity.class);
         Bundle data = new Bundle();
-        //data.putString("name", name);
-        //data.putInt("price", price);
-        //data.putInt("money", money);
         data.putInt("SID", SID );
+        data.putParcelable("DT", time);
         intent.putExtras(data);
         startActivity(intent);
         DBHandler.close();
@@ -94,10 +101,21 @@ public class ShareActivity extends Activity {
         //data.putString("name", name);
         //data.putInt("price", price);
         //data.putInt("owned", owned);
-        data.putInt("SID", SID );
+        data.putInt("SID", SID);
+        data.putParcelable("DT", time);
         intent.putExtras(data);
         startActivity(intent);
         DBHandler.close();
         ShareActivity.this.finish();
+    }
+
+    public void UpdateTopBar(TextView player, TextView daytime){
+        int money = DBHandler.getPlayerMoney();
+        int level = DBHandler.getLevel();
+        int assets = DBHandler.getAssets();
+        String TBPlayer = "Lvl "+level+": $"+money+" ("+assets+") ";
+        player.setText(TBPlayer);
+        daytime.setText(time.DTtoString());
+
     }
 }

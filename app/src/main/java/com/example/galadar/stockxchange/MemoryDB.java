@@ -371,6 +371,14 @@ public class MemoryDB extends SQLiteOpenHelper {
         values.put(DATA_COLUMN_ENTRY_NAME, "economysize");
         values.put(DATA_COLUMN_ENTRY_VALUE, 0);
         db.insert(DATA_TABLE_NAME, null, values);
+        values = new ContentValues();
+        values.put(DATA_COLUMN_ENTRY_NAME, "term");
+        values.put(DATA_COLUMN_ENTRY_VALUE, 1);
+        db.insert(DATA_TABLE_NAME, null, values);
+        values = new ContentValues();
+        values.put(DATA_COLUMN_ENTRY_NAME, "day");
+        values.put(DATA_COLUMN_ENTRY_VALUE, 1);
+        db.insert(DATA_TABLE_NAME, null, values);
         db.close();
     }
 
@@ -408,8 +416,53 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.close();
     }
 
-    //heavy workload, call in own syncronised thread
+    public int getTerm() {
+        int term = 1;
 
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"term\" ;", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            term = c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+
+        return term;
+    }
+
+    public void setTerm(int newTerm){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + newTerm + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"term\" ;";
+        db.execSQL(query);
+        db.close();
+    }
+
+    public int getDay() {
+        int day = 1;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"level\" ;", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            day = c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+
+        return day;
+    }
+
+    public void setDay(int newDay){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + newDay + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"level\" ;";
+        db.execSQL(query);
+        db.close();
+    }
+
+    //heavy workload, call in own syncronised thread
     public int GetSharesValue(String name){
         int res = 0;
         int price=0;
