@@ -17,7 +17,10 @@ import java.security.PublicKey;
 
 public class MemoryDB extends SQLiteOpenHelper {
 
+    private static MemoryDB DBHandler;
+
     public static final String DATABASE_NAME = "StockXChangeGame.db";
+    public static final int DATABASE_VER = 1;
 
     public static final String COMPANIES_TABLE_NAME = "Companies";
     public static final String COMPANIES_COLUMN_NAME = "Name";
@@ -31,6 +34,7 @@ public class MemoryDB extends SQLiteOpenHelper {
     public static final String COMPANIES_COLUMN_SECTOR = "Sector";
     public static final String COMPANIES_COLUMN_MARKET_SHARE = "MarketShare";
     public static final String COMPANIES_COLUMN_REVENUE = "Revenue";
+    public static final String COMPANIES_COLUMN_LAST_REVENUE = "LRevenue";
     public static final String COMPANIES_COLUMN_FAME = "Fame";
 
     public static final String SHARES_TABLE_NAME = "shares";
@@ -55,9 +59,16 @@ public class MemoryDB extends SQLiteOpenHelper {
     public static final String PROPERTY_TABLE_SHARE = "Share";
     public static final String PROPERTY_TABLE_AMOUNT = "Amount";
 
+    public static synchronized MemoryDB getInstance(Context context){
+        if(DBHandler==null){
+            DBHandler = new MemoryDB(context.getApplicationContext());
+        }
+        return DBHandler;
+    }
+
     public MemoryDB(Context context)
     {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VER);
     }
 
     @Override
@@ -76,8 +87,9 @@ public class MemoryDB extends SQLiteOpenHelper {
                         COMPANIES_COLUMN_SECTOR + " TEXT, " +
                         COMPANIES_COLUMN_MARKET_SHARE + " REAL, " +
                         COMPANIES_COLUMN_REVENUE + " INTEGER, " +
+                        COMPANIES_COLUMN_LAST_REVENUE + " INTEGER, " +
                         COMPANIES_COLUMN_FAME + " INTEGER " +
-                ");"
+                        ");"
         );
 
         //The game data table will include Player money, assets, fame, as well as economy size and various other numeric values not belonging to companies, shares or outlooks.
@@ -121,7 +133,15 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        clearData();
         onCreate(db);
+
+        switch (oldVersion) {
+            case 1: {
+                db.execSQL("ALTER TABLE " + COMPANIES_TABLE_NAME + " ADD COLUMN " + COMPANIES_COLUMN_LAST_REVENUE + " INTEGER DEFAULT 0;");
+            }
+        }
+
     }
 
     public void sellShare(int sid, int NewAmount, int newCash){
@@ -176,6 +196,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         values.put(COMPANIES_COLUMN_SECTOR, company.getSector());
         values.put(COMPANIES_COLUMN_MARKET_SHARE, company.getMarketShare());
         values.put(COMPANIES_COLUMN_REVENUE, company.getRevenue());
+        values.put(COMPANIES_COLUMN_LAST_REVENUE, company.getLastRevenue());
         values.put(COMPANIES_COLUMN_FAME, company.getFame());
         db.insert(COMPANIES_TABLE_NAME, null, values);
     }
@@ -212,10 +233,10 @@ public class MemoryDB extends SQLiteOpenHelper {
     }
 
     public void DayCloseShare(int sid, int price){
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db2 = this.getWritableDatabase();
         String query = "UPDATE " + SHARES_TABLE_NAME + " SET " + SHARES_COLUMN_LAST_CLOSE + "=" + price + " WHERE " + SHARES_COLUMN_SID +" = " +sid+";";
-        db.execSQL(query);
-        db.close();
+        db2.execSQL(query);
+        db2.close();
     }
 
     public int numberOfShares(){
@@ -266,18 +287,31 @@ public class MemoryDB extends SQLiteOpenHelper {
         return last;
     }
 
-    public void setDBCurrPrice(int sid, int newP) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + SHARES_TABLE_NAME + " SET " + SHARES_COLUMN_CURRENT_PRICE + "=" + newP + " WHERE " + SHARES_COLUMN_SID +" = " +sid+";";
-        db.execSQL(query);
+    public int getCompTotalValue(String name){
+        int last = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select "+COMPANIES_COLUMN_TOTAL_VALUE+" from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_TOTAL_VALUE));
+            c.moveToNext();
+        }
+        c.close();
         db.close();
+        return last;
+
+    }
+
+    public void setDBCurrPrice(int sid, int newP) {
+        SQLiteDatabase db1 = this.getWritableDatabase();
+        String query = "UPDATE " + SHARES_TABLE_NAME + " SET " + SHARES_COLUMN_CURRENT_PRICE + "=" + newP + " WHERE " + SHARES_COLUMN_SID +" = " +sid+";";
+        db1.execSQL(query);
+        db1.close();
     }
 
     public void setPlayerMoney(int newCash){
-        int curr=getPlayerMoney();
-        curr+=newCash;
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + curr + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"money\" ;";
+        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + newCash + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"money\" ;";
         db.execSQL(query);
         db.close();
     }
@@ -409,6 +443,24 @@ public class MemoryDB extends SQLiteOpenHelper {
         return level;
     }
 
+    public int getMaxSID(){
+        int max = 0;
+        int temp = 0;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select "+ SHARES_COLUMN_SID + " from " + SHARES_TABLE_NAME + " where 1;", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            temp = c.getInt(c.getColumnIndex(SHARES_COLUMN_SID));
+            if(temp>max) max = temp;
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+
+        return max;
+    }
+
     public void setLevel(int newLevel){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + newLevel + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"level\" ;";
@@ -462,26 +514,6 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.close();
     }
 
-    //heavy workload, call in own syncronised thread
-    public int GetSharesValue(String name){
-        int res = 0;
-        int price=0;
-        int shares=0;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor ts = db.rawQuery("select * from " + COMPANIES_TABLE_NAME + " WHERE " + COMPANIES_COLUMN_NAME + " = \"" + name + "\";", null);
-        Cursor pr = db.rawQuery("select * from " + SHARES_TABLE_NAME + " WHERE " + SHARES_COLUMN_NAME + " = \"" + name + "\";", null);
-        ts.moveToFirst();
-        pr.moveToFirst();
-        while (!ts.isAfterLast()&&!pr.isAfterLast()){
-            price = pr.getInt(pr.getColumnIndex(SHARES_COLUMN_CURRENT_PRICE));
-            shares = ts.getInt(ts.getColumnIndex(COMPANIES_COLUMN_TOTAL_SHARES));
-            res += price*shares;
-            ts.moveToNext();
-            pr.moveToNext();
-        }
-        return res;
-    }
-
     public void setDBShareName(int sid, String newName) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + SHARES_TABLE_NAME + " SET " + SHARES_COLUMN_NAME + "=" + newName + " WHERE " + SHARES_COLUMN_SID +" = "+ sid +";";
@@ -494,5 +526,48 @@ public class MemoryDB extends SQLiteOpenHelper {
         String query = "UPDATE " + COMPANIES_TABLE_NAME + " SET " + COMPANIES_COLUMN_NAME + "=" + newName + " WHERE " + COMPANIES_COLUMN_NAME +" = \""+ name +"\";";
         db.execSQL(query);
         db.close();
+    }
+
+    public int getTotalShares(String name) {
+        int last = -1;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select "+COMPANIES_COLUMN_TOTAL_SHARES+" from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_TOTAL_SHARES));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+        return last;
+
+    }
+
+    public int getInvestment(String name) {
+        int last = -1;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select "+COMPANIES_COLUMN_INVESTMENT+" from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_INVESTMENT));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+        return last;
+    }
+
+    public int getLastRevenue(String name){
+        int last = -1;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select "+COMPANIES_COLUMN_LAST_REVENUE+" from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_LAST_REVENUE));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+        return last;
     }
 }

@@ -22,7 +22,7 @@ public class CompanyActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         String name = data.getString("name");
-        DBHandler = new MemoryDB(this);
+        DBHandler = MemoryDB.getInstance(getApplicationContext());
         time = data.getParcelable("DT");
 
         TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
@@ -31,6 +31,18 @@ public class CompanyActivity extends AppCompatActivity {
 
         TextView NameView = (TextView)findViewById(R.id.CompNameDt);
         NameView.setText(name);
+
+        TextView TotalValueView = (TextView)findViewById(R.id.TotalValDt);
+        TotalValueView.setText(Double.toString(DBHandler.getCompTotalValue(name)/100));
+
+        TextView TotalSharesView = (TextView)findViewById((R.id.TotalSharesDt));
+        TotalSharesView.setText(Integer.toString(DBHandler.getTotalShares(name)));
+
+        TextView LastRevView = (TextView)findViewById(R.id.LastTermRevenueDt);
+        LastRevView.setText(Double.toString(DBHandler.getLastRevenue(name)/100));
+
+        TextView InvestView = (TextView)findViewById(R.id.LastTermInvDt);
+        InvestView.setText(Double.toString(DBHandler.getInvestment(name)/100));
 
         Button Report = (Button)findViewById(R.id.ScamCheck);
         Report.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +88,7 @@ public class CompanyActivity extends AppCompatActivity {
         int money = DBHandler.getPlayerMoney();
         int level = DBHandler.getLevel();
         int assets = DBHandler.getAssets();
-        String TBPlayer = "Lvl "+level+": $"+money+" ("+assets+") ";
+        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());
 

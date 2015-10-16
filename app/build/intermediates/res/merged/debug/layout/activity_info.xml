@@ -56,11 +56,29 @@
     </ScrollView>
 
     <Button
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/black"
         android:textColor="@color/white"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:text="@string/BackButton"
+        android:id="@+id/BackButton"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:textColor="@color/white"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toLeftOf="@id/BackButton"
         android:text="Update Info"
         android:id="@+id/UpdateInfo"/>
 

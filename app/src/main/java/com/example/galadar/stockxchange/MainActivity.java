@@ -1,11 +1,15 @@
 package com.example.galadar.stockxchange;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,7 +18,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.Random;
 import java.util.logging.Handler;
 
 
@@ -28,12 +34,13 @@ public class MainActivity extends Activity {
     TextView topBarDaytime;
     TextView sharePrices;
     Thread upd;
+    public static final int CurrAPI = android.os.Build.VERSION.SDK_INT;
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateUI();
+        UpdateTopBar(topBarPlayer, topBarDaytime);
     }
 
 
@@ -41,17 +48,17 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        DBHandler = new MemoryDB(this);
+        DBHandler = MemoryDB.getInstance(getApplicationContext());
 
-        if(DBHandler.numberOfShares()<1) {
+        if(DBHandler.getMaxSID()<1) {
             f = new Finance(DBHandler, 5);
             p = new Gamer(DBHandler);
-            time = new Daytime();
+            time = new Daytime(this);
             DBHandler.PrepGamer(0);
         } else {
             f = new Finance(DBHandler);
-            p = new Gamer( DBHandler.getPlayerMoney(), DBHandler.getLevel(), DBHandler.getAssets(), DBHandler.getFame());
-            time = new Daytime(DBHandler.getTerm(), DBHandler.getDay());
+            p = new Gamer(DBHandler.getPlayerMoney(), DBHandler.getLevel(), DBHandler.getAssets(), DBHandler.getFame());
+            time = new Daytime(this, DBHandler.getTerm(), DBHandler.getDay());
         }
 
         topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
@@ -65,7 +72,7 @@ public class MainActivity extends Activity {
         int intprice;
         double dprice;
 
-        for(int i=0;i<DBHandler.numberOfShares();i++){
+        for(int i=0;i<=DBHandler.getMaxSID();i++){
             view = layoutInflater.inflate(R.layout.main_share, parentLayout, false);
             LinearLayout shareData = (LinearLayout)view.findViewById(R.id.shareData);
 
@@ -86,6 +93,20 @@ public class MainActivity extends Activity {
             Button Sell = (Button)shareData.findViewById(R.id.SellButton);
             Sell.setText("Sell");
             Sell.setId(400000 + i);
+            Sell.setEnabled(false);
+            if(CurrAPI>=23) {
+                Sell.setTextColor(getColor(R.color.black));
+            } else {
+                Sell.setTextColor(getResources().getColor(R.color.black));
+            }
+            if(DBHandler.getOwnedShare(i)>0){
+                Sell.setEnabled(true);
+                if(CurrAPI>=23) {
+                    Sell.setTextColor(getColor(R.color.white));
+                } else {
+                    Sell.setTextColor(getResources().getColor(R.color.white));
+                }
+            }
 
             parentLayout.addView(shareData);
         }
@@ -96,12 +117,12 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, PlayerInfoActivity.class);
                 Bundle data = new Bundle();
-                data.putInt("SID", (v.getId() - 300000) );
                 data.putParcelable("DT", time);
                 intent.putExtras(data);
                 startActivity(intent);
             }
         });
+
 
         //New thread update time
         final Runnable r = new Runnable() {
@@ -111,8 +132,8 @@ public class MainActivity extends Activity {
                 while (running) {
                     try {
                         synchronized (this) {
-                            //TODO change wait from 5000ms to 15000ms (15 seconds)
-                            wait(5000);
+                            //TODO change wait from 3000ms to 15000ms (15 seconds)
+                            wait(10000);
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -121,12 +142,13 @@ public class MainActivity extends Activity {
                 }
             }
         };
-
         upd = new Thread(r);
         upd.start();
 
 
         LocalBroadcastManager.getInstance(this).registerReceiver(PricesUpdateMessageRec, new IntentFilter("DBPricesUpdated"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(DayEndedMessageRec, new IntentFilter("DayEnded"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(TermEndedMessageRec, new IntentFilter("TermEnded"));
     }
 
     private BroadcastReceiver PricesUpdateMessageRec = new BroadcastReceiver() {
@@ -135,6 +157,39 @@ public class MainActivity extends Activity {
             updateUI();
         }
     };
+
+    private BroadcastReceiver DayEndedMessageRec = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //TODO Play sound for day end
+            synchronized (upd) {
+                try {
+                    upd.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i <= DBHandler.getMaxSID(); i++) {
+                    DBHandler.DayCloseShare(i, DBHandler.getDBCurrPrice(i));
+                }
+                upd.notify();
+            }
+        }
+    };
+
+    private BroadcastReceiver TermEndedMessageRec = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                upd.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Toast.makeText(context.getApplicationContext(), "Term Ended", Toast.LENGTH_LONG);
+            //TODO Term update
+            upd.notify();
+        }
+    };
+
 
     @Override
     protected void onDestroy() {
@@ -170,6 +225,22 @@ public class MainActivity extends Activity {
             String zerodigit = "";
             if(intprice%10==0){zerodigit="0";}
             sharePrices.setText(Double.toString(dprice)+zerodigit);
+            Button Sell = (Button)findViewById(400000 + i);
+            if(DBHandler.getOwnedShare(i)>0){
+                Sell.setEnabled(true);
+                if(CurrAPI>=23) {
+                    Sell.setTextColor(getColor(R.color.white));
+                } else {
+                    Sell.setTextColor(getResources().getColor(R.color.white));
+                }
+            } else {
+                Sell.setEnabled(false);
+                if(CurrAPI>=23) {
+                    Sell.setTextColor(getColor(R.color.black));
+                } else {
+                    Sell.setTextColor(getResources().getColor(R.color.black));
+                }
+            }
         }
 
         UpdateTopBar(topBarPlayer, topBarDaytime);
@@ -177,7 +248,6 @@ public class MainActivity extends Activity {
 
     public void updatePrices(){
         int temp;
-
         for(int i=0;i<DBHandler.numberOfShares();i++){
             temp = getNewSharePrice(DBHandler.getDBCurrPrice(i));
             DBHandler.setDBCurrPrice(i, temp);
@@ -193,8 +263,23 @@ public class MainActivity extends Activity {
     }
 
     public int getNewSharePrice(int old){
-        //TODO the real share price update function
-        return (int)Math.round( Math.random() * 100000 );
+        Random random = new Random();
+        if(random.nextInt(4)!=2) {
+            return old;
+        } else {
+            double alteration=0;
+
+            alteration+=random.nextGaussian()*(old*0.05);
+            //TODO Add sector outlook effect
+            //TODO Add company outlook effect
+
+            while(Math.abs(100*alteration)>0.13*old){
+                alteration *= 0.95;
+            }
+            old += (int)Math.round(alteration*100);
+
+            return old;
+        }
     }
 
     public void clickInfo(View v){
@@ -211,7 +296,7 @@ public class MainActivity extends Activity {
         int money = DBHandler.getPlayerMoney();
         int level = DBHandler.getLevel();
         int assets = DBHandler.getAssets();
-        String TBPlayer = "Lvl "+level+": $"+(money/100)+" ("+assets+") ";
+        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());
 
@@ -293,6 +378,8 @@ public class MainActivity extends Activity {
     public void ExitClicked(View view) {
         DBHandler.close();
         MainActivity.this.finish();
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
     }
 
 }

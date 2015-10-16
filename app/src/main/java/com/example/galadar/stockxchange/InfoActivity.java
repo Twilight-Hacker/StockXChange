@@ -20,7 +20,7 @@ public class InfoActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
-        DBHandler = new MemoryDB(this);
+        DBHandler = MemoryDB.getInstance(getApplicationContext());
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
@@ -38,7 +38,7 @@ public class InfoActivity extends Activity {
 
             RelativeLayout info = (RelativeLayout) view.findViewById(R.id.infoData);
             info.setId(400000 + i);
-            TextView date = (TextView) info.findViewById(R.id.info_date); //(TextView)view.findViewById(R.id.shareInfo);
+            TextView date = (TextView) info.findViewById(R.id.info_date);
             TextView user = (TextView) info.findViewById(R.id.info_user);
             user.setText("U " + (i + 1));
             TextView body = (TextView) info.findViewById(R.id.info_body);
@@ -66,13 +66,23 @@ public class InfoActivity extends Activity {
             }
 
         });
+
+        final Button BackB = (Button)findViewById(R.id.BackButton);
+
+        BackB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfoActivity.this.finish();
+            }
+        });
+
     }
 
     public void UpdateTopBar(TextView player, TextView daytime){
         int money = DBHandler.getPlayerMoney();
         int level = DBHandler.getLevel();
         int assets = DBHandler.getAssets();
-        String TBPlayer = "Lvl "+level+": $"+money+" ("+assets+") ";
+        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());
 

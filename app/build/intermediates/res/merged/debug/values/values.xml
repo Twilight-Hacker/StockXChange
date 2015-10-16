@@ -219,6 +219,7 @@
     <eat-comment/>
     <string name="Add">+1 Share</string>
     <string name="Amount">Number of Shares: </string>
+    <string name="BackButton">Back</string>
     <string name="Buy_Button">Buy</string>
     <string name="CancelButton">Cancel</string>
     <string name="CompanyInfo">Info</string>
@@ -229,6 +230,7 @@
     <string name="Cost">Price:</string>
     <string name="Exit">Exit</string>
     <string name="InfoButton">INFO</string>
+    <string name="LastTermInvest">Invested:</string>
     <string name="LastTermRev">Last Term Revenue:</string>
     <string name="Max">Max</string>
     <string name="OK">Back</string>

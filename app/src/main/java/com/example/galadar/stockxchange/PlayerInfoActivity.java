@@ -13,12 +13,14 @@ import java.util.concurrent.BlockingDeque;
 
 public class PlayerInfoActivity extends AppCompatActivity {
 
+    MemoryDB DBHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_info);
 
-        final MemoryDB DBHandler = new MemoryDB(this);
+        DBHandler = MemoryDB.getInstance(getApplicationContext());
 
         String name = "William";
         int money = DBHandler.getPlayerMoney(); //data.getInt("money");
@@ -42,7 +44,6 @@ public class PlayerInfoActivity extends AppCompatActivity {
         Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DBHandler.close();
                 PlayerInfoActivity.this.finish();
             }
         });

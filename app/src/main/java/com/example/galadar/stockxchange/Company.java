@@ -16,6 +16,15 @@ public class Company {
     double marketShare;
     int revenue;
     int fame;
+    int lastRevenue;
+
+    public int getLastRevenue() {
+        return lastRevenue;
+    }
+
+    public void setLastRevenue(int lastRevenue) {
+        this.lastRevenue = lastRevenue;
+    }
 
     public Company(String name) {
         this.name = name;
@@ -28,6 +37,8 @@ public class Company {
         Sector = RandomSector();
         marketShare = Math.min(Math.random(), 0.3);
         revenue = 0;
+        lastRevenue = 0;
+
         fame = 300;
     }
 

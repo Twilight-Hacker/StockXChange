@@ -1,7 +1,10 @@
 package com.example.galadar.stockxchange;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.content.LocalBroadcastManager;
 
 /**
  * Created by Galadar on 1/10/2015.
@@ -11,19 +14,22 @@ public class Daytime implements Parcelable{
     int day;
     int min;
     int hour;
+    Context context;
 
-    public Daytime(){
+    public Daytime(Context context){
         this.term =1;
         this.day = 1;
         this.hour = 9;
         this.min = 0;
+        this.context = context;
     }
 
-    public Daytime(int term, int day) {
+    public Daytime(Context context, int term, int day) {
         this.term =term;
         this.day = day;
         this.hour = 9;
         this.min = 0;
+        this.context = context;
     }
 
     protected Daytime(Parcel in) {
@@ -63,11 +69,18 @@ public class Daytime implements Parcelable{
         if(this.hour==15&&this.min>=30){
             this.day++;
             this.hour = 9;
+            this.min = 0;
+            Intent i = new Intent("DayEnded");
+            this.context.sendBroadcast(i);
+            //LocalBroadcastManager.getInstance(this.context).sendBroadcast(i);
         }
 
         if(this.day==60){
             this.term++;
             this.day =1;
+            Intent i = new Intent("TermEnded");
+            this.context.sendBroadcast(i);
+            //LocalBroadcastManager.getInstance(this.context).sendBroadcast(i);
         }
     }
 

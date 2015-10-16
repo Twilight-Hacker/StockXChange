@@ -1,8 +1,11 @@
 package com.example.galadar.stockxchange;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,11 +17,11 @@ import android.widget.Toast;
 
 public class SellActivity extends AppCompatActivity {
 
-    int price;
-    int amount;
-    int total;
-    int SID;
-    int money;
+    static int price;
+    static int amount;
+    static int total;
+    static int SID;
+    static int money;
     Daytime time;
 
     MemoryDB DBHandler;
@@ -29,7 +32,7 @@ public class SellActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sell);
 
-        DBHandler = new MemoryDB(this);
+        DBHandler = MemoryDB.getInstance(getApplicationContext());
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
@@ -117,8 +120,8 @@ public class SellActivity extends AppCompatActivity {
         Execute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DBHandler.sellShare(SID, max+amount, money+total);
-                DBHandler.close();
+                DBHandler.sellShare(SID, max-amount, money+total);
+                SellActivity.this.DBHandler.close();
                 SellActivity.this.finish();
             }
         });
@@ -126,12 +129,11 @@ public class SellActivity extends AppCompatActivity {
         Cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DBHandler.close();
                 SellActivity.this.finish();
             }
         });
 
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(PricesUpdateMessageRec, new IntentFilter("DBPricesUpdated"));
 
     }
 
@@ -161,9 +163,24 @@ public class SellActivity extends AppCompatActivity {
         int money = DBHandler.getPlayerMoney();
         int level = DBHandler.getLevel();
         int assets = DBHandler.getAssets();
-        String TBPlayer = "Lvl "+level+": $"+money+" ("+assets+") ";
+        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());
 
     }
+
+    private BroadcastReceiver PricesUpdateMessageRec = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Button Execute = (Button)findViewById(R.id.SellButton);
+            Execute.setEnabled(false);
+            price = DBHandler.getDBCurrPrice(SID);
+            final TextView Cost = (TextView)findViewById(R.id.TotalValueDt);
+            TextView SharePrice = (TextView)findViewById(R.id.ShareCurrPriDt);
+            SharePrice.setText(Double.toString(((double)price)/100));
+            total = amount*price;
+            Cost.setText(Double.toString(((double)total)/100));
+            Execute.setEnabled(true);
+        }
+    };
 }

@@ -63,4 +63,6 @@
     <string name="Ownership_file_key">com.example.galadar.stockxchange.ownerdata</string>
     <string name="Exit">Exit</string>
     <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="BackButton">Back</string>
+    <string name="LastTermInvest">Invested:</string>
 </resources>

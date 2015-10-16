@@ -11,10 +11,8 @@ import android.widget.TextView;
 
 public class ShareActivity extends Activity {
 
-    //SharedPreferences Ownerships;
     MemoryDB DBHandler;
     Daytime time;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +22,7 @@ public class ShareActivity extends Activity {
 
         Bundle data = i.getExtras();
         final int SID = data.getInt("SID");
-        DBHandler = new MemoryDB(this);
+        DBHandler = MemoryDB.getInstance(getApplicationContext());
         time = data.getParcelable("DT");
 
         TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
@@ -73,11 +71,10 @@ public class ShareActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(ShareActivity.this, CompanyActivity.class);
                 Bundle data = new Bundle();
-                data.putString("name", name );
+                data.putString("name", name);
                 data.putParcelable("DT", time);
                 intent.putExtras(data);
                 startActivity(intent);
-                DBHandler.close();
                 ShareActivity.this.finish();
             }
         });
@@ -87,11 +84,10 @@ public class ShareActivity extends Activity {
     public void BuyShare(int SID){
         Intent intent = new Intent(this, BuyActivity.class);
         Bundle data = new Bundle();
-        data.putInt("SID", SID );
+        data.putInt("SID", SID);
         data.putParcelable("DT", time);
         intent.putExtras(data);
         startActivity(intent);
-        DBHandler.close();
         ShareActivity.this.finish();
     }
 
@@ -105,7 +101,6 @@ public class ShareActivity extends Activity {
         data.putParcelable("DT", time);
         intent.putExtras(data);
         startActivity(intent);
-        DBHandler.close();
         ShareActivity.this.finish();
     }
 
@@ -113,7 +108,7 @@ public class ShareActivity extends Activity {
         int money = DBHandler.getPlayerMoney();
         int level = DBHandler.getLevel();
         int assets = DBHandler.getAssets();
-        String TBPlayer = "Lvl "+level+": $"+money+" ("+assets+") ";
+        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());
 
