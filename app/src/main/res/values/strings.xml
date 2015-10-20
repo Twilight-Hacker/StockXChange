@@ -65,4 +65,14 @@
     <string name="title_activity_welcome">WelcomeActivity</string>
     <string name="BackButton">Back</string>
     <string name="LastTermInvest">Invested:</string>
+    <string name="Company_Sectror">Industry:</string>
+    <string name="title_activity_messages">MessagesActivity</string>
+    <string name="Messages">Messages</string>
+    <string name="action_sound">Play Sounds</string>
+    <string name="newGame">New Game</string>
+    <string name="backMain">Back to Main</string>
+    <string name="title_activity_economy_info">Economy Info</string>
+    <string name="EconomySize">Economy Size in M$</string>
+    <string name="TotalCompanies">Companies</string>
+    <string name="Economy">Economy</string>
 </resources>

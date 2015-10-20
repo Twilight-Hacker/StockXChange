@@ -14,21 +14,25 @@ public class Daytime implements Parcelable{
     int day;
     int min;
     int hour;
-    Context context;
+    LocalBroadcastManager context;
 
-    public Daytime(Context context){
+    public Daytime getClock(){
+        return this;
+    }
+
+    public Daytime(LocalBroadcastManager context){
         this.term =1;
         this.day = 1;
-        this.hour = 9;
-        this.min = 0;
+        this.hour = 8;
+        this.min = 50;
         this.context = context;
     }
 
-    public Daytime(Context context, int term, int day) {
+    public Daytime(LocalBroadcastManager context, int term, int day) {
         this.term =term;
         this.day = day;
-        this.hour = 9;
-        this.min = 0;
+        this.hour = 8;
+        this.min = 50;
         this.context = context;
     }
 
@@ -60,26 +64,36 @@ public class Daytime implements Parcelable{
 
     public void increment(int UpdateInterval ){
         this.min += UpdateInterval;
+        Intent intent = new Intent("TimeForwarded");
+        this.context.sendBroadcast(intent);
 
         if(this.min==60){
             this.hour++;
             this.min =0;
         }
 
-        if(this.hour==15&&this.min>=30){
-            this.day++;
-            this.hour = 9;
-            this.min = 0;
+        if(this.hour==15&&this.min==30) {
             Intent i = new Intent("DayEnded");
             this.context.sendBroadcast(i);
             //LocalBroadcastManager.getInstance(this.context).sendBroadcast(i);
         }
 
+        if(this.hour==15&&this.min>30) {
+            this.day++;
+            this.hour = 8;
+            this.min = 50;
+        }
+
+        if(this.hour==9&&this.min==0){
+            Intent intent2 = new Intent("DayStarted");
+            this.context.sendBroadcast(intent2);
+        }
+
         if(this.day==60){
             this.term++;
             this.day =1;
-            Intent i = new Intent("TermEnded");
-            this.context.sendBroadcast(i);
+            Intent intent3 = new Intent("TermEnded");
+            this.context.sendBroadcast(intent3);
             //LocalBroadcastManager.getInstance(this.context).sendBroadcast(i);
         }
     }
@@ -95,5 +109,14 @@ public class Daytime implements Parcelable{
         dest.writeInt(day);
         dest.writeInt(min);
         dest.writeInt(hour);
+    }
+
+    public int totalDays(){
+        return this.term*60 + this.day;
+    }
+
+    //returns what the tatal days will be after X days
+    public int totalDays(int duration){
+        return this.term*60 + this.day + duration;
     }
 }

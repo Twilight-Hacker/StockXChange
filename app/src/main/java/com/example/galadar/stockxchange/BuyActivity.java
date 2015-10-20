@@ -22,29 +22,26 @@ public class BuyActivity extends AppCompatActivity {
     static int max;
     static int money;
     static int SID;
+    static int owned;
     Daytime time;
-
-    MemoryDB DBHandler;
+    boolean playSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy);
 
-        DBHandler = MemoryDB.getInstance(getApplicationContext());
-
         Intent intent = getIntent();
-        Bundle data = intent.getExtras();
+        final Bundle data = intent.getExtras();
         SID = data.getInt("SID");
-        time = data.getParcelable("DT");
-        money = DBHandler.getPlayerMoney();
+        time = MainActivity.getClock();
+        money = data.getInt("Pmoney");
+        playSound = data.getBoolean("playSound");
+        final String name = data.getString("Sname");
+        price = data.getInt("Sprice");
+        owned = data.getInt("Owned");
 
-        String name = DBHandler.getDBShareName(SID);
-        price = DBHandler.getDBCurrPrice(SID);
-
-        TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
-        TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
-        UpdateTopBar(topBarPlayer, topBarDaytime);
+        UpdateTimeView(time);
 
 
         TextView ShareName = (TextView)findViewById(R.id.ShareNameDt);
@@ -120,9 +117,14 @@ public class BuyActivity extends AppCompatActivity {
         Execute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int temp = DBHandler.getOwnedShare(SID);
-                DBHandler.BuyShare(SID, temp+amount, money-total);
-                BuyActivity.this.DBHandler.close();
+                Intent SharesBought = new Intent("SharesTransaction"); //To update prices
+                Bundle Bdata = new Bundle();
+                Bdata.putInt("SID", SID);
+                Bdata.putInt("amount", amount);
+                Bdata.putInt("atPrice", price);
+                Bdata.putBoolean("ByPlayer", true);
+                SharesBought.putExtras(Bdata);
+                LocalBroadcastManager.getInstance(BuyActivity.this).sendBroadcast(SharesBought);
                 BuyActivity.this.finish();
             }
         });
@@ -134,14 +136,22 @@ public class BuyActivity extends AppCompatActivity {
             }
         });
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(PricesUpdateMessageRec, new IntentFilter("DBPricesUpdated"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(PricesUpdateMessageRec, new IntentFilter("SpecificPriceUpdated"));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, final Intent intent) {
+                UpdateTimeView(time);
+            }
+        }, new IntentFilter("TimeForwarded"));
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_buy, menu);
+        getMenuInflater().inflate(R.menu.menu_nonmain, menu);
         return true;
     }
 
@@ -152,21 +162,23 @@ public class BuyActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.menu_sound:
+                playSound = !playSound;
+                LocalBroadcastManager.getInstance(BuyActivity.this).sendBroadcast(new Intent("SoundAltered").putExtra("sound", playSound));
+                item.setChecked(playSound);
+                break;
+            case R.id.menu_backMain:
+                BuyActivity.this.finish();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void UpdateTopBar(TextView player, TextView daytime){
-        int money = DBHandler.getPlayerMoney();
-        int level = DBHandler.getLevel();
-        int assets = DBHandler.getAssets();
-        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
-        player.setText(TBPlayer);
-        daytime.setText(time.DTtoString());
+    public void UpdateTimeView(Daytime time){
+        TextView DT = (TextView)findViewById(R.id.DaytimeInfo);
+        DT.setText(time.DTtoString());
     }
 
     private BroadcastReceiver PricesUpdateMessageRec = new BroadcastReceiver() {
@@ -176,16 +188,18 @@ public class BuyActivity extends AppCompatActivity {
             Execute.setEnabled(false);
             final TextView ShareAmount = (TextView)findViewById(R.id.ShareAmountDt);
             final TextView Cost = (TextView)findViewById(R.id.TotalValueDt);
-            price = DBHandler.getDBCurrPrice(SID);
-            TextView SharePrice = (TextView) findViewById(R.id.ShareCurrPriDt);
-            SharePrice.setText(Double.toString(((double)price)/100));
-            max = (int) Math.floor( money/price );
-            if(amount>max){
-                amount = max;
+            if(intent.getExtras().getInt("SID")==SID) {
+                TextView SharePrice = (TextView) findViewById(R.id.ShareCurrPriDt);
+                int price = intent.getExtras().getInt("price");
+                SharePrice.setText(Double.toString(((double) price) / 100));
+                max = (int) Math.floor(money / price);
+                if (amount > max) {
+                    amount = max;
+                }
+                ShareAmount.setText(Integer.toString(amount));
+                total = amount * price;
+                Cost.setText(Double.toString(((double) total) / 100));
             }
-            ShareAmount.setText(Integer.toString(amount));
-            total = amount * price;
-            Cost.setText(Double.toString(((double)total)/100));
             Execute.setEnabled(true);
         }
     };

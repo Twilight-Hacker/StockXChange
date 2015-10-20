@@ -22,9 +22,10 @@ public class SellActivity extends AppCompatActivity {
     static int total;
     static int SID;
     static int money;
-    Daytime time;
-
-    MemoryDB DBHandler;
+    static int level;
+    static int assets;
+    static Daytime time;
+    static boolean playSound;
 
 
     @Override
@@ -32,18 +33,20 @@ public class SellActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sell);
 
-        DBHandler = MemoryDB.getInstance(getApplicationContext());
 
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
         SID = data.getInt("SID");
-        time = data.getParcelable("DT");
+        time = MainActivity.getClock();
+        playSound = true;
 
-        String name = DBHandler.getDBShareName(SID);
-        price = DBHandler.getDBCurrPrice(SID);
-        final int max = DBHandler.getOwnedShare(SID);
-
-        money = DBHandler.getPlayerMoney();
+        String name = data.getString("name");
+        price = data.getInt("Sprice");
+        final int max = data.getInt("owned");
+        money = data.getInt("money");
+        level = data.getInt("level");
+        assets = data.getInt("assets");
+        amount = 0;
 
         TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
         TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
@@ -59,6 +62,9 @@ public class SellActivity extends AppCompatActivity {
 
         final TextView ShareAmount = (TextView)findViewById(R.id.ShareAmountDt);
         final TextView Cost = (TextView)findViewById(R.id.TotalValueDt);
+        ShareAmount.setText(Integer.toString(amount));
+        total = amount*price;
+        Cost.setText(Double.toString(((double)total)/100));
 
         final Button maxButton = (Button)findViewById(R.id.MaxSharesButton);
         final Button plusOne = (Button)findViewById(R.id.AddSharesButton);
@@ -120,8 +126,14 @@ public class SellActivity extends AppCompatActivity {
         Execute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DBHandler.sellShare(SID, max-amount, money+total);
-                SellActivity.this.DBHandler.close();
+                Intent SharesSold = new Intent("SharesTransaction"); //To update prices
+                Bundle Sdata = new Bundle();
+                Sdata.putInt("SID", SID);
+                Sdata.putInt("amount", (0-amount) );
+                Sdata.putInt("atPrice", price);
+                Sdata.putBoolean("ByPlayer", true);
+                SharesSold.putExtras(Sdata);
+                LocalBroadcastManager.getInstance(SellActivity.this).sendBroadcast(SharesSold);
                 SellActivity.this.finish();
             }
         });
@@ -133,14 +145,22 @@ public class SellActivity extends AppCompatActivity {
             }
         });
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(PricesUpdateMessageRec, new IntentFilter("DBPricesUpdated"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(PricesUpdateMessageRec, new IntentFilter("SpecificPriceUpdated"));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, final Intent intent) {
+                UpdateTimeView(time);
+            }
+        }, new IntentFilter("TimeForwarded"));
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_sell, menu);
+        getMenuInflater().inflate(R.menu.menu_nonmain, menu);
         return true;
     }
 
@@ -151,18 +171,21 @@ public class SellActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.menu_sound:
+                playSound = !playSound;
+                LocalBroadcastManager.getInstance(SellActivity.this).sendBroadcast(new Intent("SoundAltered").putExtra("sound", playSound));
+                item.setChecked(playSound);
+                break;
+            case R.id.menu_backMain:
+                SellActivity.this.finish();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     public void UpdateTopBar(TextView player, TextView daytime){
-        int money = DBHandler.getPlayerMoney();
-        int level = DBHandler.getLevel();
-        int assets = DBHandler.getAssets();
         String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());
@@ -172,15 +195,23 @@ public class SellActivity extends AppCompatActivity {
     private BroadcastReceiver PricesUpdateMessageRec = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Button Execute = (Button)findViewById(R.id.SellButton);
-            Execute.setEnabled(false);
-            price = DBHandler.getDBCurrPrice(SID);
-            final TextView Cost = (TextView)findViewById(R.id.TotalValueDt);
-            TextView SharePrice = (TextView)findViewById(R.id.ShareCurrPriDt);
-            SharePrice.setText(Double.toString(((double)price)/100));
-            total = amount*price;
-            Cost.setText(Double.toString(((double)total)/100));
-            Execute.setEnabled(true);
+            if(intent.getExtras().getInt("SID")==SID) {
+                Button Execute = (Button) findViewById(R.id.SellButton);
+                Execute.setEnabled(false);
+                final TextView Cost = (TextView) findViewById(R.id.TotalValueDt);
+                TextView SharePrice = (TextView) findViewById(R.id.ShareCurrPriDt);
+                price = intent.getExtras().getInt("newPrice");
+                SharePrice.setText(Double.toString(((double) price) / 100));
+                total = amount * price;
+                Cost.setText(Double.toString(((double) total) / 100));
+                Execute.setEnabled(true);
+            }
         }
     };
+
+    public void UpdateTimeView(Daytime time){
+        TextView DT = (TextView)findViewById(R.id.DaytimeInfo);
+        DT.setText(time.DTtoString());
+    }
+
 }

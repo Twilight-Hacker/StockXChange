@@ -43,7 +43,7 @@ public class Update extends IntentService {
     private void DBPriceUpdate(){
         int temp;
 
-        for(int i=0;i<DBHandler.numberOfShares();i++){
+        for(int i=0;i<DBHandler.getMaxSID();i++){
             temp = getNewSharePrice(DBHandler.getDBCurrPrice(i));
             DBHandler.setDBCurrPrice(i, temp);
         }

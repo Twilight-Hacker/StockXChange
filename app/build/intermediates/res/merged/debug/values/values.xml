@@ -226,13 +226,17 @@
     <string name="Company_Activity_Tittle">Company Analysis</string>
     <string name="Company_Name">Shortened Name: </string>
     <string name="Company_Sector">Industry: </string>
+    <string name="Company_Sectror">Industry:</string>
     <string name="Company_Total_Value">Total Value Reported: </string>
     <string name="Cost">Price:</string>
+    <string name="Economy">Economy</string>
+    <string name="EconomySize">Economy Size in M$</string>
     <string name="Exit">Exit</string>
     <string name="InfoButton">INFO</string>
     <string name="LastTermInvest">Invested:</string>
     <string name="LastTermRev">Last Term Revenue:</string>
     <string name="Max">Max</string>
+    <string name="Messages">Messages</string>
     <string name="OK">Back</string>
     <string name="Ownership_file_key">com.example.galadar.stockxchange.ownerdata</string>
     <string name="PlayerButton">Player</string>
@@ -255,6 +259,7 @@
     <string name="Share_Owned">Shares Owned: </string>
     <string name="Share_Prev_Close">Last Close: </string>
     <string name="Shares_Owned_Value">Owned Shares Value: </string>
+    <string name="TotalCompanies">Companies</string>
     <string name="Total_Shares">Total Number of Shares: </string>
     <string name="Zero">0</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
@@ -279,10 +284,13 @@
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="action_settings">Settings</string>
+    <string name="action_sound">Play Sounds</string>
     <string name="app_name">StockXchange</string>
+    <string name="backMain">Back to Main</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="hello_world">Hello world!</string>
+    <string name="newGame">New Game</string>
     <string name="preference_file_key">com.example.galadar.stockxchange.gamedata</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>
@@ -292,7 +300,9 @@
     <string name="title_activity_activity__info">Activity_Info</string>
     <string name="title_activity_buy">BuyActivity</string>
     <string name="title_activity_company">Company Info</string>
+    <string name="title_activity_economy_info">Economy Info</string>
     <string name="title_activity_info">InfoActivity</string>
+    <string name="title_activity_messages">MessagesActivity</string>
     <string name="title_activity_player_info">PlayerInfoActivity</string>
     <string name="title_activity_sell">SellActivity</string>
     <string name="title_activity_share">ShareActivity</string>

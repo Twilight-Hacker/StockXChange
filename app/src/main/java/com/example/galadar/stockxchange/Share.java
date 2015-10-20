@@ -10,11 +10,22 @@ public class Share {
     int sid;
     String name;
 
-    public Share(String name, int sid, int currentSharePrice) {
+    public int getTotalShares() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    int total;
+
+    public Share(String name, int sid, int currentSharePrice, int total) {
         this.name = name;
         this.sid = sid;
         this.currentSharePrice = currentSharePrice;
         this.prevDayClose = currentSharePrice;
+        this.total = total;
     }
 
     public int getId() {

@@ -14,6 +14,7 @@ import java.util.concurrent.BlockingDeque;
 public class PlayerInfoActivity extends AppCompatActivity {
 
     MemoryDB DBHandler;
+    boolean playSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class PlayerInfoActivity extends AppCompatActivity {
         int money = DBHandler.getPlayerMoney(); //data.getInt("money");
         int assets = DBHandler.getAssets(); //data.getInt("assets");
         int level = DBHandler.getLevel(); //data.getInt("level");
+        playSound =true;
 
         TextView NameView = (TextView)findViewById(R.id.PlayerNameDt);
         NameView.setText(name);
@@ -49,10 +51,11 @@ public class PlayerInfoActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_player_info, menu);
+        getMenuInflater().inflate(R.menu.menu_nonmain, menu);
         return true;
     }
 
@@ -63,11 +66,18 @@ public class PlayerInfoActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.menu_sound:
+                playSound = !playSound;
+                DBHandler.setSound(playSound);
+                item.setChecked(playSound);
+                break;
+            case R.id.menu_backMain:
+                PlayerInfoActivity.this.finish();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 }

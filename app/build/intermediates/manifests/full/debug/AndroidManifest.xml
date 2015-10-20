@@ -76,6 +76,22 @@
             android:name="com.example.galadar.stockxchange.WelcomeActivity"
             android:label="@string/title_activity_welcome" >
         </activity>
+        <activity
+            android:name="com.example.galadar.stockxchange.MessagesActivity"
+            android:label="@string/title_activity_messages"
+            android:parentActivityName="com.example.galadar.stockxchange.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.galadar.stockxchange.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.galadar.stockxchange.EconomyInfoActivity"
+            android:label="@string/title_activity_economy_info"
+            android:parentActivityName="com.example.galadar.stockxchange.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.galadar.stockxchange.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

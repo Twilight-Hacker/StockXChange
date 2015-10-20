@@ -33,6 +33,10 @@ public class Gamer {
         this.money = money;
     }
 
+    public void alterMoney(int amount){
+        this.money += amount;
+    }
+
     public int getAssets() {
         return assets;
     }

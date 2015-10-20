@@ -1,53 +1,69 @@
 package com.example.galadar.stockxchange;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class ShareActivity extends Activity {
+public class ShareActivity extends AppCompatActivity {
 
-    MemoryDB DBHandler;
-    Daytime time;
+    static Daytime time;
+    static boolean playSound;
+    static Finance f;
+    static int money;
+    static int price;
+    static int owned;
+    static String name;
+    static int level;
+    static int assets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent i = getIntent();
         setContentView(R.layout.activity_share);
 
-        Bundle data = i.getExtras();
+        Bundle data = getIntent().getExtras();
         final int SID = data.getInt("SID");
-        DBHandler = MemoryDB.getInstance(getApplicationContext());
-        time = data.getParcelable("DT");
+        time = MainActivity.getClock();
+        money = data.getInt("Pmoney");
+        f = MainActivity.getFinance();
+
+        playSound = true;
 
         TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
-        TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
+        TextView topBarDaytime = (TextView) findViewById(R.id.DaytimeInfo);
         UpdateTopBar(topBarPlayer, topBarDaytime);
 
         TextView ShareName = (TextView)findViewById(R.id.ShareNameData);
-        final String name = DBHandler.getDBShareName(SID); //data.getString("name");
-        ShareName.setText(name);
+        ShareName.setText(f.getName(SID));
 
         TextView SharePrice = (TextView)findViewById(R.id.ShareCurrPriData);
-        int price = DBHandler.getDBCurrPrice(SID); //data.getInt("price");
+        price = f.getShareCurrPrince(SID);
         SharePrice.setText(Double.toString(((double)price)/100));
 
         TextView ShareOwned = (TextView)findViewById((R.id.ShareOwnedData));
-        int owned = DBHandler.getOwnedShare(SID); //data.getInt("owned",0);
+        owned = f.getSharesOwned(SID);
         ShareOwned.setText(Integer.toString(owned));
+
+        TextView ShareTotal = (TextView)findViewById(R.id.ShareTotalData);
+        ShareTotal.setText(Integer.toString(f.getTotalShares(SID)));
 
         TextView SharesValue = (TextView)findViewById(R.id.ShareOwnedVData);
         int val = owned*price;
         SharesValue.setText(Double.toString((double)val/100));
 
         TextView ShareLast = (TextView)findViewById(R.id.SharePrevData);
-        int prev = DBHandler.getDBLastClose(SID);
-        ShareLast.setText(Double.toString((double)prev/100));
+        ShareLast.setText(Double.toString((double)f.getLastClose(SID)/100));
 
         final Button BuyButton = (Button)findViewById(R.id.BuyButton);
         BuyButton.setOnClickListener(new View.OnClickListener() {
@@ -71,21 +87,38 @@ public class ShareActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(ShareActivity.this, CompanyActivity.class);
                 Bundle data = new Bundle();
-                data.putString("name", name);
+                data.putString("name", f.getName(SID));
                 data.putParcelable("DT", time);
+                data.putString("sector", f.getCompSector(SID));
+                data.putInt("totalV", f.getCompTotalValue(SID));
+                data.putInt("totalS", f.getTotalShares(SID));
+                data.putInt("LastRevenue", f.getLastRevenue(SID));
+                data.putInt("LastInvestment", f.getInvestment(SID));
                 intent.putExtras(data);
                 startActivity(intent);
                 ShareActivity.this.finish();
             }
         });
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, final Intent intent) {
+                        UpdateTimeView(time);
+            }
+        }, new IntentFilter("TimeForwarded"));
+
     }
 
     public void BuyShare(int SID){
         Intent intent = new Intent(this, BuyActivity.class);
         Bundle data = new Bundle();
-        data.putInt("SID", SID);
+        data.putInt("SID", SID );
         data.putParcelable("DT", time);
+        data.putInt("Pmoney", money);
+        data.putBoolean("playSound", playSound);
+        data.putString("Sname", f.getName(SID));
+        data.putInt("Sprice", f.getShareCurrPrince(SID));
+        data.putInt("Owned", f.getSharesOwned(SID));
         intent.putExtras(data);
         startActivity(intent);
         ShareActivity.this.finish();
@@ -94,23 +127,58 @@ public class ShareActivity extends Activity {
     public void SellShare(int SID){
         Intent intent = new Intent(this, SellActivity.class);
         Bundle data = new Bundle();
-        //data.putString("name", name);
-        //data.putInt("price", price);
-        //data.putInt("owned", owned);
-        data.putInt("SID", SID);
+        data.putInt("SID", SID );
         data.putParcelable("DT", time);
+        data.putInt("Pmoney", money);
+        data.putBoolean("playSound", playSound);
+        data.putString("Sname", name);
+        data.putInt("Sprice", price);
+        data.putInt("Owned", owned);
+        data.putInt("level", level);
+        data.putInt("assets", assets);
         intent.putExtras(data);
         startActivity(intent);
         ShareActivity.this.finish();
     }
 
-    public void UpdateTopBar(TextView player, TextView daytime){
-        int money = DBHandler.getPlayerMoney();
-        int level = DBHandler.getLevel();
-        int assets = DBHandler.getAssets();
-        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
+    public void UpdateTopBar(TextView player, TextView daytime) {
+        String TBPlayer = "Lvl " + level + ": $" + Double.toString(money / 100) + " (" + assets + ") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());
-
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_nonmain, menu);
+        return true;
+    }
+
+    public void UpdateTimeView(Daytime time){
+        TextView DT = (TextView)findViewById(R.id.DaytimeInfo);
+        DT.setText(time.DTtoString());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id){
+            case R.id.menu_sound:
+                playSound = !playSound;
+                LocalBroadcastManager.getInstance(ShareActivity.this).sendBroadcast(new Intent("SoundAltered").putExtra("sound", playSound));
+                item.setChecked(playSound);
+                break;
+            case R.id.menu_backMain:
+                ShareActivity.this.finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
