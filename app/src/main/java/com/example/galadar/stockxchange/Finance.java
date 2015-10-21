@@ -27,7 +27,7 @@ public class Finance implements Parcelable {
         String name;
         numComp = DBHandler.getMaxSID();
         Companies = new int[numComp][6];
-        Shares = new int[numComp][4];
+        Shares = new int[numComp][5];
         Names = new String[numComp];
         CompaniesNames = new HashSet();
         for(int i=0; i<DBHandler.getMaxSID();i++){
@@ -51,6 +51,8 @@ public class Finance implements Parcelable {
             Shares[i][0] = DBHandler.getDBCurrPrice(i);
             Shares[i][1] = DBHandler.getOwnedShare(i);
             Shares[i][2] = DBHandler.getTotalShares(i);
+            Shares[i][3] = DBHandler.getDBLastClose(i);
+            Shares[i][4] = DBHandler.getRemShares(i);
             Names[i]=name;
         }
 
@@ -61,10 +63,18 @@ public class Finance implements Parcelable {
         }
     }
 
+    public int getRemShares(int id){
+        return Shares[id][4];
+    }
+
+    public void alterRemShares(int id, int amount){
+        Shares[id][4] -= amount;
+    }
+
     public Finance(MemoryDB DBHandler, int size) {
         numComp = size*10;
         Companies = new int[numComp][6];
-        Shares = new int[numComp][4];
+        Shares = new int[numComp][5];
         Names = new String[numComp];
         CompaniesNames = new HashSet();
         for(int i=0;i<numComp;i++){
@@ -75,7 +85,7 @@ public class Finance implements Parcelable {
                 DBHandler.addCompany(company, i);
                 share = new Share(name, i, company.shareStart(), company.getTotalShares());
                 DBHandler.addShare(share);
-                Companies[i][0] = company.getTotalValue();
+                Companies[i][0] = company.getTotalValue()*100;
                 Companies[i][1] = company.getSectorInt();
                 Companies[i][2] = company.getRevenue();
                 Companies[i][3] = company.get10000Outlook();
@@ -85,6 +95,7 @@ public class Finance implements Parcelable {
                 Shares[i][1] = 0; //Amount Owned
                 Shares[i][2] = company.getTotalShares();
                 Shares[i][3] = share.getPrevDayClose();
+                Shares[i][4] = share.getTotalShares();
                 Names[i]=name;
             } else {
                 i--;
@@ -165,8 +176,8 @@ public class Finance implements Parcelable {
         }
     }
 
-    public void alterShareCurrPrice(int id, int alteration){
-        Shares[id][0] += alteration;
+    public void setShareCurrPrice(int id, int alteration){
+        Shares[id][0] = alteration;
     }
 
     public int getSharesOwned(int id){

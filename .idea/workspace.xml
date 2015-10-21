@@ -26,10 +26,10 @@
   </component>
   <component name="AndroidLogFilters">
     <option name="TOOL_WINDOW_LOG_LEVEL" value="ERROR" />
-    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
   </component>
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MemoryDB.java" line="662" />
+    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MemoryDB.java" line="695" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb8064f8-5ead-4814-9bbf-5a6049ea3bc4" name="Default" comment="" />
@@ -69,88 +69,26 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MemoryDB.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="69" column="18" selection-start-line="69" selection-start-column="18" selection-end-line="69" selection-end-column="18" />
+              <caret line="154" column="129" selection-start-line="154" selection-start-column="129" selection-end-line="154" selection-end-column="129" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3479#3480#0" expanded="true" />
-                <element signature="e#3544#3545#0" expanded="true" />
+                <element signature="e#3562#3563#0" expanded="true" />
+                <element signature="e#3627#3628#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Finance.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Finance.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Finance.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.9115385">
-              <caret line="82" column="58" selection-start-line="82" selection-start-column="58" selection-end-line="82" selection-end-column="58" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.2941175">
-              <caret line="400" column="13" selection-start-line="400" selection-start-column="13" selection-end-line="400" selection-end-column="13" />
-              <folding>
-                <element signature="e#1478#1479#0" expanded="true" />
-                <element signature="e#1502#1503#0" expanded="true" />
-                <element signature="e#1541#1542#0" expanded="true" />
-                <element signature="e#1568#1569#0" expanded="true" />
-                <element signature="e#6737#7306#0" expanded="true" />
-                <element signature="e#7305#7306#0" expanded="true" />
-                <element signature="e#8135#8357#0" expanded="true" />
-                <element signature="e#8356#8357#0" expanded="true" />
-                <element signature="e#8478#8742#0" expanded="true" />
-                <element signature="e#8741#8742#0" expanded="true" />
-                <element signature="e#9998#11235#0" expanded="true" />
-                <element signature="e#11234#11235#0" expanded="true" />
-                <element signature="e#11292#12486#0" expanded="true" />
-                <element signature="e#12485#12486#0" expanded="true" />
-                <element signature="e#12537#12703#0" expanded="true" />
-                <element signature="e#12702#12703#0" expanded="true" />
-                <element signature="e#12914#13177#0" expanded="true" />
-                <element signature="e#13176#13177#0" expanded="true" />
-                <element signature="e#14692#15117#0" expanded="true" />
-                <element signature="e#15116#15117#0" expanded="true" />
-                <element signature="e#22482#23124#0" expanded="true" />
-                <element signature="e#23123#23124#0" expanded="true" />
-                <element signature="e#23168#23387#0" expanded="true" />
-                <element signature="e#23386#23387#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SellActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/SellActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="202" column="62" selection-start-line="202" selection-start-column="62" selection-end-line="202" selection-end-column="62" />
+              <caret line="70" column="23" selection-start-line="70" selection-start-column="23" selection-end-line="70" selection-end-column="23" />
               <folding>
-                <element signature="e#5289#5449#0" expanded="true" />
-                <element signature="e#5448#5449#0" expanded="true" />
-                <element signature="e#5651#5834#0" expanded="true" />
-                <element signature="e#5833#5834#0" expanded="true" />
-                <element signature="e#7202#7970#0" expanded="true" />
-                <element signature="e#7969#7970#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CompanyActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/CompanyActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="114" column="43" selection-start-line="114" selection-start-column="43" selection-end-line="114" selection-end-column="43" />
-              <folding>
-                <element signature="e#2488#2651#0" expanded="true" />
-                <element signature="e#2650#2651#0" expanded="true" />
-                <element signature="e#2720#2903#0" expanded="true" />
-                <element signature="e#2902#2903#0" expanded="true" />
+                <element signature="e#2192#2193#0" expanded="true" />
+                <element signature="e#2228#2229#0" expanded="true" />
+                <element signature="e#2281#2282#0" expanded="true" />
+                <element signature="e#2320#2321#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -160,12 +98,60 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/ShareActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="36" column="39" selection-start-line="36" selection-start-column="39" selection-end-line="36" selection-end-column="39" />
+              <caret line="135" column="0" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.84881604">
+              <caret line="555" column="21" selection-start-line="555" selection-start-column="21" selection-end-line="555" selection-end-column="21" />
               <folding>
-                <element signature="e#2985#3787#0" expanded="true" />
-                <element signature="e#3786#3787#0" expanded="true" />
-                <element signature="e#3856#4047#0" expanded="true" />
-                <element signature="e#4046#4047#0" expanded="true" />
+                <element signature="e#8166#8388#0" expanded="true" />
+                <element signature="e#8387#8388#0" expanded="true" />
+                <element signature="e#8509#8773#0" expanded="true" />
+                <element signature="e#8772#8773#0" expanded="true" />
+                <element signature="e#10482#12391#0" expanded="true" />
+                <element signature="e#12390#12391#0" expanded="true" />
+                <element signature="e#12448#13701#0" expanded="true" />
+                <element signature="e#13700#13701#0" expanded="true" />
+                <element signature="e#13752#13954#0" expanded="true" />
+                <element signature="e#13953#13954#0" expanded="true" />
+                <element signature="e#14165#14965#0" expanded="true" />
+                <element signature="e#14964#14965#0" expanded="true" />
+                <element signature="e#16634#17072#0" expanded="true" />
+                <element signature="e#17071#17072#0" expanded="true" />
+                <element signature="e#24401#24996#0" expanded="true" />
+                <element signature="e#24995#24996#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Daytime.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Daytime.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="122" column="26" selection-start-line="122" selection-start-column="26" selection-end-line="122" selection-end-column="26" />
+              <folding>
+                <element signature="e#3135#3136#0" expanded="true" />
+                <element signature="e#3172#3173#0" expanded="true" />
+                <element signature="e#3204#3205#0" expanded="true" />
+                <element signature="e#3231#3232#0" expanded="true" />
+                <element signature="e#3257#3258#0" expanded="true" />
+                <element signature="e#3292#3293#0" expanded="true" />
+                <element signature="e#3322#3323#0" expanded="true" />
+                <element signature="e#3349#3350#0" expanded="true" />
+                <element signature="e#3375#3376#0" expanded="true" />
+                <element signature="e#3410#3411#0" expanded="true" />
+                <element signature="e#3440#3441#0" expanded="true" />
+                <element signature="e#3468#3469#0" expanded="true" />
+                <element signature="e#3495#3496#0" expanded="true" />
+                <element signature="e#3532#3533#0" expanded="true" />
+                <element signature="e#3564#3565#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -175,15 +161,54 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/BuyActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="121" column="39" selection-start-line="121" selection-start-column="36" selection-end-line="121" selection-end-column="39" />
-              <folding>
-                <element signature="e#4850#5009#0" expanded="true" />
-                <element signature="e#5008#5009#0" expanded="true" />
-                <element signature="e#5211#5394#0" expanded="true" />
-                <element signature="e#5393#5394#0" expanded="true" />
-                <element signature="e#6675#7716#0" expanded="true" />
-                <element signature="e#7715#7716#0" expanded="true" />
-              </folding>
+              <caret line="41" column="39" selection-start-line="41" selection-start-column="39" selection-end-line="41" selection-end-column="39" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SellActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/SellActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="194" column="0" selection-start-line="188" selection-start-column="0" selection-end-line="194" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="activity_buy.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_buy.xml">
+          <provider editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+          <provider selected="true" editor-type-id="android-designer">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="activity_sell.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_sell.xml">
+          <provider editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
+              <folding />
+            </state>
+          </provider>
+          <provider selected="true" editor-type-id="android-designer">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CompanyActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/CompanyActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -1660,16 +1685,16 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_economy_info.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/EconomyInfoActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Gamer.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Gamer.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Daytime.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/CompanyActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Company.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MemoryDB.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Daytime.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/ShareActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/BuyActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Finance.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/CompanyActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/SellActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/BuyActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/ShareActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java" />
       </list>
     </option>
@@ -1685,10 +1710,10 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-9" />
+    <option name="x" value="2391" />
     <option name="y" value="-9" />
-    <option name="width" value="1938" />
-    <option name="height" value="1050" />
+    <option name="width" value="2418" />
+    <option name="height" value="1308" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -1713,6 +1738,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="ProjectPane" />
       <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
@@ -1730,28 +1756,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="StockXchange" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layout" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -1777,12 +1781,19 @@
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stockxchange" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="ProjectPane" />
-      <pane id="Scratches" />
       <pane id="PackagesPane" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -2049,7 +2060,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
+    <frame x="2391" y="-9" width="2418" height="1308" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2050401" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -2061,14 +2072,13 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32941177" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22451317" sideWeight="0.49358287" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22369584" sideWeight="0.49358287" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32875144" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.4871795" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3665521" sideWeight="0.57787234" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2820513" sideWeight="0.57787234" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32302406" sideWeight="0.50213903" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19358289" sideWeight="0.6151203" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32979664" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15404256" sideWeight="0.6151203" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973261" sideWeight="0.4871795" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19358289" sideWeight="0.17067583" order="4" side_tool="true" content_ui="tabs" />
@@ -2079,6 +2089,7 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32979664" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -2159,23 +2170,23 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="24" column="21" selection-start-line="24" selection-start-column="21" selection-end-line="24" selection-end-column="21" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main_share.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main_share.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="17" column="47" selection-start-line="17" selection-start-column="47" selection-end-line="17" selection-end-column="47" />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java">
@@ -2200,13 +2211,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java">
@@ -2217,13 +2228,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java">
@@ -2234,13 +2245,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java">
@@ -2251,13 +2262,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/SDKs/Android/sdk1/sources/android-23/android/view/View.java">
@@ -2268,81 +2279,59 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main_info.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-2.7941177">
           <caret line="6" column="29" selection-start-line="6" selection-start-column="29" selection-end-line="6" selection-end-column="29" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main_share.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main_share.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-10.5">
           <caret line="46" column="30" selection-start-line="46" selection-start-column="30" selection-end-line="46" selection-end-column="30" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_welcome.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_welcome.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_info.xml">
-      <provider selected="true" editor-type-id="android-designer">
+      <provider editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_info.xml">
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="76" column="38" selection-start-line="76" selection-start-column="38" selection-end-line="76" selection-end-column="38" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_share.xml">
-      <provider editor-type-id="android-designer">
+      <provider selected="true" editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_share.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-2.4772727">
           <caret line="154" column="0" selection-start-line="154" selection-start-column="0" selection-end-line="154" selection-end-column="0" />
-          <folding>
-            <element signature="e#2141#2161#0" expanded="true" />
-            <element signature="e#2670#2692#0" expanded="true" />
-            <element signature="e#3255#3284#0" expanded="true" />
-            <element signature="e#3750#3771#0" expanded="true" />
-            <element signature="e#4237#4265#0" expanded="true" />
-            <element signature="e#4730#4756#0" expanded="true" />
-            <element signature="e#5219#5233#0" expanded="true" />
-            <element signature="e#5788#5802#0" expanded="true" />
-            <element signature="e#6361#6375#0" expanded="true" />
-            <element signature="e#6938#6952#0" expanded="true" />
-            <element signature="e#7515#7529#0" expanded="true" />
-            <element signature="e#8091#8105#0" expanded="true" />
-            <element signature="e#9112#9132#0" expanded="true" />
-            <element signature="e#9480#9501#0" expanded="true" />
-            <element signature="e#9851#9872#0" expanded="true" />
-          </folding>
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/menu_main.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.518851">
           <caret line="17" column="32" selection-start-line="17" selection-start-column="32" selection-end-line="17" selection-end-column="32" />
-          <folding>
-            <element signature="e#271#288#0" expanded="true" />
-            <element signature="e#425#447#0" expanded="true" />
-            <element signature="e#647#661#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2365,7 +2354,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.52509654">
           <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2384,14 +2372,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/text_simple_whiteonblack.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-5.5">
           <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
-          <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Message.java">
@@ -2402,14 +2389,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_messages.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-15.705882">
           <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
-          <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MessagesActivity.java">
@@ -2427,25 +2413,23 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_player_info.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="27" column="38" selection-start-line="27" selection-start-column="38" selection-end-line="27" selection-end-column="38" />
-          <folding />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_company.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-12.705882">
           <caret line="234" column="44" selection-start-line="0" selection-start-column="0" selection-end-line="250" selection-end-column="0" />
-          <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/InfoActivity.java">
@@ -2465,21 +2449,19 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_economy_info.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="141" column="51" selection-start-line="141" selection-start-column="51" selection-end-line="141" selection-end-column="51" />
-          <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/EconomyInfoActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="22" column="50" selection-start-line="22" selection-start-column="50" selection-end-line="22" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2494,37 +2476,32 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4305211">
+          <caret line="87" column="42" selection-start-line="87" selection-start-column="42" selection-end-line="87" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Gamer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4913295">
-          <caret line="36" column="29" selection-start-line="36" selection-start-column="29" selection-end-line="36" selection-end-column="29" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="3" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
           <folding>
-            <element signature="e#509#510#0" expanded="true" />
-            <element signature="e#537#538#0" expanded="true" />
             <element signature="e#651#652#0" expanded="true" />
             <element signature="e#687#688#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_buy.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Company.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-16.5">
-          <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4305211">
-          <caret line="87" column="42" selection-start-line="87" selection-start-column="42" selection-end-line="87" selection-end-column="42" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="161" column="58" selection-start-line="161" selection-start-column="58" selection-end-line="161" selection-end-column="58" />
           <folding />
         </state>
       </provider>
@@ -2532,55 +2509,24 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MemoryDB.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="69" column="18" selection-start-line="69" selection-start-column="18" selection-end-line="69" selection-end-column="18" />
+          <caret line="154" column="129" selection-start-line="154" selection-start-column="129" selection-end-line="154" selection-end-column="129" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3479#3480#0" expanded="true" />
-            <element signature="e#3544#3545#0" expanded="true" />
+            <element signature="e#3562#3563#0" expanded="true" />
+            <element signature="e#3627#3628#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Company.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.7687861">
-          <caret line="76" column="51" selection-start-line="76" selection-start-column="51" selection-end-line="76" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Daytime.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5895954">
-          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-          <folding>
-            <element signature="e#427#428#0" expanded="true" />
-            <element signature="e#454#455#0" expanded="true" />
-            <element signature="e#1143#1144#0" expanded="true" />
-            <element signature="e#1189#1190#0" expanded="true" />
-            <element signature="e#1254#1255#0" expanded="true" />
-            <element signature="e#1302#1303#0" expanded="true" />
-            <element signature="e#2637#2638#0" expanded="true" />
-            <element signature="e#2661#2662#0" expanded="true" />
-            <element signature="e#2881#2882#0" expanded="true" />
-            <element signature="e#2927#2928#0" expanded="true" />
-            <element signature="e#3023#3024#0" expanded="true" />
-            <element signature="e#3080#3081#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/BuyActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Finance.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="121" column="39" selection-start-line="121" selection-start-column="36" selection-end-line="121" selection-end-column="39" />
+          <caret line="70" column="23" selection-start-line="70" selection-start-column="23" selection-end-line="70" selection-end-column="23" />
           <folding>
-            <element signature="e#4850#5009#0" expanded="true" />
-            <element signature="e#5008#5009#0" expanded="true" />
-            <element signature="e#5211#5394#0" expanded="true" />
-            <element signature="e#5393#5394#0" expanded="true" />
-            <element signature="e#6675#7716#0" expanded="true" />
-            <element signature="e#7715#7716#0" expanded="true" />
+            <element signature="e#2192#2193#0" expanded="true" />
+            <element signature="e#2228#2229#0" expanded="true" />
+            <element signature="e#2281#2282#0" expanded="true" />
+            <element signature="e#2320#2321#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2588,93 +2534,103 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/CompanyActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="114" column="43" selection-start-line="114" selection-start-column="43" selection-end-line="114" selection-end-column="43" />
-          <folding>
-            <element signature="e#2488#2651#0" expanded="true" />
-            <element signature="e#2650#2651#0" expanded="true" />
-            <element signature="e#2720#2903#0" expanded="true" />
-            <element signature="e#2902#2903#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/ShareActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="39" selection-start-line="36" selection-start-column="39" selection-end-line="36" selection-end-column="39" />
-          <folding>
-            <element signature="e#2985#3787#0" expanded="true" />
-            <element signature="e#3786#3787#0" expanded="true" />
-            <element signature="e#3856#4047#0" expanded="true" />
-            <element signature="e#4046#4047#0" expanded="true" />
-          </folding>
+          <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_sell.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
           <folding />
         </state>
       </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_buy.xml">
+      <provider editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/ShareActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.2941175">
-          <caret line="400" column="13" selection-start-line="400" selection-start-column="13" selection-end-line="400" selection-end-column="13" />
-          <folding>
-            <element signature="e#1478#1479#0" expanded="true" />
-            <element signature="e#1502#1503#0" expanded="true" />
-            <element signature="e#1541#1542#0" expanded="true" />
-            <element signature="e#1568#1569#0" expanded="true" />
-            <element signature="e#6737#7306#0" expanded="true" />
-            <element signature="e#7305#7306#0" expanded="true" />
-            <element signature="e#8135#8357#0" expanded="true" />
-            <element signature="e#8356#8357#0" expanded="true" />
-            <element signature="e#8478#8742#0" expanded="true" />
-            <element signature="e#8741#8742#0" expanded="true" />
-            <element signature="e#9998#11235#0" expanded="true" />
-            <element signature="e#11234#11235#0" expanded="true" />
-            <element signature="e#11292#12486#0" expanded="true" />
-            <element signature="e#12485#12486#0" expanded="true" />
-            <element signature="e#12537#12703#0" expanded="true" />
-            <element signature="e#12702#12703#0" expanded="true" />
-            <element signature="e#12914#13177#0" expanded="true" />
-            <element signature="e#13176#13177#0" expanded="true" />
-            <element signature="e#14692#15117#0" expanded="true" />
-            <element signature="e#15116#15117#0" expanded="true" />
-            <element signature="e#22482#23124#0" expanded="true" />
-            <element signature="e#23123#23124#0" expanded="true" />
-            <element signature="e#23168#23387#0" expanded="true" />
-            <element signature="e#23386#23387#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.0">
+          <caret line="135" column="0" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/SellActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="202" column="62" selection-start-line="202" selection-start-column="62" selection-end-line="202" selection-end-column="62" />
+          <caret line="194" column="0" selection-start-line="188" selection-start-column="0" selection-end-line="194" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/BuyActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="41" column="39" selection-start-line="41" selection-start-column="39" selection-end-line="41" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Daytime.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="122" column="26" selection-start-line="122" selection-start-column="26" selection-end-line="122" selection-end-column="26" />
           <folding>
-            <element signature="e#5289#5449#0" expanded="true" />
-            <element signature="e#5448#5449#0" expanded="true" />
-            <element signature="e#5651#5834#0" expanded="true" />
-            <element signature="e#5833#5834#0" expanded="true" />
-            <element signature="e#7202#7970#0" expanded="true" />
-            <element signature="e#7969#7970#0" expanded="true" />
+            <element signature="e#3135#3136#0" expanded="true" />
+            <element signature="e#3172#3173#0" expanded="true" />
+            <element signature="e#3204#3205#0" expanded="true" />
+            <element signature="e#3231#3232#0" expanded="true" />
+            <element signature="e#3257#3258#0" expanded="true" />
+            <element signature="e#3292#3293#0" expanded="true" />
+            <element signature="e#3322#3323#0" expanded="true" />
+            <element signature="e#3349#3350#0" expanded="true" />
+            <element signature="e#3375#3376#0" expanded="true" />
+            <element signature="e#3410#3411#0" expanded="true" />
+            <element signature="e#3440#3441#0" expanded="true" />
+            <element signature="e#3468#3469#0" expanded="true" />
+            <element signature="e#3495#3496#0" expanded="true" />
+            <element signature="e#3532#3533#0" expanded="true" />
+            <element signature="e#3564#3565#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Finance.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.9115385">
-          <caret line="82" column="58" selection-start-line="82" selection-start-column="58" selection-end-line="82" selection-end-column="58" />
-          <folding />
+        <state vertical-scroll-proportion="0.84881604">
+          <caret line="555" column="21" selection-start-line="555" selection-start-column="21" selection-end-line="555" selection-end-column="21" />
+          <folding>
+            <element signature="e#8166#8388#0" expanded="true" />
+            <element signature="e#8387#8388#0" expanded="true" />
+            <element signature="e#8509#8773#0" expanded="true" />
+            <element signature="e#8772#8773#0" expanded="true" />
+            <element signature="e#10482#12391#0" expanded="true" />
+            <element signature="e#12390#12391#0" expanded="true" />
+            <element signature="e#12448#13701#0" expanded="true" />
+            <element signature="e#13700#13701#0" expanded="true" />
+            <element signature="e#13752#13954#0" expanded="true" />
+            <element signature="e#13953#13954#0" expanded="true" />
+            <element signature="e#14165#14965#0" expanded="true" />
+            <element signature="e#14964#14965#0" expanded="true" />
+            <element signature="e#16634#17072#0" expanded="true" />
+            <element signature="e#17071#17072#0" expanded="true" />
+            <element signature="e#24401#24996#0" expanded="true" />
+            <element signature="e#24995#24996#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

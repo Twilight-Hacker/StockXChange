@@ -89,7 +89,7 @@ public class Daytime implements Parcelable{
             this.context.sendBroadcast(intent2);
         }
 
-        if(this.day==60){
+        if(this.day==61){
             this.term++;
             this.day =1;
             Intent intent3 = new Intent("TermEnded");
@@ -118,5 +118,37 @@ public class Daytime implements Parcelable{
     //returns what the tatal days will be after X days
     public int totalDays(int duration){
         return this.term*60 + this.day + duration;
+    }
+
+    public int getTerm() {
+        return term;
+    }
+
+    public void setTerm(int term) {
+        this.term = term;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public void setMin(int min) {
+        this.min = min;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
     }
 }

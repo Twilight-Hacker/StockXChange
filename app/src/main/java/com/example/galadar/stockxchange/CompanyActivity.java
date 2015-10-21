@@ -16,9 +16,13 @@ import android.widget.TextView;
 public class CompanyActivity extends AppCompatActivity {
 
 
-    static MemoryDB DBHandler;
+    //static MemoryDB DBHandler;
+    static Finance f;
     static Daytime time;
     static boolean playSound;
+    static int money;
+    static int level;
+    static int assets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -26,32 +30,35 @@ public class CompanyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_company);
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String name = data.getString("name");
-        DBHandler = MemoryDB.getInstance(getApplicationContext());
+        int CID = data.getInt("CID");
+        f = MainActivity.getFinance();
         time = MainActivity.getClock();
         playSound = true;
+        money = data.getInt("Pmoney");
+        level = data.getInt("level");
+        assets = data.getInt("assets");
 
         TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
         TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
         UpdateTopBar(topBarPlayer, topBarDaytime);
 
         TextView NameView = (TextView)findViewById(R.id.CompNameDt);
-        NameView.setText(name);
+        NameView.setText(f.getName(CID));
 
         TextView SectorView = (TextView)findViewById(R.id.CompSectorDt);
-        SectorView.setText(DBHandler.getCompanySector(name));
+        SectorView.setText(f.getCompSector(CID));
 
         TextView TotalValueView = (TextView)findViewById(R.id.TotalValDt);
-        TotalValueView.setText(Double.toString((double)DBHandler.getCompTotalValue(name)/100));
+        TotalValueView.setText(Double.toString((double)f.getCompTotalValue(CID)/100));
 
         TextView TotalSharesView = (TextView)findViewById((R.id.TotalSharesDt));
-        TotalSharesView.setText(Integer.toString(DBHandler.getTotalShares(name)));
+        TotalSharesView.setText(Integer.toString(f.getTotalShares(CID)));
 
         TextView LastRevView = (TextView)findViewById(R.id.LastTermRevenueDt);
-        LastRevView.setText(Double.toString((double)DBHandler.getLastRevenue(name)/100));
+        LastRevView.setText(Double.toString((double)f.getLastRevenue(CID)/100));
 
         TextView InvestView = (TextView)findViewById(R.id.LastTermInvDt);
-        InvestView.setText(Double.toString((double)DBHandler.getInvestment(name)/100));
+        InvestView.setText(Double.toString((double)f.getInvestment(CID)/100));
 
         Button Report = (Button)findViewById(R.id.ScamCheck);
         Report.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +102,7 @@ public class CompanyActivity extends AppCompatActivity {
         switch (id){
             case R.id.menu_sound:
                 playSound = !playSound;
-                DBHandler.setSound(playSound);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("SoundAltered"));
                 item.setChecked(playSound);
                 break;
             case R.id.menu_backMain:
@@ -107,9 +114,6 @@ public class CompanyActivity extends AppCompatActivity {
     }
 
     public void UpdateTopBar(TextView player, TextView daytime){
-        int money = DBHandler.getPlayerMoney();
-        int level = DBHandler.getLevel();
-        int assets = DBHandler.getAssets();
         String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());

@@ -22,6 +22,7 @@ public class SellActivity extends AppCompatActivity {
     static int total;
     static int SID;
     static int money;
+    static int owned;
     static int level;
     static int assets;
     static Daytime time;
@@ -42,7 +43,7 @@ public class SellActivity extends AppCompatActivity {
 
         String name = data.getString("name");
         price = data.getInt("Sprice");
-        final int max = data.getInt("owned");
+        owned = data.getInt("owned");
         money = data.getInt("money");
         level = data.getInt("level");
         assets = data.getInt("assets");
@@ -58,7 +59,7 @@ public class SellActivity extends AppCompatActivity {
         TextView SharePrice = (TextView)findViewById(R.id.ShareCurrPriDt);
         SharePrice.setText(Double.toString(((double)price)/100));
         TextView SharesOwned = (TextView)findViewById(R.id.SharesOwnedDt);
-        SharesOwned.setText(Integer.toString(max));
+        SharesOwned.setText(Integer.toString(owned));
 
         final TextView ShareAmount = (TextView)findViewById(R.id.ShareAmountDt);
         final TextView Cost = (TextView)findViewById(R.id.TotalValueDt);
@@ -74,7 +75,7 @@ public class SellActivity extends AppCompatActivity {
         maxButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                amount = max;
+                amount = owned;
                 ShareAmount.setText(Integer.toString(amount));
                 total = amount*price;
                 Cost.setText(Double.toString(((double)total)/100));
@@ -84,7 +85,7 @@ public class SellActivity extends AppCompatActivity {
         plusOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(amount<max) {
+                if(amount<owned) {
                     amount++;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
@@ -189,7 +190,6 @@ public class SellActivity extends AppCompatActivity {
         String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());
-
     }
 
     private BroadcastReceiver PricesUpdateMessageRec = new BroadcastReceiver() {

@@ -87,13 +87,10 @@ public class ShareActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ShareActivity.this, CompanyActivity.class);
                 Bundle data = new Bundle();
-                data.putString("name", f.getName(SID));
-                data.putParcelable("DT", time);
-                data.putString("sector", f.getCompSector(SID));
-                data.putInt("totalV", f.getCompTotalValue(SID));
-                data.putInt("totalS", f.getTotalShares(SID));
-                data.putInt("LastRevenue", f.getLastRevenue(SID));
-                data.putInt("LastInvestment", f.getInvestment(SID));
+                data.putInt("CID", SID);
+                data.putInt("Pmoney", money);
+                data.putInt("level", level);
+                data.putInt("assets", assets);
                 intent.putExtras(data);
                 startActivity(intent);
                 ShareActivity.this.finish();
@@ -115,6 +112,8 @@ public class ShareActivity extends AppCompatActivity {
         data.putInt("SID", SID );
         data.putParcelable("DT", time);
         data.putInt("Pmoney", money);
+        data.putInt("level", level);
+        data.putInt("assets", assets);
         data.putBoolean("playSound", playSound);
         data.putString("Sname", f.getName(SID));
         data.putInt("Sprice", f.getShareCurrPrince(SID));

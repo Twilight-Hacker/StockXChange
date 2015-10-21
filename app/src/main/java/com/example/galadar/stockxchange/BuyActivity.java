@@ -19,11 +19,13 @@ public class BuyActivity extends AppCompatActivity {
     static int amount;
     static int price;
     static int total;
+    static int level;
+    static int assets;
     static int max;
     static int money;
     static int SID;
     static int owned;
-    Daytime time;
+    static Daytime time;
     boolean playSound;
 
     @Override
@@ -36,13 +38,16 @@ public class BuyActivity extends AppCompatActivity {
         SID = data.getInt("SID");
         time = MainActivity.getClock();
         money = data.getInt("Pmoney");
+        level = data.getInt("level");
+        assets = data.getInt("assets");
         playSound = data.getBoolean("playSound");
         final String name = data.getString("Sname");
         price = data.getInt("Sprice");
         owned = data.getInt("Owned");
 
-        UpdateTimeView(time);
-
+        TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
+        TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
+        UpdateTopBar(topBarPlayer, topBarDaytime);
 
         TextView ShareName = (TextView)findViewById(R.id.ShareNameDt);
         ShareName.setText(name);
@@ -204,4 +209,9 @@ public class BuyActivity extends AppCompatActivity {
         }
     };
 
+    public void UpdateTopBar(TextView player, TextView daytime){
+        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
+        player.setText(TBPlayer);
+        daytime.setText(time.DTtoString());
+    }
 }

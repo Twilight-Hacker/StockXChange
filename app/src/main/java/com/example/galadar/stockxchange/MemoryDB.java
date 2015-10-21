@@ -20,7 +20,7 @@ public class MemoryDB extends SQLiteOpenHelper {
     private static MemoryDB DBHandler;
 
     public static final String DATABASE_NAME = "galad-StockXChange.db";
-    public static final int DATABASE_VER = 7;
+    public static final int DATABASE_VER = 8;
 
     public static final String COMPANIES_TABLE_NAME = "Companies";
     public static final String COMPANIES_COLUMN_NAME = "Name";
@@ -44,6 +44,7 @@ public class MemoryDB extends SQLiteOpenHelper {
     public static final String SHARES_COLUMN_CURRENT_PRICE = "currvalue";
     public static final String SHARES_COLUMN_LAST_CLOSE = "Lastllose";
     public static final String SHARES_COLUMN_TOTAL_SHARES = "TotalShares";
+    public static final String SHARES_COLUMN_REMAINING_SHARES = "remainingShares";
 
     public static final String OUTLOOK_TABLE_NAME = "outlooks";
     public static final String OUTLOOK_COLUMN_ID = "_id";
@@ -133,7 +134,8 @@ public class MemoryDB extends SQLiteOpenHelper {
                         SHARES_COLUMN_SID + " INTEGER, " +
                         SHARES_COLUMN_CURRENT_PRICE + " INTEGER, " +
                         SHARES_COLUMN_LAST_CLOSE + " INTEGER, " +
-                        SHARES_COLUMN_TOTAL_SHARES + " INTEGER" +
+                        SHARES_COLUMN_TOTAL_SHARES + " INTEGER, " +
+                        SHARES_COLUMN_REMAINING_SHARES + " INTEGER" +
                         ");"
         );
 
@@ -150,7 +152,7 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("ALTER TABLE " + COMPANIES_TABLE_NAME + " ADD COLUMN " + COMPANIES_COLUMN_CID + " INTEGER;");
+        db.execSQL("ALTER TABLE " + SHARES_TABLE_NAME + " ADD COLUMN " + SHARES_COLUMN_REMAINING_SHARES + " INTEGER default 30000;");
     }
 
     public int getMessagesNumber(){
@@ -169,6 +171,15 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.close();
 
         return max;
+    }
+
+    public void storeDay(int day, int term){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + day + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"day\" ;";
+        db.execSQL(query);
+        query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + term + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"term\" ;";
+        db.execSQL(query);
+        db.close();
     }
 
     public int[][] getMessages(int currentDay){
@@ -283,7 +294,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COMPANIES_COLUMN_NAME, company.getName());
-        values.put(COMPANIES_COLUMN_TOTAL_VALUE, company.getTotalValue());
+        values.put(COMPANIES_COLUMN_TOTAL_VALUE, company.getTotalValue()*100);
         values.put(COMPANIES_COLUMN_CURRENT_VALUE, company.getCurrentValue());
         values.put(COMPANIES_COLUMN_PERCENTAGE_VALUE, company.getPercentageValue());
         values.put(COMPANIES_COLUMN_INVESTMENT, company.getInvestment());
@@ -345,7 +356,7 @@ public class MemoryDB extends SQLiteOpenHelper {
     public int getCompRevenue(String name){
         int last = 0;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select "+COMPANIES_COLUMN_REVENUE+" from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
+        Cursor c =  db.rawQuery("select " + COMPANIES_COLUMN_REVENUE + " from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
             last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_REVENUE));
@@ -364,6 +375,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         values.put(SHARES_COLUMN_CURRENT_PRICE, share.getCurrentSharePrice());
         values.put(SHARES_COLUMN_TOTAL_SHARES, share.getTotalShares());
         values.put(SHARES_COLUMN_LAST_CLOSE, share.getPrevDayClose());
+        values.put(SHARES_COLUMN_REMAINING_SHARES, share.getTotalShares());
         db.insert(SHARES_TABLE_NAME, null, values);
 
         values = new ContentValues();
@@ -378,6 +390,27 @@ public class MemoryDB extends SQLiteOpenHelper {
         String query = "UPDATE " + SHARES_TABLE_NAME + " SET " + SHARES_COLUMN_LAST_CLOSE + "=" + price + " WHERE " + SHARES_COLUMN_SID +" = " +sid+";";
         db2.execSQL(query);
         db2.close();
+    }
+
+    public void setRemShares(int sid, int amount){
+        SQLiteDatabase db2 = this.getWritableDatabase();
+        String query = "UPDATE " + SHARES_TABLE_NAME + " SET " + SHARES_COLUMN_REMAINING_SHARES + "=" + amount + " WHERE " + SHARES_COLUMN_SID +" = " +sid+";";
+        db2.execSQL(query);
+        db2.close();
+    }
+
+    public int getRemShares(int sid){
+        int curr = -1;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + SHARES_TABLE_NAME + " where " + SHARES_COLUMN_SID + "=" + sid + ";", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            curr = c.getInt(c.getColumnIndex(SHARES_COLUMN_REMAINING_SHARES));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+        return curr;
     }
 
 /*

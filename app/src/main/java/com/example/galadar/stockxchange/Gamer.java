@@ -34,7 +34,7 @@ public class Gamer {
     }
 
     public void alterMoney(int amount){
-        this.money += amount;
+        this.money -= amount;
     }
 
     public int getAssets() {

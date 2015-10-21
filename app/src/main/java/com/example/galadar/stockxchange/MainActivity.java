@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             Button Sell = (Button)shareData.findViewById(R.id.SellButton);
             Sell.setText("Sell");
             Sell.setId(400000 + i);
-            if((f.getSharesOwned(i)>0)&&dayOpen) {
+            if((f.getSharesOwned(i)>0) & dayOpen) {
                 Sell.setEnabled(true);
                 Sell.setTextColor(0xffffffff);
             } else {
@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         DBHandler.UpdateEconomySize();
+        f.resetEconomySize();
 
 /*
         Messages[DBHandler.getMessagesNumber()][0] = DBHandler.publishMessage(new Message(3, "I am a message.", "I am a Message Body"), time.day);
@@ -214,12 +215,12 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
     private void callforTransactions() {
         if(!dayOpen) return;
         int temp;
         for(int i=0;i<f.getNumComp();i++) {
-            temp = getSharesAmount(f.getCompOutlook(i), f.getSectorOutlook(f.getCompSector(i)), f.getTotalShares(i));
+            double x = (double)f.getCompTotalValue(i)/f.getTotalShares(i);
+            temp = getSharesAmount(f.getCompOutlook(i), f.getSectorOutlook(f.getCompSector(i)), f.getRemShares(i), f.getTotalShares(i), x);
             if (temp != 0) {
                 Intent intent = new Intent("SharesTransaction");
                 Bundle data = new Bundle();
@@ -233,16 +234,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public int getSharesAmount(double C, double S, int total){
+    public int getSharesAmount(double C, double S, int remaining, int total, double x){
         Random random = new Random();
+        double determinant = random.nextGaussian() -x + (C+S)/100;
+        if(Math.abs(determinant)<0.1) return 0;
         int temp = random.nextInt(4);
         if(temp!=2) {
             return 0;
         } else {
-            double am = (random.nextGaussian()+5*C+S)*(0.3*total);
-            if(am<=10) am = random.nextInt(50)+1;
-            if(Math.abs(am)>0.12*total) am=Math.signum(am)*0.12*total;
-            return (int)Math.round(am);
+            double am = Math.abs(random.nextGaussian())*(determinant*remaining);
+            if(Math.abs(am)<=20) am = random.nextInt(50)+20;
+            if(Math.abs(am)>0.35*remaining) am=Math.signum(am)*0.35*remaining;
+            int amount = (int)Math.round(am);
+            if(amount+remaining>total) {
+                return 0;
+            } else if (amount+remaining<0){
+                return 0;
+            }
+            return amount;
         }
     }
 
@@ -255,8 +264,8 @@ public class MainActivity extends AppCompatActivity {
             int oldPrice = data.getInt("atPrice");
             boolean byPlayer = data.getBoolean("ByPlayer");
 
-            double transPerc = 10*amount/f.getTotalShares(SID);
-            int newPrice = (int)Math.round(oldPrice*(1 + transPerc));
+            int remaining = f.getRemShares(SID);
+            int total = f.getTotalShares(SID);
 
             if(byPlayer){
                 f.TransactShares(SID, amount);
@@ -268,10 +277,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            f.alterRemShares(SID, amount);
+            DBHandler.setRemShares(SID, f.getRemShares(SID));
+
+            double value = (double)f.getCompTotalValue(SID)/100;
+            int max = (int)Math.round( value/total );
+            int newPrice = oldPrice + (int) Math.round( (1 - (double)remaining/total )*max + Math.random()*50+10 );
+
+            if(newPrice<0) {
+                newPrice=Math.abs(newPrice);
+                Toast.makeText(MainActivity.this, "Price Error " + (double)remaining/total +" "+max, Toast.LENGTH_SHORT).show();
+            }
+
+            f.setShareCurrPrice(SID, newPrice);
+            DBHandler.setDBCurrPrice(SID, newPrice);
+
             Intent intent1 = new Intent("SpecificPriceChange");
             Bundle data1 = new Bundle();
             data1.putInt("SID", SID);
             data1.putInt("newPrice", newPrice);
+            data1.putInt("oldPrice", oldPrice);
             data1.putBoolean("PlayerOwner", f.getSharesOwned(SID)>0);
             intent1.putExtras(data1);
             LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent1);
@@ -284,22 +309,23 @@ public class MainActivity extends AppCompatActivity {
             Bundle data = intent.getExtras();
             int SID = data.getInt("SID");
             int price = data.getInt("newPrice");
+            int oldPrice = data.getInt("oldPrice");
             boolean sellactive = data.getBoolean("PlayerOwner");
 
-            double dprice = (double)price/100;
             String zerodigit = "";
             if(price%10==0){zerodigit="0";}
             TextView sharePrices = (TextView)findViewById(100000 + SID);
-            double oldPrice = Double.parseDouble( sharePrices.getText().toString() );
-            if(dprice>oldPrice) {
+            if(price>oldPrice) {
                 sharePrices.setTextColor(0xff00ff00); //Color green for price going up
-            } else {
+            } else if (price<oldPrice) {
                 sharePrices.setTextColor(0xffff0000); //Color red for price going down
+            } else {
+                sharePrices.setTextColor(0xffffffff); //Color white for price unchanged
             }
-            sharePrices.setText(Double.toString(dprice) + zerodigit);
+            sharePrices.setText(Double.toString((double)price/100) + zerodigit);
 
             Button Sell = (Button)findViewById(400000 + SID);
-            Sell.setEnabled(sellactive&&dayOpen);
+            Sell.setEnabled(sellactive & dayOpen);
             if(sellactive){
                 Sell.setTextColor(0xffffffff);
             } else {
@@ -311,6 +337,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver SoundAlteredRec = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            playSound = !playSound;
             DBHandler.setSound(playSound);
         }
     };
@@ -326,6 +353,17 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             dayOpen = false;
             Toast.makeText(MainActivity.this, "Day Ended", Toast.LENGTH_SHORT).show();
+            f.DayCloseShares();
+            for (int i = 0; i < f.getNumComp(); i++) {
+                DBHandler.DayCloseShare(i, f.getLastClose(i));
+            }
+            //Updating DB to show the NEXT day (and possibly term) than the one Just ENDED
+            if(time.day==60){
+                DBHandler.storeDay(1, time.getTerm()+1);
+                LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(new Intent("TermEnded"));
+            } else {
+                DBHandler.setDay(time.getDay()+1);
+            }
             UpdateUI();
         }
     };
@@ -337,9 +375,13 @@ public class MainActivity extends AppCompatActivity {
             B = (Button)findViewById(300000+i);
             B.setEnabled(dayOpen);
             B = (Button)findViewById(400000+i);
-            B.setEnabled(dayOpen&&(f.getSharesOwned(i)>0));
+            B.setEnabled(dayOpen & (f.getSharesOwned(i)>0));
+            if(B.isEnabled()){
+                B.setTextColor(0xffffffff);
+            } else {
+                B.setTextColor(0xff000000);
+            }
         }
-
     }
 
     public void MessagesLoad(View v){
@@ -376,12 +418,13 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             try {
                 upd.wait();
+                Toast.makeText(context.getApplicationContext(), "Term Ended", Toast.LENGTH_LONG).show();
+                //TODO Term update
+                upd.notify();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Toast.makeText(context.getApplicationContext(), "Term Ended", Toast.LENGTH_LONG).show();
-            //TODO Term update
-            upd.notify();
+
         }
     };
 
@@ -391,7 +434,6 @@ public class MainActivity extends AppCompatActivity {
         int old;
 
         for(int i=0;i<f.getNumComp();i++) {
-            intprice = f.getShareCurrPrince(i);
             sharePrices = (TextView) findViewById(100000 + i);
             intprice = f.getShareCurrPrince(i);
             try {
@@ -413,7 +455,7 @@ public class MainActivity extends AppCompatActivity {
             if(intprice%10==0){zerodigit="0";}
             sharePrices.setText(Double.toString(dprice)+zerodigit);
             Button Sell = (Button)findViewById(400000 + i);
-            if((f.getSharesOwned(i)>0) && dayOpen){
+            if((f.getSharesOwned(i)>0) & dayOpen){
                 Sell.setEnabled(true);
                 Sell.setTextColor(0xffffffff);
             } else {
@@ -456,7 +498,7 @@ public class MainActivity extends AppCompatActivity {
         data.putInt("Pmoney", p.getMoney());
         data.putInt("level", p.getLevel());
         data.putInt("assets", p.getAssets());
-        data.putInt("NewWorth", 100); //TODO net worth function
+        data.putInt("NewWorth", 100); //TODO net worth function in Finance only
         intent.putExtras(data);
         startActivity(intent);
     }
@@ -492,8 +534,8 @@ public class MainActivity extends AppCompatActivity {
         data.putInt("Sprice", f.getShareCurrPrince(SID));
         data.putInt("owned", f.getSharesOwned(SID));
         data.putInt("Pmoney", p.getMoney());
-        data.putInt("Plevel", p.getLevel());
-        data.putInt("Passets", p.getAssets());
+        data.putInt("level", p.getLevel());
+        data.putInt("assets", p.getAssets());
         data.putInt("total", f.getTotalShares(SID));
         data.putInt("lastClose", f.getLastClose(SID));
         intent.putExtras(data);
@@ -507,11 +549,11 @@ public class MainActivity extends AppCompatActivity {
         data.putInt("SID", SID );
         data.putParcelable("DT", time);
         data.putString("name", f.getName(SID));
-        data.putInt("price", f.getShareCurrPrince(SID));
+        data.putInt("Sprice", f.getShareCurrPrince(SID));
         data.putInt("owned", f.getSharesOwned(SID));
         data.putInt("Pmoney", p.getMoney());
-        data.putInt("Plevel", p.getLevel());
-        data.putInt("Passets", p.getAssets());
+        data.putInt("level", p.getLevel());
+        data.putInt("assets", p.getAssets());
         data.putInt("total", f.getTotalShares(SID));
         data.putInt("lastClose", f.getLastClose(SID));
         intent.putExtras(data);
@@ -598,7 +640,6 @@ public class MainActivity extends AppCompatActivity {
                 time = new Daytime(LocalBroadcastManager.getInstance(MainActivity.this.getApplicationContext()));
                 DBHandler.setEconomySize(f.calcEconomySize());
                 dialog.dismiss();
-                MainActivity.this.updateAll();
             }
 
         });
