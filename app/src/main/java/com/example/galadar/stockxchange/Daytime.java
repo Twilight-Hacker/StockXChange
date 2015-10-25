@@ -64,8 +64,7 @@ public class Daytime implements Parcelable{
 
     public void increment(int UpdateInterval ){
         this.min += UpdateInterval;
-        Intent intent = new Intent("TimeForwarded");
-        this.context.sendBroadcast(intent);
+
 
         if(this.min==60){
             this.hour++;
@@ -81,7 +80,7 @@ public class Daytime implements Parcelable{
         if(this.hour==15&&this.min>30) {
             this.day++;
             this.hour = 8;
-            this.min = 50;
+            this.min = 40;
         }
 
         if(this.hour==9&&this.min==0){
@@ -89,13 +88,6 @@ public class Daytime implements Parcelable{
             this.context.sendBroadcast(intent2);
         }
 
-        if(this.day==61){
-            this.term++;
-            this.day =1;
-            Intent intent3 = new Intent("TermEnded");
-            this.context.sendBroadcast(intent3);
-            //LocalBroadcastManager.getInstance(this.context).sendBroadcast(i);
-        }
     }
 
     @Override
@@ -109,6 +101,11 @@ public class Daytime implements Parcelable{
         dest.writeInt(day);
         dest.writeInt(min);
         dest.writeInt(hour);
+    }
+
+    public void nextTerm(){
+            this.term++;
+            this.day =1;
     }
 
     public int totalDays(){

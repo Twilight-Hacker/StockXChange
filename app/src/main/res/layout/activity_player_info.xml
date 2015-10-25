@@ -1,17 +1,51 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:background="@color/black"
-    tools:context="com.example.galadar.stockxchange.CompanyActivity">
+    tools:context="com.example.galadar.stockxchange.PlayerInfoActivity">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1.0"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/TopBar"
+        android:background="@color/black"
+        android:layout_marginBottom="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/PlayerDataInfo"
+            android:layout_weight="0.7"
+            android:textColor="@color/white"
+            android:text="Lvl 1: $1000000000 (99)"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:id="@+id/DaytimeInfo"
+            android:textColor="@color/white"
+            android:text="Term 50, Day 38"/>
+
+    </LinearLayout>
+
+
 
     <ImageView
         android:layout_width="300dp"
         android:layout_height="250dp"
         android:id="@+id/CompanyImage"
         android:background="@color/white"
+        android:layout_below="@id/TopBar"
         android:foregroundGravity="center"
         android:layout_centerHorizontal="true"/>
 
@@ -35,22 +69,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/black"
                 android:textColor="@color/white"
-                android:id="@+id/PlayerNameLbl"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:text="@string/PlayerNameLbl"
-                android:textSize="20sp" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/black"
-                android:textColor="@color/white"
                 android:id="@+id/PlLevelLbl"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/PlayerNameLbl"
+                android:layout_alignParentTop="true"
                 android:text="@string/Player_Level"
                 android:textSize="20sp" />
 
@@ -71,10 +93,22 @@
                 android:layout_height="wrap_content"
                 android:background="@color/black"
                 android:textColor="@color/white"
-                android:id="@+id/AssetsLbl"
+                android:id="@+id/NextLevelLbl"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/PlayerMoneyLbl"
+                android:text="@string/NextLevel"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:textColor="@color/white"
+                android:id="@+id/AssetsLbl"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/NextLevelLbl"
                 android:text="@string/Player_Assets"
                 android:textSize="20sp" />
 
@@ -104,22 +138,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/black"
                 android:textColor="@color/white"
-                android:id="@+id/PlayerNameDt"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:text="William"
-                android:textSize="20sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/black"
-                android:textColor="@color/white"
                 android:id="@+id/PlLevelDt"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@id/PlayerNameDt"
+                android:layout_alignParentTop="true"
                 android:text="1"
                 android:textSize="20sp" />
 
@@ -140,10 +162,22 @@
                 android:layout_height="wrap_content"
                 android:background="@color/black"
                 android:textColor="@color/white"
-                android:id="@+id/AssetsDt"
+                android:id="@+id/NextLevelDt"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/PlayerMoneyDt"
+                android:text="0"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:textColor="@color/white"
+                android:id="@+id/AssetsDt"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/NextLevelDt"
                 android:text="0"
                 android:textSize="20sp" />
 
@@ -168,16 +202,27 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="1"
+        android:layout_below="@id/CenterLayout"
         android:layout_alignParentBottom="true"
         android:background="@color/black">
 
         <Button
             android:layout_width="0dp"
-            android:layout_weight="1.0"
+            android:layout_weight="0.5"
             android:layout_height="wrap_content"
             android:id="@+id/OK"
             android:text="@string/OK"
             android:textColor="@color/white"
+            android:background="@color/black"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:id="@+id/LevelUp"
+            android:text="@string/LevelUp"
+            android:enabled="false"
+            android:textColor="@color/black"
             android:background="@color/black"/>
 
     </LinearLayout>

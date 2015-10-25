@@ -75,4 +75,6 @@
     <string name="EconomySize">Economy Size in M$</string>
     <string name="TotalCompanies">Companies</string>
     <string name="Economy">Economy</string>
+    <string name="NextLevel">Level up at:</string>
+    <string name="LevelUp">Level Up</string>
 </resources>

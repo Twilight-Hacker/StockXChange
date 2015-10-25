@@ -33,7 +33,7 @@ public class CompanyActivity extends AppCompatActivity {
         int CID = data.getInt("CID");
         f = MainActivity.getFinance();
         time = MainActivity.getClock();
-        playSound = true;
+        playSound = data.getBoolean("playSound");
         money = data.getInt("Pmoney");
         level = data.getInt("level");
         assets = data.getInt("assets");
@@ -102,7 +102,7 @@ public class CompanyActivity extends AppCompatActivity {
         switch (id){
             case R.id.menu_sound:
                 playSound = !playSound;
-                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("SoundAltered"));
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("SoundAltered").putExtra("playSound", playSound));
                 item.setChecked(playSound);
                 break;
             case R.id.menu_backMain:

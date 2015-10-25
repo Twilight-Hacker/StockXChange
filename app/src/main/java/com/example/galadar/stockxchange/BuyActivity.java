@@ -22,7 +22,7 @@ public class BuyActivity extends AppCompatActivity {
     static int level;
     static int assets;
     static int max;
-    static int money;
+    static long money;
     static int SID;
     static int owned;
     static Daytime time;
@@ -37,7 +37,7 @@ public class BuyActivity extends AppCompatActivity {
         final Bundle data = intent.getExtras();
         SID = data.getInt("SID");
         time = MainActivity.getClock();
-        money = data.getInt("Pmoney");
+        money = data.getLong("Pmoney");
         level = data.getInt("level");
         assets = data.getInt("assets");
         playSound = data.getBoolean("playSound");

@@ -1,8 +1,8 @@
 package com.example.galadar.stockxchange;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,33 +16,36 @@ import android.widget.Toast;
 
 public class InfoActivity extends AppCompatActivity {
 
-    MemoryDB DBHandler;
-    Daytime time;
-    boolean playSound;
+
+    static Daytime time;
+    static boolean playSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
-        DBHandler = MemoryDB.getInstance(getApplicationContext());
+        time = MainActivity.getClock();
+        Bundle data = getIntent().getExtras();
+        long money = data.getLong("Pmoney");
+        int assets = data.getInt("assets");
+        int level = data.getInt("level");
 
-        Intent intent = getIntent();
-        Bundle data = intent.getExtras();
-        time = data.getParcelable("DT");
-        playSound =true;
+        playSound =data.getBoolean("playSound");
 
-        final int NumInfo = (int) Math.round(Math.random() * 8 + 7);
+        int NumInfo = data.getInt("numInfo");
+        String[] messages = data.getStringArray("messages");
 
         final LinearLayout parentLayout = (LinearLayout) findViewById(R.id.layoutInfo);
 
         LayoutInflater layoutInflater = getLayoutInflater();
         View view;
 
+        //TODO List adapter for simple string array
         for (int i = 0; i < NumInfo; i++) {
             view = layoutInflater.inflate(R.layout.main_info, parentLayout, false);
 
             RelativeLayout info = (RelativeLayout) view.findViewById(R.id.infoData);
-            info.setId(400000 + i);
+            info.setId(500000 + i);
             TextView date = (TextView) info.findViewById(R.id.info_date);
             TextView user = (TextView) info.findViewById(R.id.info_user);
             user.setText("U " + (i + 1));
@@ -53,21 +56,20 @@ public class InfoActivity extends AppCompatActivity {
         }
 
         TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
+        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
+        topBarPlayer.setText(TBPlayer);
         TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
-        UpdateTopBar(topBarPlayer, topBarDaytime);
 
         final Button upD = (Button) findViewById(R.id.UpdateInfo);
 
+        //TODO set as certain info get, add to list adapter
         upD.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(),
                         "Clicked Update Button",
                         Toast.LENGTH_SHORT).show();
-
-                double rand;
-                for (int i = 0; i < NumInfo; i += 2) {
-                    parentLayout.removeView(findViewById(400000 + i));
-                }
+                //after constructing and adding the extra message
+                //adapter.notifyDataSetChanged();
             }
 
         });
@@ -84,11 +86,9 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     public void UpdateTopBar(TextView player, TextView daytime){
-        int money = DBHandler.getPlayerMoney();
-        int level = DBHandler.getLevel();
-        int assets = DBHandler.getAssets();
-        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
-        player.setText(TBPlayer);
+
+
+
         daytime.setText(time.DTtoString());
 
     }
@@ -111,7 +111,7 @@ public class InfoActivity extends AppCompatActivity {
         switch (id){
             case R.id.menu_sound:
                 playSound = !playSound;
-                DBHandler.setSound(playSound);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("SoundAltered").putExtra("playSound", playSound));
                 item.setChecked(playSound);
                 break;
             case R.id.menu_backMain:

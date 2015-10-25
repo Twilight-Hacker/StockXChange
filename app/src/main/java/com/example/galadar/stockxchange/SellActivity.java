@@ -21,7 +21,7 @@ public class SellActivity extends AppCompatActivity {
     static int amount;
     static int total;
     static int SID;
-    static int money;
+    static long money;
     static int owned;
     static int level;
     static int assets;
@@ -44,7 +44,7 @@ public class SellActivity extends AppCompatActivity {
         String name = data.getString("name");
         price = data.getInt("Sprice");
         owned = data.getInt("owned");
-        money = data.getInt("money");
+        money = data.getLong("money");
         level = data.getInt("level");
         assets = data.getInt("assets");
         amount = 0;

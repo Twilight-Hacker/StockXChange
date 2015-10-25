@@ -20,7 +20,7 @@ public class ShareActivity extends AppCompatActivity {
     static Daytime time;
     static boolean playSound;
     static Finance f;
-    static int money;
+    static long money;
     static int price;
     static int owned;
     static String name;
@@ -35,7 +35,7 @@ public class ShareActivity extends AppCompatActivity {
         Bundle data = getIntent().getExtras();
         final int SID = data.getInt("SID");
         time = MainActivity.getClock();
-        money = data.getInt("Pmoney");
+        money = data.getLong("Pmoney");
         f = MainActivity.getFinance();
 
         playSound = true;
@@ -88,7 +88,7 @@ public class ShareActivity extends AppCompatActivity {
                 Intent intent = new Intent(ShareActivity.this, CompanyActivity.class);
                 Bundle data = new Bundle();
                 data.putInt("CID", SID);
-                data.putInt("Pmoney", money);
+                data.putLong("Pmoney", money);
                 data.putInt("level", level);
                 data.putInt("assets", assets);
                 intent.putExtras(data);
@@ -111,7 +111,7 @@ public class ShareActivity extends AppCompatActivity {
         Bundle data = new Bundle();
         data.putInt("SID", SID );
         data.putParcelable("DT", time);
-        data.putInt("Pmoney", money);
+        data.putLong("Pmoney", money);
         data.putInt("level", level);
         data.putInt("assets", assets);
         data.putBoolean("playSound", playSound);
@@ -128,7 +128,7 @@ public class ShareActivity extends AppCompatActivity {
         Bundle data = new Bundle();
         data.putInt("SID", SID );
         data.putParcelable("DT", time);
-        data.putInt("Pmoney", money);
+        data.putLong("Pmoney", money);
         data.putBoolean("playSound", playSound);
         data.putString("Sname", name);
         data.putInt("Sprice", price);

@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
  */
 public class Gamer {
 
-    int money;
+    long money;
     int assets;
     int level;
     private int fame;
@@ -16,24 +16,28 @@ public class Gamer {
 
 
     public Gamer(MemoryDB DBHandler) {
+        this.money = DBHandler.getPlayerMoney();
+        this.assets = DBHandler.getAssets();
+        this.level = DBHandler.getLevel();
+        this.fame = DBHandler.getFame();
     }
 
-    public Gamer(int money, int level, int assets, int fame) {
+    public Gamer(long money, int level, int assets, int fame) {
         this.money = money;
         this.level = level;
         this.assets = assets;
         this.fame = fame;
     }
 
-    public int getMoney() {
+    public long getMoney() {
         return money;
     }
 
-    public void setMoney(int money) {
+    public void setMoney(long money) {
         this.money = money;
     }
 
-    public void alterMoney(int amount){
+    public void alterMoney(long amount){
         this.money -= amount;
     }
 

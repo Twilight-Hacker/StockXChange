@@ -10,10 +10,10 @@ import java.util.Random;
 /**
  * Created by Galadar on 29/9/2015.
  */
-public class Finance implements Parcelable {
+public class Finance {
 
-    int EconomySize;
-    double[] outlooks;
+    long EconomySize;
+    double[][] outlooks;
     HashSet CompaniesNames;
     String[] Names;
     int[][] Shares;
@@ -56,10 +56,11 @@ public class Finance implements Parcelable {
             Names[i]=name;
         }
 
-        outlooks = new double[Company.Sectors.values().length];
+        outlooks = new double[Company.Sectors.values().length][2];
 
         for (int i = 0; i < outlooks.length ; i++) {
-            outlooks[i] = DBHandler.getOutlook(Company.Sectors.values()[i].toString());
+            outlooks[i][0] = DBHandler.getOutlook(Company.Sectors.values()[i].toString());
+            outlooks[i][1] = 0;
         }
     }
 
@@ -85,6 +86,7 @@ public class Finance implements Parcelable {
                 DBHandler.addCompany(company, i);
                 share = new Share(name, i, company.shareStart(), company.getTotalShares());
                 DBHandler.addShare(share);
+                Names[i]=name;
                 Companies[i][0] = company.getTotalValue()*100;
                 Companies[i][1] = company.getSectorInt();
                 Companies[i][2] = company.getRevenue();
@@ -96,42 +98,24 @@ public class Finance implements Parcelable {
                 Shares[i][2] = company.getTotalShares();
                 Shares[i][3] = share.getPrevDayClose();
                 Shares[i][4] = share.getTotalShares();
-                Names[i]=name;
             } else {
                 i--;
             }
         }
 
-        outlooks = new double[Company.Sectors.values().length];
+        outlooks = new double[Company.Sectors.values().length][2];
 
         for(int i=0;i<outlooks.length;i++){
-            outlooks[i] = Math.random()*2-1;
-            DBHandler.setOutlook(Company.Sectors.values()[i].toString(), outlooks[i]);
+            outlooks[i][0] = Math.random()*2-1;
+            DBHandler.setOutlook(Company.Sectors.values()[i].toString(), outlooks[i][0]);
+            outlooks[i][1]=0;
         }
 
         this.EconomySize = calcEconomySize();
 
     }
 
-    protected Finance(Parcel in) {
-        EconomySize = in.readInt();
-        outlooks = in.createDoubleArray();
-        Names = in.createStringArray();
-    }
-
-    public static final Creator<Finance> CREATOR = new Creator<Finance>() {
-        @Override
-        public Finance createFromParcel(Parcel in) {
-            return new Finance(in);
-        }
-
-        @Override
-        public Finance[] newArray(int size) {
-            return new Finance[size];
-        }
-    };
-
-    public int getEconomySize() {
+    public long getEconomySize() {
         return this.EconomySize;
     }
 
@@ -147,8 +131,8 @@ public class Finance implements Parcelable {
         this.EconomySize = calcEconomySize();
     }
 
-    public int calcEconomySize(){
-        int size = 0;
+    public long calcEconomySize(){
+        long size = 0;
 
         for (int i = 0; i < Companies.length; i++) {
             size += Companies[i][0];
@@ -192,7 +176,6 @@ public class Finance implements Parcelable {
         return Shares[id][2];
     }
 
-
     public int getCompTotalValue(int id){
         return Companies[id][0];
     }
@@ -218,29 +201,29 @@ public class Finance implements Parcelable {
     }
 
     public double getCompOutlook(int id){
-        return (double)Companies[id][3]/10000;
+        return (double)Companies[id][3]/1000;
     }
 
     public void setCompOutlook(int id, double newO){
-        Companies[id][3] = (int)Math.round(newO/10000);
+        Companies[id][3] = (int)Math.round(newO*1000);
     }
 
-    public double getSectorOutlook(String sec){
-        int i=0;
-        while (Company.Sectors.values()[i].toString().equalsIgnoreCase(sec)){
-            i++;
-            if(i== Company.Sectors.values().length) return 0;
-        }
-        return outlooks[i];
+    public double getSectorOutlook(int i){
+        return outlooks[i][0]+outlooks[i][1];
     }
 
-    public void setSectorOutlook(String sec, double newO){
-        int i=0;
-        while (Company.Sectors.values()[i].toString()!=sec){
-            i++;
-        }
-        outlooks[i]=newO;
+    public double getBaseSectorOutlook(int i){
+        return outlooks[i][0];
     }
+
+    public void setSectorOutlook(int index, double newO){
+        outlooks[index][0]=newO;
+    }
+
+    public void setSectorEventOutlook(int index, double newO){
+        outlooks[index][1]+=newO;
+    }
+
 
     private String randomName() {
 
@@ -255,22 +238,14 @@ public class Finance implements Parcelable {
         return value;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(EconomySize);
-        dest.writeDoubleArray(outlooks);
-        dest.writeStringArray(Names);
-    }
-
     public int getInvestment(int id) {
 
         return Companies[id][5];
 
+    }
+
+    public boolean addCompanyName(String name){
+        return !CompaniesNames.contains(name);
     }
 
     public void setInvestment(int id, int inv){
@@ -289,4 +264,29 @@ public class Finance implements Parcelable {
         return sum;
     }
 
+    public void companyAddedtoDB(){
+        this.numComp++;
+    }
+
+    public long getSecEconSize(int sectorI) {
+        long size =0;
+        for (int i = 0; i < Companies.length; i++) {
+            if(Companies[i][1]==sectorI){
+                size += getCompTotalValue(i);
+            }
+        }
+        return size;
+    }
+
+    public int getCompSectorInt(int i) {
+        return Companies[i][1];
+    }
+
+    public long NetWorth(){
+        long value = 0;
+        for (int i = 0; i < Shares.length; i++) {
+            value += getShareCurrPrince(i)*getSharesOwned(i);
+        }
+        return value;
+    }
 }

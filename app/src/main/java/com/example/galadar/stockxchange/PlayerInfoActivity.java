@@ -1,6 +1,10 @@
 package com.example.galadar.stockxchange;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,31 +13,42 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.concurrent.BlockingDeque;
-
 public class PlayerInfoActivity extends AppCompatActivity {
 
-    MemoryDB DBHandler;
     boolean playSound;
+    static Daytime time;
+    static TextView daytimeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_info);
 
-        DBHandler = MemoryDB.getInstance(getApplicationContext());
+        time = MainActivity.getClock();
+        Bundle data = getIntent().getExtras();
 
-        String name = "William";
-        int money = DBHandler.getPlayerMoney(); //data.getInt("money");
-        int assets = DBHandler.getAssets(); //data.getInt("assets");
-        int level = DBHandler.getLevel(); //data.getInt("level");
-        playSound =true;
+        int next = data.getInt("next");
+        long money = data.getLong("Pmoney");
+        int assets =data.getInt("assets");
+        int level = data.getInt("level");
+        long NetWorth = data.getLong("NetWorth");
+        playSound = data.getBoolean("playSound");
 
-        TextView NameView = (TextView)findViewById(R.id.PlayerNameDt);
-        NameView.setText(name);
+        long value = money+NetWorth;
+
+        //boolean activate LevelUp button
+        boolean ena = (((double)value/100)>=next) & (level<6);
+
+        TextView playerInfoBar = (TextView)findViewById(R.id.PlayerDataInfo);
+        String q = "Lvl "+level+": $"+Double.toString((double)money/100)+" ("+assets+") ";
+        playerInfoBar.setText(q);
+
+        daytimeView = (TextView)findViewById(R.id.DaytimeInfo);
+        updateTime();
+        LocalBroadcastManager.getInstance(this).registerReceiver(timeUpdated, new IntentFilter("TimeForwarded"));
 
         TextView MoneyView = (TextView)findViewById(R.id.PlayerMoneyDt);
-        MoneyView.setText(Double.toString((double)money / 100));
+        MoneyView.setText(Double.toString((double) money / 100));
 
         TextView AssetsView = (TextView)findViewById(R.id.AssetsDt);
         AssetsView.setText(Integer.toString(assets));
@@ -41,6 +56,11 @@ public class PlayerInfoActivity extends AppCompatActivity {
         TextView LevelView = (TextView)findViewById(R.id.PlLevelDt);
         LevelView.setText(Integer.toString(level));
 
+        TextView NextView = (TextView)findViewById(R.id.NextLevelDt);
+        NextView.setText(Integer.toString(next));
+
+        TextView NetWorthView = (TextView)findViewById(R.id.PlNetWorthDt);
+        NetWorthView.setText(Double.toString((double)value / 100));
 
         Button Back = (Button)findViewById(R.id.OK);
         Back.setOnClickListener(new View.OnClickListener() {
@@ -49,8 +69,35 @@ public class PlayerInfoActivity extends AppCompatActivity {
                 PlayerInfoActivity.this.finish();
             }
         });
+
+        Button LevelUp = (Button)findViewById(R.id.LevelUp);
+        if(ena){
+            LevelUp.setTextColor(0xffffffff);
+        } else {
+            LevelUp.setTextColor(0xff000000);
+        }
+        LevelUp.setEnabled(ena);
+
+        LevelUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LocalBroadcastManager.getInstance(PlayerInfoActivity.this).unregisterReceiver(timeUpdated);
+                LocalBroadcastManager.getInstance(PlayerInfoActivity.this).sendBroadcast(new Intent("LevelUp"));
+                PlayerInfoActivity.this.finish();
+            }
+        });
     }
 
+    private void updateTime() {
+        daytimeView.setText(time.DTtoString());
+    }
+
+    private BroadcastReceiver timeUpdated = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, final Intent intent) {
+            updateTime();
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,7 +116,7 @@ public class PlayerInfoActivity extends AppCompatActivity {
         switch (id){
             case R.id.menu_sound:
                 playSound = !playSound;
-                DBHandler.setSound(playSound);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("SoundAltered"));
                 item.setChecked(playSound);
                 break;
             case R.id.menu_backMain:

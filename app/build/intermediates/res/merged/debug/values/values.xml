@@ -235,8 +235,10 @@
     <string name="InfoButton">INFO</string>
     <string name="LastTermInvest">Invested:</string>
     <string name="LastTermRev">Last Term Revenue:</string>
+    <string name="LevelUp">Level Up</string>
     <string name="Max">Max</string>
     <string name="Messages">Messages</string>
+    <string name="NextLevel">Level up at:</string>
     <string name="OK">Back</string>
     <string name="Ownership_file_key">com.example.galadar.stockxchange.ownerdata</string>
     <string name="PlayerButton">Player</string>

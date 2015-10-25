@@ -12,59 +12,61 @@ import android.widget.Toast;
  * Created by Galadar on 1/10/2015.
  */
 
-public class Update extends IntentService {
+public class Update implements Runnable {
 
-    MemoryDB DBHandler;
-    Daytime time;
-    public static final String UPDATE_SERVICE_NAME = "com.galadar.StockXChange.UpdatePricesDB";
+    private Object mPauseLock;
+    private boolean mPaused;
+    private boolean mFinished;
+    private static final Daytime time = MainActivity.getClock();
 
-    public Update() {
-        super("UpdatePricesService");
+    public Update(){
+        mPauseLock = new Object();
+        mPaused = false;
+        mFinished = false;
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-        DBHandler = new MemoryDB(this);
-        time = intent.getParcelableExtra("DT");
-        boolean playing = true;
-        while(playing){
+    public void run() {
+        while (!mFinished) {
+            // Do stuff.
             try {
-                wait(5000);
+                synchronized (this) {
+                    //TODO change wait from 5000ms to 10000ms (10 seconds)
+                    wait(5000);
+                }
             } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-            DBPriceUpdate();
-        }
+            time.increment(10);
 
-        time.increment(10);
-        sendPriceUpdMessage();
-    }
-
-    private void DBPriceUpdate(){
-        int temp;
-
-        for(int i=0;i<DBHandler.getMaxSID();i++){
-            temp = getNewSharePrice(DBHandler.getDBCurrPrice(i));
-            DBHandler.setDBCurrPrice(i, temp);
+            synchronized (mPauseLock) {
+                while (mPaused) {
+                    try {
+                        mPauseLock.wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
         }
     }
 
-    private void sendPriceUpdMessage() {
-        Intent i = new Intent("DBPricesUpdated");
-        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+
+    /**
+     * Call this on pause.
+     */
+    public void onPause() {
+        synchronized (mPauseLock) {
+            mPaused = true;
+        }
     }
 
-    public int getNewSharePrice(int old){
-        //TODO the real share price update function
-        return (int)Math.round( Math.random() * 100000 );
-    }
-
-    public void interupt(){
-        Update.this.stopService(new Intent(UPDATE_SERVICE_NAME));
-    }
-
-    public void resume(){
-        Update.this.startService(new Intent(UPDATE_SERVICE_NAME));
+    /**
+     * Call this on resume.
+     */
+    public void onResume() {
+        synchronized (mPauseLock) {
+            mPaused = false;
+            mPauseLock.notifyAll();
+        }
     }
 
 }

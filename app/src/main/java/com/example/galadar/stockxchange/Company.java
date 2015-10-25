@@ -14,7 +14,7 @@ public class Company {
     int totalShares;
     double outlook;
     public enum  Sectors{
-        Constr(0), Transp(1), Oil(2), Tech(3), Food(4), Telecomm(5), Defence(6), Entertainment(7), Education(8), Tourism(9);
+        Constr(0), Transp(1), Oil(2), Tech(3), Food(4), Telecom(5), Defence(6), Entert(7), Educ(8), Tourism(9);
 
         private int value;
 
@@ -47,7 +47,27 @@ public class Company {
         fame = 300;
     }
 
+    public Company(String name, Sectors sec) {
+        Random r = new Random();
+        this.name = name;
+        this.totalValue = r.nextInt(1000000)+r.nextInt(100000)+r.nextInt(10000)+250000;
+        this.currentValue = 0;
+        this.percentageValue = 0;
+        this.totalShares = r.nextInt(10000)+r.nextInt(1000)+r.nextInt(100)+2500;
+        this.investment = 0;
+        this.outlook = (double)shareStart()/1000 - 0.1;
+        this.Sector = sec;
+        this.marketShare = Math.min(Math.random(), 0.3);
+        this.revenue = 0;
+        this.lastRevenue = r.nextInt(10000000);
 
+        fame = 300;
+    }
+
+
+    public Sectors getSector(int i){
+        return Sectors.values()[i];
+    }
 
     private Sectors RandomSector(){
         int i = (int)Math.round(Math.random()*100)%(Sectors.values().length);

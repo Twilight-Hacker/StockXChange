@@ -242,6 +242,13 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void removeCompany(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM " + COMPANIES_TABLE_NAME + "WHERE " + COMPANIES_COLUMN_NAME +" = \"" +name+ "\";" ;
+        db.execSQL(query);
+        db.close();
+    }
+
     public void clearALL(SQLiteDatabase db){
         db.execSQL("DROP TABLE " + MESSAGE_TABLE_NAME + ";");
         db.execSQL("DROP TABLE " + COMPANIES_TABLE_NAME + ";");
@@ -251,7 +258,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE " + SHARES_TABLE_NAME + ";");
     }
 
-    public void SellShare(int sid, int NewAmount, int newCash){
+    public void SellShare(int sid, int NewAmount, long newCash){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + PROPERTY_TABLE_NAME + " SET " + PROPERTY_COLUMN_AMOUNT + "=" + NewAmount + " WHERE " + PROPERTY_COLUMN_SHARE +" = " +sid+ ";" ;
         db.execSQL(query);
@@ -259,7 +266,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void BuyShare(int SID, int NewAmount, int newCash){
+    public void BuyShare(int SID, int NewAmount, long newCash){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + PROPERTY_TABLE_NAME + " SET " + PROPERTY_COLUMN_AMOUNT + "=" + NewAmount + " WHERE " + PROPERTY_COLUMN_SHARE +" = " +SID+ ";" ;
         db.execSQL(query);
@@ -308,14 +315,6 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.insert(COMPANIES_TABLE_NAME, null, values);
     }
 
-    public void addSectorOutlook(String sector){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(OUTLOOK_COLUMN_NAME, sector);
-        values.put(OUTLOOK_COLUMN_OUTLOOK, 0);
-        db.insert(OUTLOOK_TABLE_NAME, null, values);
-    }
-
     public void setOutlook(String name, double outlook){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + OUTLOOK_TABLE_NAME + " SET " + OUTLOOK_COLUMN_OUTLOOK + "=" + outlook + " WHERE " + OUTLOOK_COLUMN_NAME +" = \"" +name+ "\";" ;
@@ -330,6 +329,20 @@ public class MemoryDB extends SQLiteOpenHelper {
         c.moveToFirst();
         while (!c.isAfterLast()){
             last = c.getInt(c.getColumnIndex(OUTLOOK_COLUMN_OUTLOOK));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+        return last;
+    }
+
+    public int getCompPercValue(String name){
+        int last = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select " + COMPANIES_COLUMN_PERCENTAGE_VALUE + " from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_PERCENTAGE_VALUE));
             c.moveToNext();
         }
         c.close();
@@ -360,6 +373,20 @@ public class MemoryDB extends SQLiteOpenHelper {
         c.moveToFirst();
         while (!c.isAfterLast()){
             last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_REVENUE));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+        return last;
+    }
+
+    public double getCompMarketShare(String name){
+        double last = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select " + COMPANIES_COLUMN_MARKET_SHARE + " from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_MARKET_SHARE));
             c.moveToNext();
         }
         c.close();
@@ -475,7 +502,20 @@ public class MemoryDB extends SQLiteOpenHelper {
         c.close();
         db.close();
         return last;
+    }
 
+    public int getCompFame(String name){
+        int last = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select "+COMPANIES_COLUMN_FAME+" from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_FAME));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+        return last;
     }
 
     public void setDBCurrPrice(int sid, int newP) {
@@ -484,15 +524,43 @@ public class MemoryDB extends SQLiteOpenHelper {
         db1.execSQL(query);
     }
 
-    public void setPlayerMoney(int newCash){
+    public void setPlayerMoney(long newCash){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + newCash + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"money\" ;";
         db.execSQL(query);
         db.close();
     }
 
-    public int getPlayerMoney(){
-        int cash = 0;
+    public void setCompPercValue(String name, int newV){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + COMPANIES_TABLE_NAME + " SET " + COMPANIES_COLUMN_PERCENTAGE_VALUE + "=" + newV + " WHERE " + COMPANIES_COLUMN_NAME +" = \""+ name +"\" ;";
+        db.execSQL(query);
+        db.close();
+    }
+
+    public void setCompTotValue(String name, int newV){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + COMPANIES_TABLE_NAME + " SET " + COMPANIES_COLUMN_TOTAL_VALUE + "=" + newV + " WHERE " + COMPANIES_COLUMN_NAME +" = \""+ name +"\" ;";
+        db.execSQL(query);
+        db.close();
+    }
+
+    public void setCompInvest(String name, int newV){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + COMPANIES_TABLE_NAME + " SET " + COMPANIES_COLUMN_INVESTMENT + "=" + newV + " WHERE " + COMPANIES_COLUMN_NAME +" = \""+ name +"\" ;";
+        db.execSQL(query);
+        db.close();
+    }
+
+    public void setCompFame(String name, int newV){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + COMPANIES_TABLE_NAME + " SET " + COMPANIES_COLUMN_FAME + "=" + newV + " WHERE " + COMPANIES_COLUMN_NAME +" = \""+ name +"\" ;";
+        db.execSQL(query);
+        db.close();
+    }
+
+    public long getPlayerMoney(){
+        long cash = 0;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"money\" ;", null);
 
@@ -633,6 +701,11 @@ public class MemoryDB extends SQLiteOpenHelper {
         values.put(DATA_COLUMN_ENTRY_VALUE, 1);
         db.insert(DATA_TABLE_NAME, null, values);
 
+        values = new ContentValues();
+        values.put(OUTLOOK_COLUMN_NAME, "economy");
+        values.put(OUTLOOK_COLUMN_OUTLOOK, 0);
+        db.insert(OUTLOOK_TABLE_NAME, null, values);
+
         for (int i = 0; i < sectors.length; i++) {
             values = new ContentValues();
             values.put(OUTLOOK_COLUMN_NAME, sectors[i].toString());
@@ -674,15 +747,6 @@ public class MemoryDB extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + enter + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"sound\" ;";
-        db.execSQL(query);
-        db.close();
-
-    }
-
-    public void setEconomySize(int size){
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + size + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"economysize\" ;";
         db.execSQL(query);
         db.close();
 
@@ -731,6 +795,8 @@ public class MemoryDB extends SQLiteOpenHelper {
 
         return max;
     }
+
+
 
     public void setLevel(int newLevel){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -907,7 +973,7 @@ public class MemoryDB extends SQLiteOpenHelper {
     }
 
     //TODO Why is this negative
-    public int getEconomySize() {
+    public long getEconomySize() {
 
         int size = 0;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -924,24 +990,31 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     }
 
-    public void UpdateEconomySize() {
-
-        int amount = 0;
-
+    public void setEconomySize(long size) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor c =  db.rawQuery("select " +COMPANIES_COLUMN_TOTAL_VALUE+ " from " + COMPANIES_TABLE_NAME + " where 1;", null);
-        c.moveToFirst();
-        while (!c.isAfterLast()){
-            amount = amount + c.getInt(c.getColumnIndex(COMPANIES_COLUMN_TOTAL_VALUE));
-            c.moveToNext();
-        }
-
-        amount = (int)Math.round((double)amount/100000000);
-
-        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + amount + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"economysize\" ;";
+        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + size + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"economysize\" ;";
         db.execSQL(query);
-        c.close();
         db.close();
+    }
 
+    public void setCompMarketShare(String name, double newMS) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + COMPANIES_TABLE_NAME + " SET " + COMPANIES_COLUMN_MARKET_SHARE + "=" + newMS + " WHERE " + COMPANIES_COLUMN_NAME +" = \"" +name+ "\" ;";
+        db.execSQL(query);
+        db.close();
+    }
+
+    public void setCompLastRevenue(String name, int revenue) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + COMPANIES_TABLE_NAME + " SET " + COMPANIES_COLUMN_LAST_REVENUE + "=" + revenue + " WHERE " + COMPANIES_COLUMN_NAME +" = \"" +name+ "\" ;";
+        db.execSQL(query);
+        db.close();
+    }
+
+    public void setCompOutlook(String name, double newO) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + COMPANIES_TABLE_NAME + " SET " + COMPANIES_COLUMN_OUTLOOK + "=" + newO + " WHERE " + COMPANIES_COLUMN_NAME +" = \"" +name+ "\" ;";
+        db.execSQL(query);
+        db.close();
     }
 }
