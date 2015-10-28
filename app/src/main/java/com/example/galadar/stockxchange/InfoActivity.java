@@ -1,6 +1,7 @@
 package com.example.galadar.stockxchange;
 
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,17 +9,24 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class InfoActivity extends AppCompatActivity {
 
 
     static Daytime time;
     static boolean playSound;
+    static int assets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,49 +35,43 @@ public class InfoActivity extends AppCompatActivity {
         time = MainActivity.getClock();
         Bundle data = getIntent().getExtras();
         long money = data.getLong("Pmoney");
-        int assets = data.getInt("assets");
+        assets = data.getInt("assets");
         int level = data.getInt("level");
+        final ArrayList<String> info = data.getStringArrayList("Info");
 
         playSound =data.getBoolean("playSound");
 
-        int NumInfo = data.getInt("numInfo");
-        String[] messages = data.getStringArray("messages");
 
-        final LinearLayout parentLayout = (LinearLayout) findViewById(R.id.layoutInfo);
-
-        LayoutInflater layoutInflater = getLayoutInflater();
-        View view;
-
-        //TODO List adapter for simple string array
-        for (int i = 0; i < NumInfo; i++) {
-            view = layoutInflater.inflate(R.layout.main_info, parentLayout, false);
-
-            RelativeLayout info = (RelativeLayout) view.findViewById(R.id.infoData);
-            info.setId(500000 + i);
-            TextView date = (TextView) info.findViewById(R.id.info_date);
-            TextView user = (TextView) info.findViewById(R.id.info_user);
-            user.setText("U " + (i + 1));
-            TextView body = (TextView) info.findViewById(R.id.info_body);
-
-
-            parentLayout.addView(info);
-        }
+        //TODO List adapter for simple string array List
+        ListView infoView = (ListView)findViewById(R.id.InfoList);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.text_simple_whiteonblack, info);
+        infoView.setAdapter(adapter);
 
         TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
         String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
         topBarPlayer.setText(TBPlayer);
         TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
 
-        final Button upD = (Button) findViewById(R.id.UpdateInfo);
+        final Button upD = (Button) findViewById(R.id.GetInfo);
+        if(assets>0){
+            upD.setTextColor(0xffffffff);
+            upD.setEnabled(true);
+        } else {
+            upD.setEnabled(false);
+            upD.setTextColor(0xff000000);
+        }
 
         //TODO set as certain info get, add to list adapter
         upD.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),
-                        "Clicked Update Button",
-                        Toast.LENGTH_SHORT).show();
-                //after constructing and adding the extra message
-                //adapter.notifyDataSetChanged();
+                if(info.contains("There are no info tips at this point"))info.remove("There are no info tips at this point");
+                assets--;
+                if(assets==0){
+                    upD.setEnabled(false);
+                    upD.setTextColor(0xff000000);
+                }
+                info.add(MainActivity.addAssetInfo());
+                adapter.notifyDataSetChanged();
             }
 
         });

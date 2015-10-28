@@ -86,6 +86,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.galadar.stockxchange.MainActivity" />
         </activity>
+        <activity
+            android:name=".MeetingActivity"
+            android:label="@string/title_activity_meeting"
+            android:parentActivityName=".MainActivity"
+            android:theme="@android:style/Theme.Dialog">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.galadar.stockxchange.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

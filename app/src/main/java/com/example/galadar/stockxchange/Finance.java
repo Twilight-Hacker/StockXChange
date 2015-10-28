@@ -97,7 +97,7 @@ public class Finance {
                 Shares[i][1] = 0; //Amount Owned
                 Shares[i][2] = company.getTotalShares();
                 Shares[i][3] = share.getPrevDayClose();
-                Shares[i][4] = share.getTotalShares();
+                Shares[i][4] = Math.round(share.getTotalShares()/2);
             } else {
                 i--;
             }

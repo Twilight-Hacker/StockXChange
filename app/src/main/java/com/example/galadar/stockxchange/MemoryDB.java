@@ -402,7 +402,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         values.put(SHARES_COLUMN_CURRENT_PRICE, share.getCurrentSharePrice());
         values.put(SHARES_COLUMN_TOTAL_SHARES, share.getTotalShares());
         values.put(SHARES_COLUMN_LAST_CLOSE, share.getPrevDayClose());
-        values.put(SHARES_COLUMN_REMAINING_SHARES, share.getTotalShares());
+        values.put(SHARES_COLUMN_REMAINING_SHARES, Math.round(share.getTotalShares()/2));
         db.insert(SHARES_TABLE_NAME, null, values);
 
         values = new ContentValues();

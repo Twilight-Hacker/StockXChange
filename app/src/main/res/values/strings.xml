@@ -77,4 +77,9 @@
     <string name="Economy">Economy</string>
     <string name="NextLevel">Level up at:</string>
     <string name="LevelUp">Level Up</string>
+    <string name="TermEndDialogTitle">New Term Starting</string>
+    <string name="TermEndDialogText">Please wait while data calculation is in progress.</string>
+    <string name="GetInfo">Get Info</string>
+    <string name="title_activity_meeting">MeetingActivity</string>
+    <string name="MeetingCancel">I don\'t care</string>
 </resources>

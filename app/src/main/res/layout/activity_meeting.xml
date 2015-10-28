@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alpha"
+    tools:context="com.example.galadar.stockxchange.MeetingActivity">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:layout_centerInParent="true">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TitleBar"
+        android:background="@color/black"
+        android:textColor="@color/white"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/MessageArea"
+        android:layout_below="@id/TitleBar"
+        android:background="@color/black"
+        android:textColor="@color/white"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1.0"
+        android:layout_below="@id/MessageArea"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/PrevButton"
+            android:text="<"
+            android:layout_weight="0.3"
+            android:background="@color/black"
+            android:textColor="@color/white"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/CancelButton"
+            android:layout_weight="0.4"
+            android:text="@string/MeetingCancel"
+            android:background="@color/black"
+            android:textColor="@color/white"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/NextButton"
+            android:layout_weight="0.3"
+            android:text=">"
+            android:background="@color/black"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

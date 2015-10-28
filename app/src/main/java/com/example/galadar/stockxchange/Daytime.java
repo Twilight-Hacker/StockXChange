@@ -22,9 +22,9 @@ public class Daytime implements Parcelable{
 
     public Daytime(LocalBroadcastManager context){
         this.term =1;
-        this.day = 1;
-        this.hour = 8;
-        this.min = 50;
+        this.day = 0;
+        this.hour = 15;
+        this.min = 40;
         this.context = context;
     }
 
@@ -32,7 +32,7 @@ public class Daytime implements Parcelable{
         this.term =term;
         this.day = day;
         this.hour = 8;
-        this.min = 50;
+        this.min = 40;
         this.context = context;
     }
 
@@ -81,6 +81,8 @@ public class Daytime implements Parcelable{
             this.day++;
             this.hour = 8;
             this.min = 40;
+            Intent i = new Intent("DayReset");
+            this.context.sendBroadcast(i);
         }
 
         if(this.hour==9&&this.min==0){
