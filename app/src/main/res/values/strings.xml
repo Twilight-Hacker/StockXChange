@@ -82,4 +82,17 @@
     <string name="GetInfo">Get Info</string>
     <string name="title_activity_meeting">MeetingActivity</string>
     <string name="MeetingCancel">I don\'t care</string>
+    <string name="PrevButton">Previous</string>
+    <string name="NextButton">Next</string>
+    <string name="actionBack">Back to main</string>
+    <string name="Add100">+100</string>
+    <string name="Add10">+10</string>
+    <string name="Add1">+1</string>
+    <string name="Remove1">-1</string>
+    <string name="Remove10">-10</string>
+    <string name="Remove100">-100</string>
+    <string name="title_activity_news">NewsActivity</string>
+    <string name="News">News</string>
+    <string name="ShortSales">Days to settle:</string>
+    <string name="ShortSellWarning">Short sales are settled at day start.</string>
 </resources>

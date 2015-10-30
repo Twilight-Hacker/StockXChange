@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -20,11 +18,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -53,8 +46,10 @@ public class MainActivity extends AppCompatActivity {
     static boolean dayOpen = false;
     static boolean gaming = false;
     static int infoGen;
-    static int MeetInDays;
-    public static ArrayList<String> Infos = new ArrayList<String>();
+    static long nextInvite;
+    static ArrayList<String> Infos = new ArrayList<String>();
+    static String[] News = new String[2]; //News[0] is for title, News[1] is for body (~250 characters)
+    static int NewsPriority = 0; //Something with lower news priority cannot change the news. There is only one news at a time. Priority: min=0, max=100.
 
 
     public static Finance getFinance(){
@@ -135,9 +130,18 @@ public class MainActivity extends AppCompatActivity {
 
         upd = new Thread(r);
 
+        nextInvite = DBHandler.getNextInviteTime();
+
+        if(nextInvite==0){
+            DBHandler.setNextInviteTime(System.currentTimeMillis()+82800000);
+        } else if(System.currentTimeMillis()>=nextInvite){
+            DBHandler.setNextInviteTime(System.currentTimeMillis()+82800000);
+            callInvite(p.getLevel());
+        }
 
         LocalBroadcastManager.getInstance(this).registerReceiver(DayStartedMessageRec, new IntentFilter("DayStarted"));
         LocalBroadcastManager.getInstance(this).registerReceiver(SharesTransactionedRec, new IntentFilter("SharesTransaction"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(SharesShortTransactionedRec, new IntentFilter("SharesShortTransaction"));
         LocalBroadcastManager.getInstance(this).registerReceiver(SpecificElementUpdate, new IntentFilter("SpecificPriceChange"));
         LocalBroadcastManager.getInstance(this).registerReceiver(DayEndedMessageRec, new IntentFilter("DayEnded"));
         LocalBroadcastManager.getInstance(this).registerReceiver(TermEndedMessageRec, new IntentFilter("TermEnded"));
@@ -147,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 callforMeetings();
+                resetNews();
             }
         }, new IntentFilter("DayReset"));
 
@@ -157,13 +162,71 @@ public class MainActivity extends AppCompatActivity {
         upd.start();
     }
 
+    private void resetNews(){
+        News = new String[2];
+        News[0] = "All is well";
+        News[1] = "Nothing to report";
+        NewsPriority = 1;
+    }
+
+    public void editNews(int priority, String title, String body){
+        if(priority>NewsPriority){
+            NewsPriority=priority;
+            News[0]=title;
+            News[1]=body;
+        }
+    }
+
+    private void callInvite(int level) {
+        final int cost = level*(int)Math.round(Math.random() * 300 + 700);
+        final int reward = level*(int)Math.round(Math.random() * 0.03 + 0.07);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Invitation to a party");
+        String q = "You received an Invitation to a party.\nAttending will cost $"+cost+".00 and you will earn "+reward+" assets.\n\nWhat do you want to do?";
+        builder.setMessage(q);
+
+        builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                DBHandler.incAssets(reward);
+                p.setAssets(DBHandler.getAssets());
+                p.alterMoney(cost * 100);
+                DBHandler.setPlayerMoney(p.getMoney());
+                dialog.dismiss();
+            }
+
+        });
+
+        builder.setNegativeButton("Decline", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void NewsLoad(View v){
+        Intent intent = new Intent(MainActivity.this, NewsActivity.class);
+        Bundle data = new Bundle();
+        data.putStringArray("news", News);
+        intent.putExtras(data);
+        startActivity(intent);
+    }
+
     private void callforMeetings(){
         gaming=false;
 
         List<Meeting> MeetingsList;
         MeetingXMLParser MeetingsParser = new MeetingXMLParser();
         try {
-            MeetingsList = MeetingsParser.parse(this.getResources().openRawResource(R.raw.Meetings));
+            MeetingsList = MeetingsParser.parse(this.getResources().openRawResource(R.raw.meetings));
         } catch (Exception e) {
             e.printStackTrace();
             android.os.Process.killProcess(android.os.Process.myPid());
@@ -221,6 +284,9 @@ public class MainActivity extends AppCompatActivity {
             if((f.getSharesOwned(i)>0) & dayOpen) {
                 Sell.setEnabled(true);
                 Sell.setTextColor(0xffffffff);
+            } else if(p.getLevel()>=4 & f.getTodaysShort(i)==0 & dayOpen){
+                Sell.setEnabled(true);
+                Sell.setTextColor(0xffff0000); //Red Color for short positions
             } else {
                 Sell.setEnabled(false);
                 Sell.setTextColor(0xff000000);
@@ -355,6 +421,18 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver DayStartedMessageRec = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            for (int i = 0; i < f.getNumComp(); i++) {
+                if(f.getTodaysShort(i)>0){
+                    p.alterMoney(f.getTodaysShort(i)*f.getShareCurrPrince(i));
+                    DBHandler.setPlayerMoney(p.getMoney());
+                }
+            }
+            DBHandler.ShortSettle(time.totalDays());
+            for (int i = 0; i < f.getNumComp(); i++) {
+                if(f.getRemainingDays(i)<0){
+                    f.ShortShare(i, DBHandler.getShortAmount(i), DBHandler.getShortDays(i));
+                }
+            }
             dayOpen = true;
             UpdateCommandsUI();
             Toast.makeText(MainActivity.this, "Day Started", Toast.LENGTH_SHORT).show();
@@ -425,21 +503,15 @@ public class MainActivity extends AppCompatActivity {
         double perOwned = (double)remaining/total;
 
         double determinant = random.nextDouble()*2-1.5 + perOwned + (2*C+S)/10;
-        boolean temp = random.nextBoolean();
+        boolean temp = random.nextBoolean()||(Math.abs(determinant)<0.3);
 
         if(temp) {
             //transact only half of the shares at a time, so as not to overwhelm user with changes
             return 0;
         } else {
-            double am = Math.abs(random.nextGaussian())*(determinant*remaining);
+            double am = Math.min(Math.abs(random.nextGaussian()), 3)*determinant*100;
             if(Math.abs(am)<=20) am = random.nextInt(50)+20;
-            if(Math.abs(am)>0.35*remaining) am=Math.signum(am)*0.35*remaining;
             int amount = (int)Math.round(am);
-            //if the system tries to buy more than those available for sale, just buy thise available
-            if(amount+remaining>total) return remaining;
-            //total-remaining is the amount of shares owned
-            //remaining-total (as negative) sets a down limit of the amount of shares that are owned and can be sold (sells are denoted as negative amounts)
-            if(amount<remaining-total) return remaining-total;
             return amount;
         }
     }
@@ -489,6 +561,33 @@ public class MainActivity extends AppCompatActivity {
             data1.putBoolean("PlayerOwner", f.getSharesOwned(SID)>0);
             intent1.putExtras(data1);
             LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent1);
+        }
+    };
+
+    private BroadcastReceiver SharesShortTransactionedRec = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle data = intent.getExtras();
+            int SID = data.getInt("SID");
+            int amount = data.getInt("amount");
+            int oldPrice = data.getInt("atPrice");
+            boolean byPlayer = data.getBoolean("ByPlayer");
+            int days = time.totalDays(data.getInt("Days"));
+
+            f.ShortShare(SID, amount, days);
+            p.alterMoney(amount*oldPrice);
+            DBHandler.ShortShare(SID, amount, time.totalDays(days), p.getMoney());
+
+            Intent SharesSold = new Intent("SharesTransaction"); //To update prices
+            Bundle Sdata = new Bundle();
+            Sdata.putInt("SID", SID);
+            Sdata.putInt("amount", (int)Math.round((double)amount / 2));
+            Sdata.putInt("atPrice", oldPrice);
+            Sdata.putBoolean("ByPlayer", byPlayer);
+            SharesSold.putExtras(Sdata);
+            LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(SharesSold);
+
+
         }
     };
 
@@ -608,7 +707,10 @@ public class MainActivity extends AppCompatActivity {
                 B.setEnabled(dayOpen & (f.getSharesOwned(i) > 0));
                 if (B.isEnabled()) {
                     B.setTextColor(0xffffffff);
-                } else {
+                } else if(p.getLevel()>=4 & f.getTodaysShort(i)==0 & dayOpen){
+                    B.setEnabled(true);
+                    B.setTextColor(0xffff0000); //Red Color for short positions
+                }  {
                     B.setTextColor(0xff000000);
                 }
             }

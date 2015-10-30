@@ -18,6 +18,7 @@ public class Finance {
     String[] Names;
     int[][] Shares;
     int[][] Companies;
+    int[][] Short;
     Company company;
     Share share;
     int numComp;
@@ -25,10 +26,12 @@ public class Finance {
 
     public Finance(MemoryDB DBHandler){
         String name;
+        int CurrentDay = MainActivity.getClock().totalDays();
         numComp = DBHandler.getMaxSID();
         Companies = new int[numComp][6];
         Shares = new int[numComp][5];
         Names = new String[numComp];
+        Short = new int[numComp][2];
         CompaniesNames = new HashSet();
         for(int i=0; i<DBHandler.getMaxSID();i++){
             name = DBHandler.getDBShareName(i);
@@ -53,8 +56,17 @@ public class Finance {
             Shares[i][2] = DBHandler.getTotalShares(i);
             Shares[i][3] = DBHandler.getDBLastClose(i);
             Shares[i][4] = DBHandler.getRemShares(i);
+            Shares[i][0] = DBHandler.getShortAmount(i); //Amount of Share i to settle
+            int days = DBHandler.getShortDays(i)-CurrentDay;
+            if(days>0) {
+                Shares[i][1] = days; //Remaining days until settle
+            } else {
+                Shares[i][1] = -1;
+            }
             Names[i]=name;
         }
+
+
 
         outlooks = new double[Company.Sectors.values().length][2];
 
@@ -77,6 +89,7 @@ public class Finance {
         Companies = new int[numComp][6];
         Shares = new int[numComp][5];
         Names = new String[numComp];
+        Short = new int[numComp][2];
         CompaniesNames = new HashSet();
         for(int i=0;i<numComp;i++){
             String name = randomName();
@@ -97,7 +110,9 @@ public class Finance {
                 Shares[i][1] = 0; //Amount Owned
                 Shares[i][2] = company.getTotalShares();
                 Shares[i][3] = share.getPrevDayClose();
-                Shares[i][4] = Math.round(share.getTotalShares()/2);
+                Shares[i][4] = Math.round(share.getTotalShares() / 2);
+                Short[i][0] = 0; //Amount to Settle
+                Short[i][1] = -1; //Remaining days
             } else {
                 i--;
             }
@@ -113,6 +128,26 @@ public class Finance {
 
         this.EconomySize = calcEconomySize();
 
+    }
+
+    public void ShortShare(int sid, int amount, int Days){
+        Short[sid][0]=amount;
+        Short[sid][1]=Days;
+    }
+
+    public int getTodaysShort(int SID){
+        if(Short[SID][1]==0){
+            int amount = Short[SID][0];
+            Short[SID][0]=0;
+            Short[SID][1]=-1;
+            return amount;
+        } else {
+            return 0;
+        }
+    }
+
+    public int getRemainingDays(int SID){
+        return Short[SID][1];
     }
 
     public long getEconomySize() {
@@ -157,6 +192,9 @@ public class Finance {
     public void DayCloseShares(){
         for(int i=0;i<Shares.length;i++){
             Shares[i][3]=Shares[i][0];
+            if(Short[i][1]>0) {
+                Short[i][1]--;
+            }
         }
     }
 

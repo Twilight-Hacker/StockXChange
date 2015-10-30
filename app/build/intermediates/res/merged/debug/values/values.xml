@@ -19,6 +19,11 @@
     <color name="abc_search_url_text_selected">@android:color/black</color>
     <color name="accent_material_dark">@color/material_deep_teal_200</color>
     <color name="accent_material_light">@color/material_deep_teal_500</color>
+    <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/values/colors.xml -->
+    <eat-comment/>
+    <color name="alpha">#00000000</color>
+    <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
+    <eat-comment/>
     <color name="background_floating_material_dark">@color/material_grey_800</color>
     <color name="background_floating_material_light">@android:color/white</color>
     <color name="background_material_dark">@color/material_grey_850</color>
@@ -232,12 +237,15 @@
     <string name="Economy">Economy</string>
     <string name="EconomySize">Economy Size in M$</string>
     <string name="Exit">Exit</string>
+    <string name="GetInfo">Get Info</string>
     <string name="InfoButton">INFO</string>
     <string name="LastTermInvest">Invested:</string>
     <string name="LastTermRev">Last Term Revenue:</string>
     <string name="LevelUp">Level Up</string>
     <string name="Max">Max</string>
+    <string name="MeetingCancel">I don\'t care</string>
     <string name="Messages">Messages</string>
+    <string name="NextButton">Next</string>
     <string name="NextLevel">Level up at:</string>
     <string name="OK">Back</string>
     <string name="Ownership_file_key">com.example.galadar.stockxchange.ownerdata</string>
@@ -250,6 +258,7 @@
     <string name="Player_Money">Money: </string>
     <string name="Player_Name">Player Name:</string>
     <string name="Player_Net_Value">Net Value: </string>
+    <string name="PrevButton">Previous</string>
     <string name="Remove">-1 Share</string>
     <string name="Reset">Reset</string>
     <string name="ScamCheck">Report</string>
@@ -261,6 +270,8 @@
     <string name="Share_Owned">Shares Owned: </string>
     <string name="Share_Prev_Close">Last Close: </string>
     <string name="Shares_Owned_Value">Owned Shares Value: </string>
+    <string name="TermEndDialogText">Please wait while data calculation is in progress.</string>
+    <string name="TermEndDialogTitle">New Term Starting</string>
     <string name="TotalCompanies">Companies</string>
     <string name="Total_Shares">Total Number of Shares: </string>
     <string name="Zero">0</string>
@@ -304,6 +315,7 @@
     <string name="title_activity_company">Company Info</string>
     <string name="title_activity_economy_info">Economy Info</string>
     <string name="title_activity_info">InfoActivity</string>
+    <string name="title_activity_meeting">MeetingActivity</string>
     <string name="title_activity_messages">MessagesActivity</string>
     <string name="title_activity_player_info">PlayerInfoActivity</string>
     <string name="title_activity_sell">SellActivity</string>

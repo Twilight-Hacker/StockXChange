@@ -39,11 +39,11 @@
     </LinearLayout>
 
     <ScrollView
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scroll"
         android:layout_below="@id/TopBar"
-        android:layout_above="@+id/Messages">
+        android:layout_above="@+id/CommandButtons">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -53,57 +53,68 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/Messages"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/black"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:text="@string/Messages"
-        android:textSize="12sp"
-        android:textColor="@color/white"
-        android:onClick="MessagesLoad"/>
-
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/Messages"
-        android:layout_toEndOf="@id/Messages"
-        android:background="@color/black"
-        android:textColor="@color/white"
-        android:text="@string/InfoButton"
-        android:textSize="12sp"
-        android:id="@+id/StartInfo"
-        android:onClick="clickInfo"/>
+        android:weightSum="1.0"
+        android:id="@+id/CommandButtons">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/StartInfo"
-        android:layout_toEndOf="@id/StartInfo"
-        android:onClick="PlayerButtonClick"
-        android:background="@color/black"
-        android:textColor="@color/white"
-        android:text="@string/PlayerButton"
-        android:textSize="12sp"
-        android:id="@+id/PlayerInfo" />
+        <Button
+            android:id="@+id/News"
+            android:layout_weight="0.15"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            android:text="@string/News"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:onClick="MessagesLoad"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/PlayerInfo"
-        android:layout_toEndOf="@id/PlayerInfo"
-        android:onClick="EconomyInfoLaunch"
-        android:background="@color/black"
-        android:textColor="@color/white"
-        android:text="@string/Economy"
-        android:textSize="12sp"
-        android:id="@+id/Exit" />
+        <Button
+            android:id="@+id/Messages"
+            android:layout_weight="0.25"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            android:text="@string/Messages"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:onClick="NewsLoad"/>
 
+        <Button
+            android:layout_weight="0.15"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:text="@string/InfoButton"
+            android:textSize="12sp"
+            android:id="@+id/StartInfo"
+            android:onClick="clickInfo"/>
+
+        <Button
+            android:layout_weight="0.2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="PlayerButtonClick"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:text="@string/PlayerButton"
+            android:textSize="12sp"
+            android:id="@+id/PlayerInfo" />
+
+        <Button
+            android:layout_weight="0.25"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="EconomyInfoLaunch"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:text="@string/Economy"
+            android:textSize="12sp"
+            android:id="@+id/Exit" />
+
+    </LinearLayout>
 
 </RelativeLayout>

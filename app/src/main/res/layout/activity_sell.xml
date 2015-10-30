@@ -51,6 +51,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="1.0"
+        android:id="@+id/CenterLayout"
         android:layout_below="@id/BuyImage"
         android:baselineAligned="false">
 
@@ -175,47 +176,126 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/AmountButtonsLayout"
+        android:layout_below="@id/CenterLayout"
+        android:orientation="horizontal"
+        android:weightSum="1.0"
+        android:background="@color/black">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_height="wrap_content"
+            android:id="@+id/ShortSettleLbl"
+            android:visibility="invisible"
+            android:text="@string/ShortSales"
+            android:background="@color/black"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.6"
+            android:text="@string/ShortSellWarning"
+            android:id="@+id/ShortSellWarning"
+            android:visibility="invisible"
+            android:background="@color/black"
+            android:textColor="@color/red"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:background="@color/white"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:id="@+id/SettleDaysEditText" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:id="@+id/AmountButtonsLayout"
         android:layout_above="@+id/ActionButtonsLayout"
         android:weightSum="1.0">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:background="@color/black"
             android:text="@string/Max"
             android:id="@+id/MaxSharesButton"
-            android:layout_weight="0.25"/>
+            android:layout_weight="0.15"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:background="@color/black"
-            android:text="@string/Add"
+            android:text="@string/Add100"
+            android:id="@+id/Add100SharesButton"
+            android:layout_weight="0.1"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@color/black"
+            android:text="@string/Add10"
+            android:id="@+id/Add10SharesButton"
+            android:layout_weight="0.15"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@color/black"
+            android:text="@string/Add1"
             android:id="@+id/AddSharesButton"
-            android:layout_weight="0.25"/>
+            android:layout_weight="0.1"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:background="@color/black"
-            android:text="@string/Remove"
+            android:text="@string/Remove1"
             android:id="@+id/RemSharesButton"
-            android:layout_weight="0.25"/>
+            android:layout_weight="0.1"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@color/black"
+            android:text="@string/Remove10"
+            android:id="@+id/Rem10SharesButton"
+            android:layout_weight="0.1"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@color/black"
+            android:text="@string/Remove100"
+            android:id="@+id/Rem100SharesButton"
+            android:layout_weight="0.1"/>
+
+        <Button
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:background="@color/black"
             android:text="@string/Reset"
             android:id="@+id/ZeroSharesButton"
-            android:layout_weight="0.25"/>
+            android:layout_weight="0.2"/>
 
     </LinearLayout>
 

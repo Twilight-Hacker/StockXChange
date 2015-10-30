@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="Meetings">
+        <Meeting title="Welcome to the Game" day="1">
+            <part>"Welcome to the game. \nI hope you enjoy playing.\nThis game is a stock exchange emulator where you will be able to trade shares and maybe learn something about the Financial World."</part>
+            <part>"These tutorials will help you throughout the game.\nAt first, they are about the game and how to play it, but later they will contain interesting info about how the real stock market works."</part>
+            <part>"For now, let's start with the UI.\nIf you want to leave, press \"I don't care\" below, however it is recommended you read through the entire tutorial, if this is your first time playing."</part>
+            <part>"In the main Screen you have the Top Bar that gives you your current level, cash available and assets available on the left side.\nOn the right side, you can see the Date as Term, day and time."</part>
+            <part>"Below is the main screen were the share names and current prices are. Next to them, buy and sell buttons for every share, that are available while the market is open."</part>
+            <part>"The market is open from 9:00 to 15:30 every day.\nUsing those buttons you can place orders to buy shares and sell them. Be aware that time passes while you place the orders."</part>
+            <part>"If the market closes before you can place the order, you must wait until the next day at 9:00.\nAfter 15:30, the clock time goes to 8:40 of the next day, so the wait will be small."</part>
+            <part>"Evey time you place an order, the price changes.\nIf the price goes up, its color will become green.\nIf it goes down, it will become red."</part>
+            <part>"The price can change at random intervals, as it would happen in real life by other stockbrokers, so keep an eye on the prices.\nDon't forget to Scroll down either, so you can see all shares."</part>
+            <part>"At the bottom, you can see other command buttons.\nFeel free to investigate now, but we will learn about them in future meetings."</part>
+        </Meeting>
+
+    </array>
+</resources>

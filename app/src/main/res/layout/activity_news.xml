@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alpha"
+    tools:context="com.example.galadar.stockxchange.NewsActivity">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:id="@+id/NewsLayout"
+        android:background="@color/black">
+
+    <TextView android:id="@+id/NewsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="120dp"
+        android:layout_marginStart="120dp"
+        android:background="@color/black"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:paddingBottom="10dp"
+        android:text="sljasvd"/>
+
+    <TextView android:id="@+id/NewsBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@color/black"
+        android:textColor="@color/white"
+        android:text="aiuvfivalivbiefbviavbiabiaebvilvbfaipuvbvalhfb vvnnaIBV;ijwvbipAVPivnb apuevfbivbfWIJNVB;IHA\BVF[iovm naibv ;PUVNVNIHBABV[wojv[oajvnavbiabpv n[ov"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="ExitNews"
+        android:text="@string/OK"
+        android:layout_below="@id/NewsLayout"
+        android:textColor="@color/white"
+        android:background="@color/black"/>
+
+</RelativeLayout>

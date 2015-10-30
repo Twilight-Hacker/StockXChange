@@ -65,7 +65,11 @@ public class BuyActivity extends AppCompatActivity {
 
         final Button maxButton = (Button)findViewById(R.id.MaxSharesButton);
         final Button plusOne = (Button)findViewById(R.id.AddSharesButton);
+        final Button plus10 = (Button)findViewById(R.id.AddSharesButton);
+        final Button plus100 = (Button)findViewById(R.id.AddSharesButton);
         final Button minusOne = (Button)findViewById(R.id.RemSharesButton);
+        final Button minus10 = (Button)findViewById(R.id.RemSharesButton);
+        final Button minus100 = (Button)findViewById(R.id.RemSharesButton);
         final Button resetAll = (Button)findViewById(R.id.ZeroSharesButton);
 
         maxButton.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +96,42 @@ public class BuyActivity extends AppCompatActivity {
             }
         });
 
+        plus10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(amount+10<=max) {
+                    amount+=10;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else {
+                    Toast.makeText(getApplicationContext(),"Not enough Money",Toast.LENGTH_SHORT).show();
+                    amount = max;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount*price;
+                    Cost.setText(Double.toString(((double) total) / 100));
+                }
+            }
+        });
+
+        plus100.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(amount+100<=max) {
+                    amount+=100;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else {
+                    Toast.makeText(getApplicationContext(),"Not enough Money",Toast.LENGTH_SHORT).show();
+                    amount = max;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount*price;
+                    Cost.setText(Double.toString(((double) total) / 100));
+                }
+            }
+        });
+
         minusOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +142,42 @@ public class BuyActivity extends AppCompatActivity {
                     Cost.setText(Double.toString(((double)total)/100));
                 } else {
                     Toast.makeText(getApplicationContext(),"You cannot buy less than 0 shares", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        minus10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(amount-10>0) {
+                    amount-=10;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else {
+                    Toast.makeText(getApplicationContext(),"You cannot buy less than 0 shares", Toast.LENGTH_SHORT).show();
+                    amount = 0;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount*price;
+                    Cost.setText(Double.toString(((double) total) / 100));
+                }
+            }
+        });
+
+        minus100.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(amount-100>0) {
+                    amount-=100;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else {
+                    Toast.makeText(getApplicationContext(),"You cannot buy less than 0 shares", Toast.LENGTH_SHORT).show();
+                    amount = 0;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount*price;
+                    Cost.setText(Double.toString(((double) total) / 100));
                 }
             }
         });

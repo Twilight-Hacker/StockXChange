@@ -61,6 +61,11 @@ public class MemoryDB extends SQLiteOpenHelper {
     public static final String PROPERTY_COLUMN_SHARE = "Share";
     public static final String PROPERTY_COLUMN_AMOUNT = "Amount";
 
+    public static final String SHORT_TABLE_NAME = "ShortSales";
+    public static final String SHORT_COLUMN_SID = "sid";
+    public static final String SHORT_COLUMN_AMOUNT = "amount";
+    public static final String SHORT_COLUMN_TOTAL_SETTLE_DAYS = "totalDays";
+
     public static final String MESSAGE_TABLE_NAME = "Messages";
     public static final String MESSAGE_COLUMN_ID = "_id";
     public static final String MESSAGE_COLUMN_TITLE = "title";
@@ -148,6 +153,16 @@ public class MemoryDB extends SQLiteOpenHelper {
                         ");"
         );
 
+        db.execSQL(
+                "CREATE TABLE " + SHORT_TABLE_NAME + "(" +
+                        PROPERTY_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        SHORT_COLUMN_SID + " INTEGER, " +
+                        SHORT_COLUMN_AMOUNT + " INTEGER, " +
+                        SHORT_COLUMN_TOTAL_SETTLE_DAYS + " INTEGER, " +
+                        " FOREIGN KEY (" + SHORT_COLUMN_SID + ") REFERENCES " + SHARES_TABLE_NAME + "(" + SHARES_COLUMN_SID + ")" +
+                        ");"
+        );
+
     }
 
     @Override
@@ -157,7 +172,7 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     public int getMessagesNumber(){
         int max = 0;
-        int temp = 0;
+        int temp;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select "+ MESSAGE_COLUMN_ID + " from " + MESSAGE_TABLE_NAME + " where 1;", null);
@@ -255,6 +270,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE " + DATA_TABLE_NAME + ";");
         db.execSQL("DROP TABLE " + OUTLOOK_TABLE_NAME + ";");
         db.execSQL("DROP TABLE " + PROPERTY_TABLE_NAME + ";");
+        db.execSQL("DROP TABLE " + SHORT_TABLE_NAME + ";");
         db.execSQL("DROP TABLE " + SHARES_TABLE_NAME + ";");
     }
 
@@ -264,6 +280,80 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.execSQL(query);
         setPlayerMoney(newCash);
         db.close();
+    }
+
+    public void ShortShare(int sid, int NewAmount, int days, long newCash){ //SEND TOTAL DAYS
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c =  db.rawQuery("select " + SHORT_COLUMN_AMOUNT + " from " + SHORT_TABLE_NAME + " where " + SHORT_COLUMN_SID + "=" + sid + " AND " + SHORT_COLUMN_TOTAL_SETTLE_DAYS + "=" + days + ";", null);
+        if(c.getCount()==0) {
+            String query = "UPDATE " + SHORT_TABLE_NAME + " SET " + SHORT_COLUMN_AMOUNT + "=" + NewAmount + " WHERE " + SHORT_COLUMN_SID + " = " + sid + ";";
+            db.execSQL(query);
+            query = "UPDATE " + SHORT_TABLE_NAME + " SET " + SHORT_COLUMN_TOTAL_SETTLE_DAYS + "=" + days + " WHERE " + SHORT_COLUMN_SID + " = " + sid + ";";
+            db.execSQL(query);
+        } else {
+            int amount=0;
+            if(c.moveToFirst())amount=c.getInt(c.getColumnIndex(SHORT_COLUMN_AMOUNT));
+            NewAmount+=amount;
+            String query = "UPDATE " + SHORT_TABLE_NAME + " SET " + SHORT_COLUMN_AMOUNT + "=" + NewAmount + " WHERE " + SHORT_COLUMN_SID + " = " + sid + ";";
+            db.execSQL(query);
+            query = "UPDATE " + SHORT_TABLE_NAME + " SET " + SHORT_COLUMN_TOTAL_SETTLE_DAYS + "=" + days + " WHERE " + SHORT_COLUMN_SID + " = " + sid + ";";
+            db.execSQL(query);
+        }
+        setPlayerMoney(newCash);
+        db.close();
+    }
+
+    public void ShortSettle(int Totalday){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM " + SHORT_TABLE_NAME + " WHERE " + SHORT_COLUMN_TOTAL_SETTLE_DAYS +" = " +Totalday+ ";" ;
+        db.execSQL(query);
+        db.close();
+    }
+
+    public int getShortAmount(int sid){
+        int amount=0;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + SHORT_TABLE_NAME + " where " + SHORT_COLUMN_SID + "=" + sid + " ORDER BY " + SHORT_COLUMN_TOTAL_SETTLE_DAYS + " ASC;", null);
+
+        if(c.getCount()==0){
+            c.close();
+            db.close();
+            return 0;
+        }
+
+        if(c.moveToFirst())amount=c.getInt(c.getColumnIndex(SHORT_COLUMN_AMOUNT));
+        /*while (!c.isAfterLast()){
+
+            c.moveToNext();
+        }*/
+        c.close();
+        db.close();
+
+        return amount;
+    }
+
+    public int getShortDays(int sid){
+        int amount=-1;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + SHORT_TABLE_NAME + " where " + SHORT_COLUMN_SID + "=" + sid + " ORDER BY " + SHORT_COLUMN_TOTAL_SETTLE_DAYS + " ASC;", null);
+
+        if(c.getCount()==0){
+            c.close();
+            db.close();
+            return -1;
+        }
+
+        if(c.moveToFirst())amount=c.getInt(c.getColumnIndex(SHORT_COLUMN_TOTAL_SETTLE_DAYS));
+        /*while (!c.isAfterLast()){
+
+            c.moveToNext();
+        }*/
+        c.close();
+        db.close();
+
+        return amount;
     }
 
     public void BuyShare(int SID, int NewAmount, long newCash){
@@ -402,12 +492,19 @@ public class MemoryDB extends SQLiteOpenHelper {
         values.put(SHARES_COLUMN_CURRENT_PRICE, share.getCurrentSharePrice());
         values.put(SHARES_COLUMN_TOTAL_SHARES, share.getTotalShares());
         values.put(SHARES_COLUMN_LAST_CLOSE, share.getPrevDayClose());
-        values.put(SHARES_COLUMN_REMAINING_SHARES, Math.round(share.getTotalShares()/2));
+        values.put(SHARES_COLUMN_REMAINING_SHARES, Math.round(share.getTotalShares() / 2));
         db.insert(SHARES_TABLE_NAME, null, values);
 
         values = new ContentValues();
         values.put(PROPERTY_COLUMN_SHARE, share.getId());
         values.put(PROPERTY_COLUMN_AMOUNT, 0);
+        db.insert(PROPERTY_TABLE_NAME, null, values);
+        db.close();
+
+        values = new ContentValues();
+        values.put(SHORT_COLUMN_SID, share.getId());
+        values.put(SHORT_COLUMN_AMOUNT, 0);
+        values.put(SHORT_COLUMN_TOTAL_SETTLE_DAYS, -1);
         db.insert(PROPERTY_TABLE_NAME, null, values);
         db.close();
     }
@@ -596,7 +693,29 @@ public class MemoryDB extends SQLiteOpenHelper {
         return (int)Math.floor( assets/1000 );
     }
 
-    public void addAssets(){
+    public double getPartAssets(){
+        double assets=0;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"assets\" ;", null);
+        c.moveToFirst();
+
+        if(c.getCount()==0){
+            return 0;
+        }
+
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            assets=c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+        //the main app and the user never see the assets stored as thousands, they only get the full assets as int
+        return assets/1000;
+    }
+
+    /*public void addAssets(){
         int newAssets = getAssets();
         newAssets++;
         newAssets*=1000;
@@ -631,7 +750,18 @@ public class MemoryDB extends SQLiteOpenHelper {
         } else {
             return false;
         }
+    }*/
+
+    public void incAssets(double amount){
+        double newAssets = getPartAssets();
+        newAssets+=amount;
+        int newAmount = (int)Math.round(newAssets*1000);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + newAmount + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"assets\" ;";
+        db.execSQL(query);
+        db.close();
     }
+
     public void setAssets(int newAssets){
         //Assets are stored as thousands, so 2 assets would be stored as 2000. If the app sends eg 4 assets to set (whitch would be 0.004), it is considered it wanted 4000 assets insted, or 4 full assets
         if(newAssets<10){
@@ -700,6 +830,9 @@ public class MemoryDB extends SQLiteOpenHelper {
         values.put(DATA_COLUMN_ENTRY_NAME, "sound");
         values.put(DATA_COLUMN_ENTRY_VALUE, 1);
         db.insert(DATA_TABLE_NAME, null, values);
+        values.put(DATA_COLUMN_ENTRY_NAME, "nextInvite");
+        values.put(DATA_COLUMN_ENTRY_VALUE, 0);
+        db.insert(DATA_TABLE_NAME, null, values);
 
         values = new ContentValues();
         values.put(OUTLOOK_COLUMN_NAME, "economy");
@@ -758,15 +891,33 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + PROPERTY_TABLE_NAME + " WHERE 1;");
         db.execSQL("DELETE FROM " + COMPANIES_TABLE_NAME + " WHERE 1;");
         db.execSQL("DELETE FROM " + OUTLOOK_TABLE_NAME + " WHERE 1;");
+        db.execSQL("DELETE FROM " + SHORT_TABLE_NAME + " WHERE 1;");
         db.execSQL("DELETE FROM " + SHARES_TABLE_NAME + " WHERE 1;");
         db.execSQL("DELETE FROM " + MESSAGE_TABLE_NAME + " WHERE 1;");
     }
+
 
     public int getLevel() {
         int level = 1;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"level\" ;", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            level = c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+
+        return level;
+    }
+
+    public long getNextInviteTime() {
+        long level = 0;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"nextInvite\" ;", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
             level = c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
@@ -797,10 +948,16 @@ public class MemoryDB extends SQLiteOpenHelper {
     }
 
 
-
     public void setLevel(int newLevel){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + newLevel + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"level\" ;";
+        db.execSQL(query);
+        db.close();
+    }
+
+    public void setNextInviteTime(long MStime){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + MStime + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"nextInvite\" ;";
         db.execSQL(query);
         db.close();
     }

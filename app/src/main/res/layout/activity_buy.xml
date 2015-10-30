@@ -158,47 +158,83 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_above="@+id/ActionButtonsLayout"
         android:weightSum="1.0">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:background="@color/black"
             android:text="@string/Max"
             android:id="@+id/MaxSharesButton"
-            android:layout_weight="0.25"/>
+            android:layout_weight="0.15"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:background="@color/black"
-            android:text="@string/Add"
+            android:text="@string/Add100"
+            android:id="@+id/Add100SharesButton"
+            android:layout_weight="0.1"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@color/black"
+            android:text="@string/Add10"
+            android:id="@+id/Add10SharesButton"
+            android:layout_weight="0.15"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@color/black"
+            android:text="@string/Add1"
             android:id="@+id/AddSharesButton"
-            android:layout_weight="0.25"/>
+            android:layout_weight="0.1"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:background="@color/black"
-            android:text="@string/Remove"
+            android:text="@string/Remove1"
             android:id="@+id/RemSharesButton"
-            android:layout_weight="0.25"/>
+            android:layout_weight="0.1"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@color/black"
+            android:text="@string/Remove10"
+            android:id="@+id/Rem10SharesButton"
+            android:layout_weight="0.1"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@color/black"
+            android:text="@string/Remove100"
+            android:id="@+id/Rem100SharesButton"
+            android:layout_weight="0.1"/>
+
+        <Button
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:background="@color/black"
             android:text="@string/Reset"
             android:id="@+id/ZeroSharesButton"
-            android:layout_weight="0.25"/>
+            android:layout_weight="0.2"/>
 
     </LinearLayout>
 

@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:2:1-91:12
+ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:2:1-100:12
 	package
 		ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:3:5-47
 		INJECTED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml
@@ -14,7 +14,7 @@ ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\And
 		INJECTED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml
 application
-ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:5:5-89:19
+ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:5:5-98:19
 MERGED from [com.android.support:appcompat-v7:23.0.1] C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:support-v4:23.0.1] C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:support-v4:23.0.1] C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\AndroidManifest.xml:22:5-20
@@ -122,6 +122,16 @@ ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\And
 		ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:84:13-55
 	android:name
 		ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:82:13-48
+activity#com.example.galadar.stockxchange.MeetingActivity
+ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:89:9-97:20
+	android:label
+		ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:91:13-59
+	android:parentActivityName
+		ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:92:13-55
+	android:theme
+		ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:93:13-56
+	android:name
+		ADDED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml:90:13-44
 uses-sdk
 INJECTED from C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 MERGED from [com.android.support:appcompat-v7:23.0.1] C:\Users\Galadar\AndroidStudioProjects\StockXchange2\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\AndroidManifest.xml:20:5-43

@@ -1,0 +1,227 @@
+Details
+-edit term update, company outlook must place weight on total value changes, profit reported, and divident given.
+
+Create meetings (to show on specific ingame dates), and later for player events
+-do not invite, just load activity
+-3 buttons (back, "I do not care" cancel, forward)
+-present in dialog themed activity
+-Include String title in intent
+-include string Arraylist in intent for body
+-retrieve title and body from xml to add in intent on day reset(add broadcast and reciever)
+-in body text, include current/total counter (in xml) for each part, eg 3/6, or 1/4
+-parts will be no more than 3-4 lines, and each topic should not exceed 6-8 parts. Make vols instead (I, II, III, IV, etc)
+-also add tutorials in level up switch in main
+-store dates on a DB table, keep only an int for remaining days for next meeting.
+-retreive next day for RAM at game start, as min of values greater than current day (0 is valid result)
+-remove one at every game day end. On day reser, when 0, retrieve from table at day start (after change), on current day.
+//Topics (Level)
+Game Generated Events (2)
+Random Events (3)
+Short Positions I (4)
+//Topics (day)
+Welcome to game, Game UI, buy and sell (1)
+Assets and invitations (2)
+Share info (3)
+Company info (4)
+Player info, Levels and leveling up, winning/Losing the game (5)
+Game info and their usage (include asset info) (8)
+News, messages and events (13)
+Divercification I (17)
+Scams and reporting (61)
+
+Create invitations
+-insert entry to DB data table as next invite for current real time+23h in milliseconds on game creation (game prep)
+-in MainActivity onCreate, retrieve next invite time AS LONG
+-in update UI function, check if current time >= next invite time
+--if yes, update next invite time, decide random cost (~$1000*level) and asset reward (~0.07*level) and make dialog informing the user
+---dialog: title: Invitation recieved
+----body: You recieved an invitation. Attending will cost $+cost+ and you will earn +reward+ assets. 
+----body (cont after 2 new lines = 1 empty line): Do you wish to attent?
+---dialog: type: yes/no
+---selecting yes will immediately increase assets and decrease cash accordingly.
+
+Update buy and sell activities
+-|NO| include remaining shares in intent, and set max limits accordingly (for buy) (include in shareInfo activity intent as well)
+-remaining will be used ONLY for price determination. It can become negative or exceed total. Alter everything necessary.
+--(there is always someone willing to sell for a high enough price)
+-update activity buttons to include +10, +100 and -10, -100 buttons
+
+Set up news
+-create news activity
+--stylized textviews
+--text retrieval from xml
+//news are one time things, they remain on the newspaper for an in-game day. reset news every day. news are not stored on DB.
+//news have no effect. Use Events for effects. Events can create news. News can be created independently.
+
+Set up scams
+?/-Usage of Handlers required?
+-create HashSet on finance
+-create Scam resolution table with name, remaining days (-1 remaining day on day end, then check <=0 for resolution)
+-NEVER RESOLVE 2 SCAMS AT ONCE (at the same day)
+--check scam resolution table with remaining days before adding to DB, increase day by randomInt(3)+1 until you have a free day
+-create batabase table
+--contains: SID (foreign key Share table sid)
+--contains: scamCode (int)
+--contains: resolution day (int) (in days since game start, 1 term = 60 days)
+-create Scam resolution table retrieval funtion on MemoryDB (based on Current day)
+-create HashSet retrieval function on MemoryDB (add 2 extra: one for companies and one for all companies in sector)
+-create Scam resolution function (switch-case on scamCode based) (check game creation notes for durations of scams and steps)
+--create info (if necessary) and publish
+/-?What to do with info publishing (2 scams need it)
+--execute (start execution 0-3 ingame days before resolution, see below for details){
+Empty room (<0.1 probability): execution=revealance. just bunkrupt the company in RAM and DB.
+Pump and Dump (~0.25 prob): execution at 5 remaining days. pump* at each game day start. At game day 0 start, revealance
+-* increase company outlook by 5, in ram only. When loading game, alter company outlook in RAM by 5*(6-days remaining).
+Short and distort (~0.25 prob): execution at 3 remaining days. distort* at each game day start. At game day 0 start, revealance
+-* decrease company outlook by 5, in ram only. When loading, alter company outlook in RAM by -5*(4-days remaining).
+Ponzi (<0.1 prob): Same as empty room
+-*Lawbreaker (~0.3 prob): execution=revealance, 
+}
+--create news and publish
+-set up scam report and revealance{
+Empty room: see above
+Pump and Dump: -25 to company outlook (return to normal), set price back to totValue/totShares, and remaining to half of Total.
+Short and Distort: +15 to company outlook (return to normal), set price back to totValue/totShares, and remaining to half of Total.
+Ponzi: see above
+Lawbreaker: decide int magnitude abs(nextGaussian()*2.5) min 1. share price=current*(0.7-random*0.3). remaining shares to half of Total. Company outlook -(0.5+random*3). If magnitude>5, revenue decreases by random*50000+30000+random*PrevRevenue.
+}
+
+Set Up GGEs
+-check for conditions on term end
+-create message
+-create news
+-add event changes to gge specific variable and update game data table (read from activity on game load)
+-execute event changes
+-alter outlook RAM table, add second column, event effects, integer default 0
+-/RAM table stores message id upon publishing message, to delete at event end
+-/remove message on end
+-/reset gge specific variable on end
+-/GGEs are not stored in DB, if at app start the conditions are fulfilled, the event is considered ongoing
+-/Tutorial on level2, 15d duration, +5 to all outlooks
+-/At event end, reset remaining to half of total shares, to mentain prices at that level
+
+Set Up RGEs
+-create random generator (type, then magnitude, then duration)
+-store in DB Data table as eventgen, add and update every day start (after generation, adding and possible resetting)
+--Sum add randomInt(100) at every day start. When it reaches 1000, generate event (immediately afterwards) and reset.
+--All random Ints: type 1-max, magnitude 10 to 100, print as double/10, duration= magnitude*(randomInt(9)+1)
+-alter outlook DB table, add second column, event effects, integer default 0
+-create events DB table
+--contains event type
+--contains event magnidude
+--contains end day (totaldays)
+--contains message_id, foreign key
+-decide effects (outlook changes) based on magnitude (deterministic function, non-linear)
+-create message based on event (retrieve text from xml, based on type and magnitude)
+-create news (publish)
+-add event effect amount to outlook table second variable on both RAM and DB
+-/on duration end, remove message and remove effect amount* from table second variable (do not reset, multiple events may be active)
+-/*: will need recalculation, call same function with negative magnitude, to take the outlook alterations
+
+Create "donation" activity (in-app perchuases)
+-pause gaming when starting, start for result, result is amount bought*, resume gaming to true
+-get assets and money on onCreate
+-2 options, 1 dollar each
+--get money - level dependent ($100000 * level) (be extremely careful of ingame vs DB representation) 
+--get 3 assets - lifesaver
+-Back Button, to finish activity and resume to main, with result 0 (remember to resume gaming to true).
+//if result!=0, {if result < 100, assets bought, else money bought. Update RAM tables and database accordingly.}
+//Always return gaming to true
+
+Graphics & sound
+-get images in all resolutions
+--Company image
+--Share info image
+--buy image
+--sell image
+--launcher image
+--donation image cash
+--donation image assets
+--Player info image
+-All sounds playing depends on sound boolean
+-set up day end sound (market/stock exchange bells)
+-set up term end sound (papers rustling, people talking/moving) (like Civ market)
+-set up donation perchase sound (lots of applause)
+
+Add short selling
+-update main code to show red SELL enabled buttons for shares you do not have, if player level is>=4.
+-decide max settlement duration on level mainly, then cash
+-when loading Sell Activity with 0 shares owned (num already included in intent), show and enable "settle in" num editbox in sell activity
+--also show info textview: Short sales settle at day start. If by day end, you are not above $-100000, you lose the game.
+-add DB table for short sales
+--contains, sid, amount, totaldays, all int
+-table on game load, and load sid, amount and remainingdays (totaldays-currenttotaldays),
+-remainingdays-- at every day end
+-when it reaches 0, settle ( remove cash=amount*currentprice(sid) ) and remove from DB (delete * where total days = currenttotal)
+-settle at daystart
+
+Add quickGame
+-Local finance with tables, NO DB ACCESS, NO SAVE, level 5 gamer with $1000000 and 5 assets, term 2 day 1, WITH scams
+-It will need nothing more than a term update function that does not use the DB.
+--(All other uses of the DB are to save data)
+
+
+
+
+//Publish
+
+Create filter
+-View only companies of certain industries (seperate Activity, same layout and similar code as Main)
+-update main menu to include filter option to launch activity
+
+Set up PGEs
+-On level 5, change player level up Button to Launch event Button
+-opens dialog box for activity type, and activities:
+--Humanitarian aid: Choose amount of money to give OR offer asset (determine success level)
+--Fundraiser: Choose amount of money to give (determine success or failure)
+--Party: Select party size and luxury (affect cost), possible use asset (invite VIP) (determine success or failure)
+--Meeting: Choose subject (retrieve info text from xml), possible use asset (invite VIP), (determine success or failure)
+---Success (or failure) determined by fame (and player selections for all except Meeting). Asset used: Always success, never critical.
+
+Add interest
+-add interest on term end, before taxes calculation, for positive cash
+
+add player new companies from player activity
+
+Add Google play highscore record support
+
+Add bonds
+-create table (on onUpgrade and onCreate)
+--contains: repayment day (int total game days): entries: current + 120, 240, 480, 600.
+--comtains: amount owned: int, total bonds of this entry owned
+--contains: spreads: real<1: decided by interest and repayment distance (in days) + economy outlook (both contribute to 1 factor)
+//spreads determine buying price for bonds (nominal*(1-spreads))
+//spreads up for longer repayment period
+//spreads up for very low AND very high economic outlook ( abs()>0.75 ) (add outlook squared to spreads)
+//nominal price is $100 per bond
+//there is no upper limit in existing bonds (as there are total shares)
+//bonds published for every term end
+
+Add buy/sell options (find what determines their prices first)
+[...]
+
+Add more random events
+[...]
+
+Add more meeting topics
+-Interests (on max(45, current day)
+-Bonds (on max(61, current day+1)
+-Diversification II (includes bonds)
+-Player Events (L5)
+-Player started Companies (L6)
+-Hedge funds I
+-Hedge funds II
+-Hedge funds III
+-FX I
+-FX II
+-FX III
+[...]
+-/those added solely for PGE meeting use only are stored with -1 as table day (in db)
+
+Add more currencies
+-Add curency column to bonds db table (integer, 0=dollars, default 0)
+-add FXs tables updated at day start
+-create relevant activities (exchange currencies, buy/sell currency bonds)
+-create FX prices determination function (update at day start)
+-Do not store currency prices, determine at app start from economy sizes (stored) and money flows (new random on sizes and events)
+[...]

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,16 @@ public class SellActivity extends AppCompatActivity {
         TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
         UpdateTopBar(topBarPlayer, topBarDaytime);
 
+        final EditText Days = (EditText)findViewById(R.id.SettleDaysEditText);
+
+        if(owned==0){
+            TextView view1 = (TextView)findViewById(R.id.ShortSettleLbl);
+            view1.setVisibility(TextView.VISIBLE);
+            TextView view2 = (TextView)findViewById(R.id.ShortSellWarning);
+            view2.setVisibility(TextView.VISIBLE);
+            Days.setVisibility(EditText.VISIBLE);
+            Days.setText(Integer.toString(10));
+        }
 
         TextView ShareName = (TextView)findViewById(R.id.ShareNameDt);
         ShareName.setText(name);
@@ -69,23 +80,37 @@ public class SellActivity extends AppCompatActivity {
 
         final Button maxButton = (Button)findViewById(R.id.MaxSharesButton);
         final Button plusOne = (Button)findViewById(R.id.AddSharesButton);
+        final Button plus10 = (Button)findViewById(R.id.Add10SharesButton);
+        final Button plus100 = (Button)findViewById(R.id.Add100SharesButton);
         final Button minusOne = (Button)findViewById(R.id.RemSharesButton);
+        final Button minus10 = (Button)findViewById(R.id.Rem10SharesButton);
+        final Button minus100 = (Button)findViewById(R.id.Rem100SharesButton);
         final Button resetAll = (Button)findViewById(R.id.ZeroSharesButton);
 
-        maxButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                amount = owned;
-                ShareAmount.setText(Integer.toString(amount));
-                total = amount*price;
-                Cost.setText(Double.toString(((double)total)/100));
-            }
-        });
+        if(owned==0){
+            maxButton.setEnabled(false);
+        } else {
+            maxButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    amount = owned;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double) total) / 100));
+                    }
+                }
+            );
+        }
 
         plusOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(amount<owned) {
+                if(owned==0){
+                    amount++;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else if(amount<owned) {
                     amount++;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
@@ -96,16 +121,113 @@ public class SellActivity extends AppCompatActivity {
             }
         });
 
+        plus10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(owned==0){
+                    amount=+10;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else if(amount+10<=owned) {
+                    amount=+10;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else {
+                    Toast.makeText(getApplicationContext(), "You cannot sell more shares than those you have", Toast.LENGTH_SHORT).show();
+                    amount = owned;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double) total) / 100));
+                }
+            }
+        });
+
+        plus100.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(owned==0){
+                    amount=+100;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else if(amount+100<=owned) {
+                    amount=+100;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else {
+                    Toast.makeText(getApplicationContext(), "You cannot sell more shares than those you have", Toast.LENGTH_SHORT).show();
+                    amount = owned;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                }
+            }
+        });
+
         minusOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(amount>0) {
+                if(owned==0){
+                    amount--;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else if(amount>0) {
                     amount--;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
                     Cost.setText(Double.toString(((double)total)/100));
                 } else {
                     Toast.makeText(getApplicationContext(),"You cannot sell less than 0 shares", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        minus10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(owned==0){
+                    amount-=10;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else if(amount-10>=0) {
+                    amount-=10;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else {
+                    Toast.makeText(getApplicationContext(),"You cannot sell less than 0 shares", Toast.LENGTH_SHORT).show();
+                    amount=0;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double) total) / 100));
+                }
+            }
+        });
+
+        minus100.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(owned==0){
+                    amount-=100;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else if(amount-100>=0) {
+                    amount-=100;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
+                } else {
+                    Toast.makeText(getApplicationContext(),"You cannot sell less than 0 shares", Toast.LENGTH_SHORT).show();
+                    amount=0;
+                    ShareAmount.setText(Integer.toString(amount));
+                    total = amount * price;
+                    Cost.setText(Double.toString(((double)total)/100));
                 }
             }
         });
@@ -127,15 +249,28 @@ public class SellActivity extends AppCompatActivity {
         Execute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent SharesSold = new Intent("SharesTransaction"); //To update prices
-                Bundle Sdata = new Bundle();
-                Sdata.putInt("SID", SID);
-                Sdata.putInt("amount", (0-amount) );
-                Sdata.putInt("atPrice", price);
-                Sdata.putBoolean("ByPlayer", true);
-                SharesSold.putExtras(Sdata);
-                LocalBroadcastManager.getInstance(SellActivity.this).sendBroadcast(SharesSold);
-                SellActivity.this.finish();
+                if(owned==0){
+                    Intent SharesSold = new Intent("SharesShortTransaction"); //To add to short sales, and them broadcast to update prices
+                    Bundle Sdata = new Bundle();
+                    Sdata.putInt("SID", SID);
+                    Sdata.putInt("amount", (0 - amount));
+                    Sdata.putInt("atPrice", price);
+                    Sdata.putBoolean("ByPlayer", true);
+                    Sdata.putInt("Days", Integer.parseInt( Days.getText().toString()));
+                    SharesSold.putExtras(Sdata);
+                    LocalBroadcastManager.getInstance(SellActivity.this).sendBroadcast(SharesSold);
+                    SellActivity.this.finish();
+                } else {
+                    Intent SharesSold = new Intent("SharesTransaction"); //To update prices
+                    Bundle Sdata = new Bundle();
+                    Sdata.putInt("SID", SID);
+                    Sdata.putInt("amount", (0 - amount));
+                    Sdata.putInt("atPrice", price);
+                    Sdata.putBoolean("ByPlayer", true);
+                    SharesSold.putExtras(Sdata);
+                    LocalBroadcastManager.getInstance(SellActivity.this).sendBroadcast(SharesSold);
+                    SellActivity.this.finish();
+                }
             }
         });
 
