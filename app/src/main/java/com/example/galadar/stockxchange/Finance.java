@@ -1,9 +1,5 @@
 package com.example.galadar.stockxchange;
 
-import android.content.SharedPreferences;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.HashSet;
 import java.util.Random;
 
@@ -15,6 +11,8 @@ public class Finance {
     long EconomySize;
     double[][] outlooks;
     HashSet CompaniesNames;
+    HashSet Scams;
+    int[][] ScamResolution;
     String[] Names;
     int[][] Shares;
     int[][] Companies;
@@ -33,6 +31,7 @@ public class Finance {
         Names = new String[numComp];
         Short = new int[numComp][2];
         CompaniesNames = new HashSet();
+        Scams = new HashSet();
         for(int i=0; i<DBHandler.getMaxSID();i++){
             name = DBHandler.getDBShareName(i);
             boolean ok = CompaniesNames.add(name);
@@ -66,14 +65,39 @@ public class Finance {
             Names[i]=name;
         }
 
-
-
         outlooks = new double[Company.Sectors.values().length][2];
 
         for (int i = 0; i < outlooks.length ; i++) {
             outlooks[i][0] = DBHandler.getOutlook(Company.Sectors.values()[i].toString());
             outlooks[i][1] = 0;
         }
+
+        ScamResolution = new int[numComp][2];
+        for (int i = 0; i < ScamResolution.length; i++) {
+            if(DBHandler.isScam(i)){
+                Scams.add(Names[i]);                //Add name to Hashset
+                ScamResolution[i][0] =  DBHandler.getScamType(i);
+                ScamResolution[i][1] = DBHandler.getScamResolutionDay(i)-CurrentDay;
+            } else {
+                ScamResolution[i][0] = 0;   //Scam type/category 1-5, 0 for no scam
+                ScamResolution[i][1] = -1;  //remaining days, -1 for no scams
+            }
+            if(this.ScamResolution[i][0]==2) {       //Alter Scam Share Outlook for execution of Pump&Dump Scam
+                if (ScamResolution[i][1] < 6) {
+                    Companies[ScamResolution[i][0]][3] += 5 * (5 - ScamResolution[i][1]);
+                }
+            }
+            if(ScamResolution[i][0]==3) {       //Alter Scam Share Outlook for execution of Short&Distort Scam
+                if (ScamResolution[i][1] < 4) {
+                    Companies[ScamResolution[i][0]][3] -= 5 * (3 - ScamResolution[i][1]);
+                }
+            }
+        }
+
+    }
+
+    public void resetAllScams(){ //For QuickGame Usage
+
     }
 
     public int getRemShares(int id){
@@ -91,6 +115,7 @@ public class Finance {
         Names = new String[numComp];
         Short = new int[numComp][2];
         CompaniesNames = new HashSet();
+        ScamResolution = new int[numComp][2];
         for(int i=0;i<numComp;i++){
             String name = randomName();
             boolean go = CompaniesNames.add(name);
@@ -113,6 +138,8 @@ public class Finance {
                 Shares[i][4] = Math.round(share.getTotalShares() / 2);
                 Short[i][0] = 0; //Amount to Settle
                 Short[i][1] = -1; //Remaining days
+                ScamResolution[i][0]=0;
+                ScamResolution[i][1]=-1;
             } else {
                 i--;
             }
@@ -146,7 +173,7 @@ public class Finance {
         }
     }
 
-    public int getRemainingDays(int SID){
+    public int getShortRemainingDays(int SID){
         return Short[SID][1];
     }
 
@@ -156,10 +183,6 @@ public class Finance {
 
     public int getLastRevenue(int id) {
         return Companies[id][4];
-    }
-
-    public void updateLastRevenue(int id, int last) {
-        Companies[id][4] = last;
     }
 
     public void resetEconomySize() {
@@ -196,10 +219,38 @@ public class Finance {
                 Short[i][1]--;
             }
         }
+        for (int i = 0; i < ScamResolution.length; i++) {
+            if(ScamResolution[i][0]!=0 & ScamResolution[i][1]>0){
+                ScamResolution[i][1]--;
+            }
+        }
     }
 
-    public void setShareCurrPrice(int id, int alteration){
-        Shares[id][0] = alteration;
+    public boolean isScam(int i){
+        if (Scams.isEmpty())return false;
+        return Scams.contains(getName(i));
+    }
+
+    public int getScamType(int ScamTableIndex){
+        return ScamResolution[ScamTableIndex][0];
+    }
+
+    public int getScamRemDays(int ScamTableIndex){
+        return ScamResolution[ScamTableIndex][1];
+    }
+
+    public int getScamsNo(){
+        return ScamResolution.length;
+    }
+
+    public void clearScam(int sid){
+        Scams.remove(getName(sid));
+        ScamResolution[sid][1]=0;
+        ScamResolution[sid][2]=-1;
+    }
+
+    public void setShareCurrPrice(int id, int price){
+        Shares[id][0] = price;
     }
 
     public int getSharesOwned(int id){
@@ -262,6 +313,10 @@ public class Finance {
         outlooks[index][1]+=newO;
     }
 
+    public boolean addScam(int sid){
+        return Scams.add(getName(sid));
+    }
+
 
     private String randomName() {
 
@@ -286,10 +341,6 @@ public class Finance {
         return !CompaniesNames.contains(name);
     }
 
-    public void setInvestment(int id, int inv){
-        Companies[id][5]=inv;
-    }
-
     public int getNumComp() {
         return numComp;
     }
@@ -300,10 +351,6 @@ public class Finance {
             sum += Shares[i][2];
         }
         return sum;
-    }
-
-    public void companyAddedtoDB(){
-        this.numComp++;
     }
 
     public long getSecEconSize(int sectorI) {
@@ -326,5 +373,20 @@ public class Finance {
             value += getShareCurrPrince(i)*getSharesOwned(i);
         }
         return value;
+    }
+
+    public void addScamData(int sid, int type, int totalDays) {
+        ScamResolution[sid][0]=type;
+        ScamResolution[sid][1]=totalDays;
+    }
+
+    public void removeScam(int i){
+        ScamResolution[i][0]=0;
+        ScamResolution[i][1]=-1;
+    }
+
+    public void Backrupt(int i) {
+        setCompTotalValue(i, 0);
+        setShareCurrPrice(i, 0);
     }
 }

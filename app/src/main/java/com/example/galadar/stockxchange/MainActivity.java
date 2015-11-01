@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     static boolean gaming = false;
     static int infoGen;
     static long nextInvite;
-    static ArrayList<String> Infos = new ArrayList<String>();
+    static ArrayList Infos = new ArrayList();
     static String[] News = new String[2]; //News[0] is for title, News[1] is for body (~250 characters)
     static int NewsPriority = 0; //Something with lower news priority cannot change the news. There is only one news at a time. Priority: min=0, max=100.
 
@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
 
         playSound = DBHandler.PlaySound();
         infoGen=0;
-        Infos.add("There are no info tips at this point");
+        String q = "There are no info tips at this point";
+        Infos.add(q);
 
         //Retrieve / Generate invitation, event and other messages
         Messages = new int[100][2];
@@ -327,7 +328,9 @@ public class MainActivity extends AppCompatActivity {
 
         Random r = new Random();
         int user = 1000+r.nextInt(5000);
-        int type = r.nextInt(2); //0: share, 1: Scams.
+        int type;
+        if(r.nextDouble()<0.25) type=1;
+        else type=0; //0: share, 1: Scams.
         boolean truth = r.nextDouble() >= 0.25;
 
         int reference = r.nextInt(f.getNumComp());
@@ -337,7 +340,19 @@ public class MainActivity extends AppCompatActivity {
         switch (type){
 
             case 1:
-                //TODO: if type = 1, Check for possible scam
+                if(truth){
+                    if(f.isScam(reference)) {
+                        info+="is involved in illegal activities";
+                    } else {
+                        info+="is not involved in illegal activities";
+                    }
+                } else { //Just the inverse of the above, because the info is a lie
+                    if(f.isScam(reference)) {
+                        info+="is not involved in illegal activities";
+                    } else {
+                        info+="is involved in illegal activities";
+                    }
+                }
                 break;
 
             default:
@@ -400,8 +415,14 @@ public class MainActivity extends AppCompatActivity {
 
         info+="The "+f.getName(reference)+" company ";
 
-        //TODO if scam, return info+="is related to shady activities." NO ELSE. Never return is not a scam from here.
-        //TODO if Scam, return from here, and if contained in table, return addCertainInfo with new random reference and user 9001
+        if(f.isScam(reference)) {
+            info += "is related to shady activities.";
+            if (Infos.contains(info)) return addCertainInfo(reference, 9001);
+            if (MainActivity.Infos.contains("There are no info tips at this point"))
+                MainActivity.Infos.remove("There are no info tips at this point");
+            MainActivity.Infos.add(info);
+            return info;
+        }
 
         double a = f.getCompOutlook(reference)+f.getSectorOutlook(reference)+((double)f.getRemShares(reference)/f.getTotalShares(reference))-0.5;
         if(a>0) {
@@ -421,6 +442,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver DayStartedMessageRec = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Random random = new Random();
             for (int i = 0; i < f.getNumComp(); i++) {
                 if(f.getTodaysShort(i)>0){
                     p.alterMoney(f.getTodaysShort(i)*f.getShareCurrPrince(i));
@@ -429,15 +451,103 @@ public class MainActivity extends AppCompatActivity {
             }
             DBHandler.ShortSettle(time.totalDays());
             for (int i = 0; i < f.getNumComp(); i++) {
-                if(f.getRemainingDays(i)<0){
+                if(f.getShortRemainingDays(i)<0){
                     f.ShortShare(i, DBHandler.getShortAmount(i), DBHandler.getShortDays(i));
                 }
             }
             dayOpen = true;
             UpdateCommandsUI();
+
+            //Scams are resolved after Day opens
+            for (int i = 0; i < f.getScamsNo(); i++) {
+                switch (f.getScamType(i)){
+                    case 1:     //Empty Room (set share price to 0.1, and remaining shares to -total, revenue to - total value)
+                        if(f.getScamRemDays(i)==0){
+                            f.Backrupt(i);//Bunctrupt company
+                            DBHandler.setDBCurrPrice(i, f.getShareCurrPrince(i));
+                            DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i));
+                            f.removeScam(i);
+                            String story = "Company "+f.getName(i)+" suddendly declared bankruptcy today.\n\nThe authorities state that the Company was found to be involved in shady activities, and the CEO was placed under arrest.";
+                            editNews(55, "Company Bankrupts", story);
+                        }
+                        break;
+                    case 2:     //Pump and Dump
+                        if(f.getScamRemDays(i)<=5){
+                            f.setCompOutlook(i, f.getCompOutlook(i)+5);
+                        }
+                        if(f.getScamRemDays(i)==0){
+                            Intent intent1 = new Intent("SharesTransaction");
+                            Bundle data1 = new Bundle();
+                            data1.putInt("SID", i);
+                            data1.putInt("amount", random.nextInt(2000)+1857);
+                            data1.putInt("atPrice", f.getShareCurrPrince(i));
+                            data1.putBoolean("ByPlayer", false);
+                            f.setCompOutlook(i, f.getCompOutlook(i) - 25);
+                            LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent1);
+                            f.removeScam(i);
+                            String story = "A Pump and Dump scheme was executed today, leaving many stockbrokers in a tight situation, counting losses.\n\nLaw enforcement agencies are conducting an investigation to locate the person or persons responsible.";
+                            editNews(40, "Stock Scheme leaves brokers in despair", story);
+                        }
+                        break;
+                    case 3:     //Short and Distort
+                        if(f.getScamRemDays(i)<=3){
+                            f.setCompOutlook(i, f.getCompOutlook(i)-5);
+                        }
+                        if(f.getScamRemDays(i)==0){
+                            f.setCompOutlook(i, f.getCompOutlook(i)+15);
+                            f.alterRemShares(i, 1581 + random.nextInt(1500));
+                            DBHandler.setCompOutlook(f.getName(i), f.getCompOutlook(i));
+                            DBHandler.setRemShares(i, f.getRemShares(i));
+                            f.removeScam(i);
+                            String story = "A Short and Distort scheme was executed today, leaving "+ f.getName(i) +" in a tight situation, counting losses.\n\nLaw enforcement agencies are conducting an investigation to locate the person or persons responsible.";
+                            editNews(45, "A company in distress", story);
+                        }
+                        break;
+                    case 4:     //Ponzi Scheme (set share price to 0.1, and remaining shares to -total, revenue to - total value)
+                        if(f.getScamRemDays(i)==0){
+                            f.Backrupt(i);//Bunctrupt company
+                            DBHandler.setDBCurrPrice(i, f.getShareCurrPrince(i));
+                            DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i));
+                            f.removeScam(i);
+                            String story = "Company "+f.getName(i)+" suddendly declared bankruptcy today.\n\nThe authorities state that the Company was found to be involved in a Ponzi Scheme, and the CEO was placed under arrest.";
+                            editNews(50, "Company Bankrupts", story);
+                        }
+                        break;
+                    case 5:     //Lawbreaker Scandal
+                        if(f.getScamRemDays(i)==0){
+                            int magnitude = getLinnearRN(9);
+
+                            f.setCompOutlook(i, f.getCompOutlook(i) - magnitude * 0.1);
+                            if(magnitude>3){
+                                f.UpdateCompRevenue(i, -1000000*magnitude);
+                            }
+                            f.removeScam(i);
+                            String story = "Company "+f.getName(i)+" was found to be in violation of multiple laws and regulations.\n\nThe results of the investigation, published by authorities, indicate corruption at the highest levels of the company, and the govemnment has already taken action.";
+                            editNews(30+magnitude*10, "Finance world shaken", story);
+                        }
+                        break;
+                    default:    //Do nothing, since category/type is 0, thus no Scams
+                        break;
+                }
+            }
             Toast.makeText(MainActivity.this, "Day Started", Toast.LENGTH_SHORT).show();
         }
     };
+
+    public static int getLinnearRN(int maxSize){
+        //Get a linearly multiplied random number
+        int randomMultiplier = maxSize * (maxSize + 1) / 2;
+        Random r=new Random();
+        int randomInt = r.nextInt(randomMultiplier);
+
+        int linearRN = 0;
+        for(int i=maxSize; randomInt >= 0; i--){
+            randomInt -= i;
+            linearRN++;
+        }
+
+        return linearRN;
+    }
 
     private BroadcastReceiver LeveledUp = new BroadcastReceiver() {
         @Override
@@ -469,10 +579,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
                 case 6: {
-                    priceMoney=-1000000;
                     prizeAssets+=6;
                     break;
                 }
+                default:
+                    break;
             }
 
             p.alterMoney(priceMoney*100);
@@ -484,16 +595,18 @@ public class MainActivity extends AppCompatActivity {
         if(!dayOpen) return;
         int temp;
         for(int i=0;i<f.getNumComp();i++) {
-            temp = getSharesAmount(f.getCompOutlook(i), f.getSectorOutlook(i), f.getRemShares(i), f.getTotalShares(i));
-            if (temp != 0) {
-                Intent intent = new Intent("SharesTransaction");
-                Bundle data = new Bundle();
-                data.putInt("SID", i);
-                data.putInt("amount", temp);
-                data.putInt("atPrice", f.getShareCurrPrince(i));
-                data.putBoolean("ByPlayer", false);
-                intent.putExtras(data);
-                LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
+            if (f.getShareCurrPrince(i) != 0) {
+                temp = getSharesAmount(f.getCompOutlook(i), f.getSectorOutlook(i), f.getRemShares(i), f.getTotalShares(i));
+                if (temp != 0) {
+                    Intent intent = new Intent("SharesTransaction");
+                    Bundle data = new Bundle();
+                    data.putInt("SID", i);
+                    data.putInt("amount", temp);
+                    data.putInt("atPrice", f.getShareCurrPrince(i));
+                    data.putBoolean("ByPlayer", false);
+                    intent.putExtras(data);
+                    LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
+                }
             }
         }
     }
@@ -545,13 +658,11 @@ public class MainActivity extends AppCompatActivity {
             int max = (int)Math.round( value/total );
             int newPrice = oldPrice + (int) Math.round( (1 - (double)remaining/total )*max + Math.random()*50+10 );
 
-            if(newPrice<0) {
-                newPrice=Math.abs(newPrice);
-                Toast.makeText(MainActivity.this, "Price Error " + (double)remaining/total +" "+max, Toast.LENGTH_SHORT).show();
-            }
-
             f.setShareCurrPrice(SID, newPrice);
             DBHandler.setDBCurrPrice(SID, newPrice);
+
+            f.UpdateCompRevenue(SID, newPrice - oldPrice);
+            DBHandler.setCompRevenue(SID, f.getCompRevenue(SID));
 
             Intent intent1 = new Intent("SpecificPriceChange");
             Bundle data1 = new Bundle();
@@ -652,6 +763,7 @@ public class MainActivity extends AppCompatActivity {
                 if (p.getAssets() > 0) {
                     p.setAssets(p.getAssets() - 1);
                     DBHandler.setAssets(p.getAssets());
+                    Toast.makeText(MainActivity.this, "Used Asset to escape Bankrupty", Toast.LENGTH_SHORT).show();
                 } else {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -693,6 +805,9 @@ public class MainActivity extends AppCompatActivity {
             }
             UpdateCommandsUI();
             gaming = true;
+            if(p.getLevel()==5&(p.getMoney())/100>25000000){
+                LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(new Intent("LevelUp"));
+            }
         }
     };
 
@@ -772,9 +887,9 @@ public class MainActivity extends AppCompatActivity {
                 revenue = f.getCompRevenue(i);
                 TotVal = f.getCompTotalValue(i);
 
-                revenue += (int)Math.round( (f.getEconomySize()*DBHandler.getCompMarketShare(f.getName(i))) / (Math.random()*135+45) ); //TODO Different Revenue for scams, this is used in else of if( isScam() )
+                revenue += (int)Math.round( (f.getEconomySize()*DBHandler.getCompMarketShare(f.getName(i))) / (Math.random()*135+45) );
                 double investmentRes = (Math.random()*1.5+0.5)*f.getInvestment(i);          //calculating investment gains
-                revenue+=(int)Math.round(investmentRes);                                    //adding investment gains to revenue
+                revenue +=(int)Math.round(investmentRes);                                   //adding investment gains to revenue
                 revenue -= (int)Math.round( (Math.random()*0.05+0.05)*revenue );            //Remove upkeep costs from revenue
                 revenue -= Math.max( revenue*0.2 , 0);                                      //Remove taxes from remaining revenue
                 newInv = (int)Math.round(revenue*r.nextDouble()*0.2);                       //Calculating new investment based on remaining revenue
@@ -785,6 +900,7 @@ public class MainActivity extends AppCompatActivity {
                 if(newPerc>100 & revenue>f.getShareCurrPrince(i)*f.getTotalShares(i)){      //Decide and Calculate dividents
                     divident = newPerc*(double)f.getShareCurrPrince(i)/100;
                     p.alterMoney(Math.round(divident*f.getSharesOwned(i)));
+                    revenue -= divident*f.getTotalShares(i);
                 } else {
                     divident=0;
                 }
@@ -796,7 +912,7 @@ public class MainActivity extends AppCompatActivity {
                 DBHandler.setCompLastRevenue(f.getName(i), revenue);
             }
 
-            progdialog.incrementProgressBy(35);
+            progdialog.incrementProgressBy(25);
 
             p.setMoney(p.getMoney() - taxes());
 
@@ -823,7 +939,7 @@ public class MainActivity extends AppCompatActivity {
                     do {
                         name = randomName();
                     } while (!f.addCompanyName(name));
-                    Company c = new Company(name, Company.Sectors.values()[i]);
+                    Company c = new Company(name, Company.Sectors.values()[i-1]);
                     newCompCounter++;
                     DBHandler.addCompany(c, f.getNumComp() + newCompCounter);
                     Share s = new Share(name, f.getNumComp() + newCompCounter, c.shareStart(), c.getTotalShares());
@@ -835,13 +951,14 @@ public class MainActivity extends AppCompatActivity {
                 DBHandler.setOutlook("economy", f.getBaseSectorOutlook(0));
             }
 
-            int NumOfBunkrupties = 0;
-            for (int i = 0; i < f.getNumComp(); i++) { //Declare Bunkrupties
+            int NumOfBankrupties = 0;
+            for (int i = 0; i < f.getNumComp(); i++) { //Declare Bankrupties
                 if(DBHandler.getCompPercValue(f.getName(i))<-80){
-                    DBHandler.removeCompany(f.getName(i));
+                    DBHandler.setCompTotValue(f.getName(i), 0);
+                    DBHandler.setDBCurrPrice(i, 0);
                     f.outlooks[0][0] -= (double)f.getCompTotalValue(i)/f.getEconomySize();
                     f.outlooks[i][0] += (double)f.getCompTotalValue(i)/f.getEconomySize();
-                    NumOfBunkrupties++;
+                    NumOfBankrupties++;
                 }
                 DBHandler.setOutlook(Company.Sectors.values()[i-1].toString(), f.outlooks[i][0]);
                 DBHandler.setOutlook("economy", f.outlooks[0][0]);
@@ -850,7 +967,7 @@ public class MainActivity extends AppCompatActivity {
             progdialog.incrementProgressBy(25);
 
             long oldEcon = f.getEconomySize();
-            f = new Finance(DBHandler); //AT this point, the RAM finance tables are updated. All major alterations have been complete (adding and removing companies.
+            f = new Finance(DBHandler); //AT this point, the RAM finance tables are updated. All major alterations have been complete (adding and removing companies).
 
             f.resetEconomySize();
             DBHandler.setEconomySize(f.getEconomySize());
@@ -890,8 +1007,6 @@ public class MainActivity extends AppCompatActivity {
                 DBHandler.setOutlook(Company.Sectors.values()[i].toString(), newO);
             }
 
-            progdialog.incrementProgressBy(15);
-
             //Set new market share
             double MS, SO, newOut;
             int nP, nrevenue;
@@ -907,8 +1022,45 @@ public class MainActivity extends AppCompatActivity {
                 DBHandler.setCompOutlook(f.getName(i), newOut);
             }
 
-            //TODO Add Scams from existing companies (no New Companies added at this stage)
+            progdialog.incrementProgressBy(15);
 
+            Random random = new Random();
+
+            int newScams = random.nextInt(Math.round(f.getNumComp()/10));
+            if(newScams<=2)newScams =1;
+            if (newScams>=6) newScams =5;               //ADD 1 to 5 Scams
+            int currScams=DBHandler.getScamsNo();
+            int[] ids = DBHandler.getScamSIDs();
+            int sid;
+            int j;
+            int type;
+            int totalDays;
+            boolean go;
+            int[] days = new int[currScams+newScams];
+            for (int i = 0; i < days.length; i++) {
+                days[i]=DBHandler.getScamResolutionDay(ids[i]);
+            }
+            for (int i = 0; i < newScams; i++) {
+                go=true;
+                do{
+                    sid = DBHandler.getRandomActiveSID();
+                } while(!f.addScam(sid));
+
+                double e = random.nextDouble(); //5 is current total Number of Categories, from 1 to 5, see MainActivity Scam Resolution Function for details.
+
+                if(e<0.1) type = 1;                     //Ponzi Scheme
+                else if (e<=0.3) type = 2;              //Pump&Dump
+                else if (e<=0.5) type = 3;              //Short&Distort
+                else if (e<0.6) type = 4;               //Empty Room
+                else type =5;                           //Lawbreaker Scandal
+
+                totalDays=time.totalDays(random.nextInt(30)+25);
+
+                DBHandler.addScam(sid, type, totalDays);
+                f.addScamData(sid, type, totalDays);
+            }
+
+            f.resetAllScams();
             //term update up to here
             //call dialog to report economy size change, number of companies opened and No of companies closed
 

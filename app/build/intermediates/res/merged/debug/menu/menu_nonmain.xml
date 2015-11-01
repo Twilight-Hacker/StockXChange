@@ -1,8 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.galadar.stockxchange.MeetingActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    tools:context="com.example.galadar.stockxchange.NewsActivity">
+
+    <item android:id="@+id/menu_backMain"
+        android:title="@string/backMain"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/menu_sound"
+        android:title="@string/action_sound"
+        android:orderInCategory="200"
+        android:checkable="true"
+        app:showAsAction="never"/>
 </menu>
 <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/menu/menu_nonmain.xml -->

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.security.PublicKey;
+import java.util.Random;
 
 /**
  * This class is only for aetting and retrieving values from/to the Database. It will only do a minimal amount of Calculations where absolutely required.
@@ -19,12 +20,12 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     private static MemoryDB DBHandler;
 
-    public static final String DATABASE_NAME = "galad-StockXChange.db";
-    public static final int DATABASE_VER = 8;
+    public static final String DATABASE_NAME = "Galadars-StockXChange.db";
+    public static final int DATABASE_VER = 9;
+    public static final String ALL_TABLES_COLUMN_ID = "_id";
 
     public static final String COMPANIES_TABLE_NAME = "Companies";
     public static final String COMPANIES_COLUMN_NAME = "Name";
-    public static final String COMPANIES_COLUMN_ID = "id";
     public static final String COMPANIES_COLUMN_TOTAL_VALUE = "TotalValue";
     public static final String COMPANIES_COLUMN_CURRENT_VALUE = "CurrValue";
     public static final String COMPANIES_COLUMN_PERCENTAGE_VALUE = "PercValue";
@@ -38,7 +39,6 @@ public class MemoryDB extends SQLiteOpenHelper {
     public static final String COMPANIES_COLUMN_CID = "cid";
 
     public static final String SHARES_TABLE_NAME = "shares";
-    public static final String SHARES_COLUMN_ID = "_id";
     public static final String SHARES_COLUMN_NAME = "name";
     public static final String SHARES_COLUMN_SID = "sid";
     public static final String SHARES_COLUMN_CURRENT_PRICE = "currvalue";
@@ -46,18 +46,20 @@ public class MemoryDB extends SQLiteOpenHelper {
     public static final String SHARES_COLUMN_TOTAL_SHARES = "TotalShares";
     public static final String SHARES_COLUMN_REMAINING_SHARES = "remainingShares";
 
+    public static final String SCAMS_TABLE_NAME = "scams";
+    public static final String SCAMS_COLUMN_SID = "sid";
+    public static final String SCAMS_COLUMN_TYPE = "category";
+    public static final String SCAMS_COLUMN_RESOLUTION_DAY = "endDay";
+
     public static final String OUTLOOK_TABLE_NAME = "outlooks";
-    public static final String OUTLOOK_COLUMN_ID = "_id";
     public static final String OUTLOOK_COLUMN_NAME = "Sector";
     public static final String OUTLOOK_COLUMN_OUTLOOK = "Value";
 
     public static final String DATA_TABLE_NAME = "GameData";
-    public static final String DATA_COLUMN_ID = "_id";
     public static final String DATA_COLUMN_ENTRY_NAME = "Name";
     public static final String DATA_COLUMN_ENTRY_VALUE = "Value";
 
     public static final String PROPERTY_TABLE_NAME = "Owned";
-    public static final String PROPERTY_COLUMN_ID = "_id";
     public static final String PROPERTY_COLUMN_SHARE = "Share";
     public static final String PROPERTY_COLUMN_AMOUNT = "Amount";
 
@@ -67,7 +69,6 @@ public class MemoryDB extends SQLiteOpenHelper {
     public static final String SHORT_COLUMN_TOTAL_SETTLE_DAYS = "totalDays";
 
     public static final String MESSAGE_TABLE_NAME = "Messages";
-    public static final String MESSAGE_COLUMN_ID = "_id";
     public static final String MESSAGE_COLUMN_TITLE = "title";
     public static final String MESSAGE_COLUMN_BODY = "body";
     public static final String MESSAGE_COLUMN_END_DAY = "endday";
@@ -90,7 +91,7 @@ public class MemoryDB extends SQLiteOpenHelper {
 
         db.execSQL(
                 "CREATE TABLE " + MESSAGE_TABLE_NAME + "(" +
-                        MESSAGE_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        ALL_TABLES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         MESSAGE_COLUMN_TITLE + " TEXT, " +
                         MESSAGE_COLUMN_BODY + " TEXT, " +
                         MESSAGE_COLUMN_END_DAY + " INTEGER " +
@@ -98,8 +99,18 @@ public class MemoryDB extends SQLiteOpenHelper {
         );
 
         db.execSQL(
+                "CREATE TABLE " + SCAMS_TABLE_NAME + "(" +
+                        ALL_TABLES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        SCAMS_COLUMN_SID + " INTEGER, " +
+                        SCAMS_COLUMN_TYPE + " INTEGER, " +
+                        SCAMS_COLUMN_RESOLUTION_DAY + " INTEGER " +
+                        " FOREIGN KEY (" + SCAMS_COLUMN_SID + ") REFERENCES " + SHARES_TABLE_NAME + "(" + SHARES_COLUMN_SID + ")" +
+                        ");"
+        );
+
+        db.execSQL(
                 "CREATE TABLE " + COMPANIES_TABLE_NAME + "(" +
-                        COMPANIES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        ALL_TABLES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         COMPANIES_COLUMN_NAME + " CHAR(4), " +
                         COMPANIES_COLUMN_TOTAL_VALUE + " INTEGER, " +
                         COMPANIES_COLUMN_CURRENT_VALUE + " INTEGER, " +
@@ -118,7 +129,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         //The game data table will include Player money, assets, fame, as well as economy size and various other numeric values not belonging to companies, shares or outlooks.
         db.execSQL(
                 "CREATE TABLE " + DATA_TABLE_NAME + "(" +
-                        DATA_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        ALL_TABLES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         DATA_COLUMN_ENTRY_NAME + " TEXT, " +
                         DATA_COLUMN_ENTRY_VALUE + " REAL " +
                         ");"
@@ -126,7 +137,7 @@ public class MemoryDB extends SQLiteOpenHelper {
 
         db.execSQL(
                 "CREATE TABLE " + OUTLOOK_TABLE_NAME + "(" +
-                        OUTLOOK_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        ALL_TABLES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         OUTLOOK_COLUMN_NAME + " TEXT, " +
                         OUTLOOK_COLUMN_OUTLOOK + " REAL " +
                         ");"
@@ -134,7 +145,7 @@ public class MemoryDB extends SQLiteOpenHelper {
 
         db.execSQL(
                 "CREATE TABLE " + SHARES_TABLE_NAME + "(" +
-                        SHARES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        ALL_TABLES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         SHARES_COLUMN_NAME + " CHAR(4), " +
                         SHARES_COLUMN_SID + " INTEGER, " +
                         SHARES_COLUMN_CURRENT_PRICE + " INTEGER, " +
@@ -146,7 +157,7 @@ public class MemoryDB extends SQLiteOpenHelper {
 
         db.execSQL(
                 "CREATE TABLE " + PROPERTY_TABLE_NAME + "(" +
-                        PROPERTY_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        ALL_TABLES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         PROPERTY_COLUMN_SHARE + " CHAR(4), " +
                         PROPERTY_COLUMN_AMOUNT + " INTEGER, " +
                         " FOREIGN KEY (" + PROPERTY_COLUMN_SHARE + ") REFERENCES " + SHARES_TABLE_NAME + "(" + SHARES_COLUMN_SID + ")" +
@@ -155,7 +166,7 @@ public class MemoryDB extends SQLiteOpenHelper {
 
         db.execSQL(
                 "CREATE TABLE " + SHORT_TABLE_NAME + "(" +
-                        PROPERTY_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        ALL_TABLES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         SHORT_COLUMN_SID + " INTEGER, " +
                         SHORT_COLUMN_AMOUNT + " INTEGER, " +
                         SHORT_COLUMN_TOTAL_SETTLE_DAYS + " INTEGER, " +
@@ -167,7 +178,54 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("ALTER TABLE " + SHARES_TABLE_NAME + " ADD COLUMN " + SHARES_COLUMN_REMAINING_SHARES + " INTEGER default 30000;");
+    }
+
+    public void addScam(int sid, int type, int totalDays){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(SCAMS_COLUMN_SID, sid);
+        values.put(SCAMS_COLUMN_TYPE, type);
+        values.put(SCAMS_COLUMN_RESOLUTION_DAY, totalDays);
+        db.insert(SCAMS_TABLE_NAME, null, values);
+        db.close();
+    }
+
+    public int getScamsNo(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where 1;", null);
+        c.moveToFirst();
+        return c.getCount();
+    }
+
+    public int[] getScamSIDs(){
+        int[] ids = new int[getScamsNo()];
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where 1;", null);
+        c.moveToFirst();
+
+        for (int i = 0; i < ids.length; i++) {
+            ids[i] = c.getInt(c.getColumnIndex(SCAMS_COLUMN_SID));
+            c.moveToNext();
+        }
+
+        return ids;
+    }
+
+    public int getScamType(int sid){
+        int type=0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where " + SCAMS_COLUMN_SID + "=" + sid + ";", null);
+        if(c.moveToFirst()) type=c.getInt(c.getColumnIndex(SCAMS_COLUMN_TYPE));
+        return type;
+    }
+
+    public int getScamResolutionDay(int sid){
+        int days = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where " + SCAMS_COLUMN_SID + "=" + sid + ";", null);
+        if(c.moveToFirst()) days=c.getInt(c.getColumnIndex(SCAMS_COLUMN_RESOLUTION_DAY));
+        return days;
     }
 
     public int getMessagesNumber(){
@@ -175,10 +233,10 @@ public class MemoryDB extends SQLiteOpenHelper {
         int temp;
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select "+ MESSAGE_COLUMN_ID + " from " + MESSAGE_TABLE_NAME + " where 1;", null);
+        Cursor c =  db.rawQuery("select "+ ALL_TABLES_COLUMN_ID + " from " + MESSAGE_TABLE_NAME + " where 1;", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
-            temp = c.getInt(c.getColumnIndex(MESSAGE_COLUMN_ID));
+            temp = c.getInt(c.getColumnIndex(ALL_TABLES_COLUMN_ID));
             if(temp>max) max = temp;
             c.moveToNext();
         }
@@ -208,7 +266,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         int[][] Messages = new int[2][c.getCount()];
         int i = 0;
         while (!c.isAfterLast()){
-            Messages[0][i] = c.getInt(c.getColumnIndex(MESSAGE_COLUMN_ID));
+            Messages[0][i] = c.getInt(c.getColumnIndex(ALL_TABLES_COLUMN_ID));
             Messages[1][i] = c.getInt(c.getColumnIndex(MESSAGE_COLUMN_END_DAY)) - currentDay;
             c.moveToNext();
             i++;
@@ -253,13 +311,6 @@ public class MemoryDB extends SQLiteOpenHelper {
     public void clearDoneMessages(int CurrentDay){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM " + MESSAGE_TABLE_NAME + "WHERE " + MESSAGE_COLUMN_END_DAY +" = " +CurrentDay+ ";" ;
-        db.execSQL(query);
-        db.close();
-    }
-
-    public void removeCompany(String name){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "DELETE FROM " + COMPANIES_TABLE_NAME + "WHERE " + COMPANIES_COLUMN_NAME +" = \"" +name+ "\";" ;
         db.execSQL(query);
         db.close();
     }
@@ -444,7 +495,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         int last = 0;
         double temp = 0;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select "+COMPANIES_COLUMN_OUTLOOK+" from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
+        Cursor c =  db.rawQuery("select " + COMPANIES_COLUMN_OUTLOOK + " from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
             temp = c.getDouble(c.getColumnIndex(COMPANIES_COLUMN_OUTLOOK));
@@ -519,6 +570,13 @@ public class MemoryDB extends SQLiteOpenHelper {
     public void setRemShares(int sid, int amount){
         SQLiteDatabase db2 = this.getWritableDatabase();
         String query = "UPDATE " + SHARES_TABLE_NAME + " SET " + SHARES_COLUMN_REMAINING_SHARES + "=" + amount + " WHERE " + SHARES_COLUMN_SID +" = " +sid+";";
+        db2.execSQL(query);
+        db2.close();
+    }
+
+    public void setCompRevenue(int sid, int amount){
+        SQLiteDatabase db2 = this.getWritableDatabase();
+        String query = "UPDATE " + COMPANIES_TABLE_NAME + " SET " + COMPANIES_COLUMN_REVENUE + "=" + amount + " WHERE " + COMPANIES_COLUMN_CID +" = " +sid+";";
         db2.execSQL(query);
         db2.close();
     }
@@ -1173,5 +1231,38 @@ public class MemoryDB extends SQLiteOpenHelper {
         String query = "UPDATE " + COMPANIES_TABLE_NAME + " SET " + COMPANIES_COLUMN_OUTLOOK + "=" + newO + " WHERE " + COMPANIES_COLUMN_NAME +" = \"" +name+ "\" ;";
         db.execSQL(query);
         db.close();
+    }
+
+    public int getRandomActiveSID() {
+        int sid = 0;
+        Random random = new Random();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + SHARES_TABLE_NAME + " where 1;", null);
+        int n;
+        do {
+            n = random.nextInt(c.getCount());
+        } while (n <= 0) ;
+
+        c.moveToFirst();
+        while (n>0){
+            c.moveToNext();
+            n--;
+        }
+        sid = c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
+        c.close();
+        db.close();
+        return sid;
+    }
+
+    public boolean isScam(int sid){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where " + SCAMS_COLUMN_SID + "=" +sid+";", null);
+        return c.getCount()>0;
+    }
+
+    public int getNumofCompanies(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + SHARES_TABLE_NAME + " where 1;", null);
+        return c.getCount();
     }
 }
