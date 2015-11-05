@@ -16,10 +16,12 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class MessagesActivity extends AppCompatActivity {
 
     boolean playSound;
-
+    static ArrayList MessagesText = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,31 +29,35 @@ public class MessagesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_messages);
         Bundle data = getIntent().getExtras();
         playSound = data.getBoolean("playsound");
-        //TODO Retrieve Messages table from data Bundle and replace Dummy table
-        final String[] Messages;
-        final String[] Titles;
-        int No = data.getInt("Number");
 
-        if(No==0) {
-            No = 12;
-            Messages =  new String[No];
-            Titles = new String[No];
-            for (int i = 0; i < Messages.length; i++) {
-                Titles[i] = "AVKVNDSKDJVN " + (i+1);
-                Messages[i] = "akjcnskj jeffckhcbak ijaicban iancnddl " + (i+1);
+        MainActivity.EconomyState state = MainActivity.getEconomyState();
+        if(state!= MainActivity.EconomyState.Normal){
+            String str = "The economy is ";
+            switch (state){
+                case Boom:
+                    str+="Booming. The goverment officials report that the economy is Booming, and great profit is to be made in the foreseable future, in all Industries.";
+                    break;
+                case Accel:
+                    str+="Accelarating. The goverment officials report that the future of our economy is bright, and companies can expect above average profits.";
+                    break;
+                case Recess:
+                    str+="destabilizing. The goverment officials report that the economy not doing very well, and companies should steer carefully to avoid losses.";
+                    break;
+                case Depres:
+                    str+="in depression and goverment officials are discussing possible actions to help the economy recover.";
+                    break;
+            }
+            MessagesText.add(str);
+        }
+
+        if(MainActivity.Events.size()!=0) {
+            for (Event event : MainActivity.Events) {
+                MessagesText.add(getMessageString(event.getType(), event.getMagnitude()));
             }
         } else {
-            No--;
-            Titles = new String[No];
-            Messages = new String[No];
-            String[] Titles2 = data.getStringArray("Titles");
-            String[] Messages2 = data.getStringArray("Bodies");
-
-            for(int i=0;i<Messages.length;i++){
-                Titles[i] = Titles2[i];
-                Messages[i] = Messages2[i];
-            }
+            MessagesText.add("There are no Event Messages at this point.");
         }
+
 
         Button BackButton = (Button)findViewById(R.id.BackButton);
         BackButton.setOnClickListener(new View.OnClickListener() {
@@ -62,9 +68,10 @@ public class MessagesActivity extends AppCompatActivity {
         });
 
         ListView listview = (ListView)findViewById(R.id.MessageView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.text_simple_whiteonblack, R.id.WhiteOnBlack, Titles);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.text_simple_whiteonblack, R.id.WhiteOnBlack, MessagesText);
         listview.setAdapter(adapter);
 
+/*
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -81,6 +88,7 @@ public class MessagesActivity extends AppCompatActivity {
                 alert.show();
             }
         });
+*/
     }
 
 
@@ -112,4 +120,35 @@ public class MessagesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private String getMessageString(int type, int magnitude) {
+        String str = "";
+
+        str += "There are reports of ";
+        if(magnitude>75)str+="a great ";
+        else if(magnitude>=45)str+="a medium-sized " ;
+        else str+="a small ";
+        switch(type){
+            case 1:
+                str+="Earthquake in the area.";
+                break;
+            case 2:
+                str+="Typhoon in the area.";
+                break;
+            case 3:
+                str+="Explosion in the area.";
+                break;
+            case 4:
+                str+="Riot in the area.";
+                break;
+            case 5:
+                str+="enemy invasion in our territory.";
+                break;
+            default:
+                str+="Earthquake in the area.";
+                break;
+        }
+        str+=" The events will affect companies of multiple Industries.";
+
+        return str;
+    }
 }

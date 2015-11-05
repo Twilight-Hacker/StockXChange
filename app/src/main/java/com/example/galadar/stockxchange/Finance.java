@@ -1,5 +1,7 @@
 package com.example.galadar.stockxchange;
 
+import com.example.galadar.stockxchange.Company.Sectors;
+
 import java.util.HashSet;
 import java.util.Random;
 
@@ -9,7 +11,7 @@ import java.util.Random;
 public class Finance {
 
     long EconomySize;
-    double[][] outlooks;
+    private double[][] outlooks;
     HashSet CompaniesNames;
     HashSet Scams;
     int[][] ScamResolution;
@@ -65,10 +67,13 @@ public class Finance {
             Names[i]=name;
         }
 
-        outlooks = new double[Company.Sectors.values().length][2];
+        outlooks = new double[Sectors.values().length+1][2];
 
-        for (int i = 0; i < outlooks.length ; i++) {
-            outlooks[i][0] = DBHandler.getOutlook(Company.Sectors.values()[i].toString());
+        outlooks[0][0]=DBHandler.getEconomyOutlook();
+        outlooks[0][1]=0;
+
+        for (int i = 1; i < outlooks.length ; i++) {
+            outlooks[i][0] = DBHandler.getOutlook(Sectors.values()[i].toString());
             outlooks[i][1] = 0;
         }
 
@@ -98,6 +103,10 @@ public class Finance {
 
     public void resetAllScams(){ //For QuickGame Usage
 
+    }
+
+    public int getNumOfOutlooks(){
+        return outlooks.length+1;
     }
 
     public int getRemShares(int id){
@@ -145,11 +154,14 @@ public class Finance {
             }
         }
 
-        outlooks = new double[Company.Sectors.values().length][2];
+        outlooks = new double[Sectors.values().length+1][2];
 
-        for(int i=0;i<outlooks.length;i++){
+        outlooks[0][0]=DBHandler.getEconomyOutlook();
+        outlooks[0][1]=0;
+
+        for(int i=1;i<=outlooks.length;i++){
             outlooks[i][0] = Math.random()*2-1;
-            DBHandler.setOutlook(Company.Sectors.values()[i].toString(), outlooks[i][0]);
+            DBHandler.setOutlook(Sectors.values()[i].toString(), outlooks[i][0]);
             outlooks[i][1]=0;
         }
 
@@ -274,7 +286,7 @@ public class Finance {
     }
 
     public String getCompSector(int id){
-        return Company.Sectors.values()[Companies[id][1]].toString();
+        return Sectors.values()[Companies[id][1]].toString();
     }
 
     public int getCompRevenue(int id){
@@ -298,7 +310,8 @@ public class Finance {
     }
 
     public double getSectorOutlook(int i){
-        return outlooks[i][0]+outlooks[i][1];
+        if(Math.abs(outlooks[i][0]+outlooks[i][1])<=2)return outlooks[i][0]+outlooks[i][1];
+        else return Math.signum(outlooks[i][0]+outlooks[i][1])*2;
     }
 
     public double getBaseSectorOutlook(int i){
@@ -388,5 +401,42 @@ public class Finance {
     public void Backrupt(int i) {
         setCompTotalValue(i, 0);
         setShareCurrPrice(i, 0);
+    }
+
+    public int getSectorOutlookIndex(String Sector){
+        int index = -1;
+        switch (Sector){
+            case "Constr":
+                index=1;
+                break;
+            case "Transp":
+                index=2;
+                break;
+            case "Oil":
+                index=3;
+                break;
+            case "Tech":
+                index=4;
+                break;
+            case "Food":
+                index=5;
+                break;
+            case "Telecom":
+                index=6;
+                break;
+            case "Defence":
+                index=7;
+                break;
+            case "Entert":
+                index=8;
+                break;
+            case "Educ":
+                index=9;
+                break;
+            case "Tourism":
+                index=10;
+                break;
+        }
+        return index;
     }
 }

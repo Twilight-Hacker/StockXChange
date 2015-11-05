@@ -41,16 +41,22 @@ public class MainActivity extends AppCompatActivity {
     static TextView topBarPlayer;
     static TextView topBarDaytime;
     static Thread upd;
-    static int[][] Messages;
+    static int eventGen;
+    static ArrayList<Event> Events = new ArrayList<>();
     static boolean playSound;
     static boolean dayOpen = false;
     static boolean gaming = false;
     static int infoGen;
     static long nextInvite;
     static ArrayList Infos = new ArrayList();
+    public enum EconomyState{Normal, Accel, Boom, Recess, Depres}
+    static EconomyState state;
     static String[] News = new String[2]; //News[0] is for title, News[1] is for body (~250 characters)
     static int NewsPriority = 0; //Something with lower news priority cannot change the news. There is only one news at a time. Priority: min=0, max=100.
 
+    public static EconomyState getEconomyState(){
+        return state;
+    }
 
     public static Finance getFinance(){
         return f;
@@ -91,15 +97,45 @@ public class MainActivity extends AppCompatActivity {
 
         playSound = DBHandler.PlaySound();
         infoGen=0;
+        eventGen=DBHandler.getEventGen();
         String q = "There are no info tips at this point";
         Infos.add(q);
 
-        //Retrieve / Generate invitation, event and other messages
-        Messages = new int[100][2];
-        for(int i=0; i<Messages.length;i++){
-            Messages[i][0]=-1;
-            Messages[i][1]=-1;
+        state = getEconomyState(f.getSectorOutlook(0));
+
+        switch (state){ //SetUp Current GGE
+            case Boom:
+                for(int i=1;i<f.getNumOfOutlooks();i++){
+                    f.setSectorEventOutlook(i, 1);
+                }
+                break;
+            case Accel:
+                for(int i=1;i<f.getNumOfOutlooks();i++){
+                    f.setSectorEventOutlook(i, 0.5);
+                }
+                break;
+            case Recess:
+                for(int i=1;i<f.getNumOfOutlooks();i++){
+                    f.setSectorEventOutlook(i, -0.5);
+                }
+                break;
+            case Depres:
+                for(int i=1;i<f.getNumOfOutlooks();i++){
+                    f.setSectorEventOutlook(i, -1);
+                }
+                break;
+            default:
+                break;
         }
+
+        Events=DBHandler.retrieveEvents(time.totalDays());
+
+        if(Events.size()!=0) {
+            for (Event event : Events) {
+                alterOutlooks(event.getType(), event.getMagnitude());
+            }
+        }
+        //Retrieve / Generate invitation, event and other messages
 
         topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
         topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
@@ -136,8 +172,8 @@ public class MainActivity extends AppCompatActivity {
         if(nextInvite==0){
             DBHandler.setNextInviteTime(System.currentTimeMillis()+82800000);
         } else if(System.currentTimeMillis()>=nextInvite){
-            DBHandler.setNextInviteTime(System.currentTimeMillis()+82800000);
             callInvite(p.getLevel());
+            DBHandler.setNextInviteTime(System.currentTimeMillis() + 82800000);
         }
 
         LocalBroadcastManager.getInstance(this).registerReceiver(DayStartedMessageRec, new IntentFilter("DayStarted"));
@@ -161,6 +197,15 @@ public class MainActivity extends AppCompatActivity {
 
         gaming = true;
         upd.start();
+    }
+
+
+    private EconomyState getEconomyState(double EconomyOutlook) {
+        if(EconomyOutlook>0.75)return EconomyState.Boom;
+        if(EconomyOutlook>0.5)return EconomyState.Accel;
+        if(EconomyOutlook<-0.5)return EconomyState.Recess;
+        if(EconomyOutlook<-0.75)return EconomyState.Depres;
+        return EconomyState.Normal;
     }
 
     private void resetNews(){
@@ -455,6 +500,12 @@ public class MainActivity extends AppCompatActivity {
                     f.ShortShare(i, DBHandler.getShortAmount(i), DBHandler.getShortDays(i));
                 }
             }
+            eventGen += random.nextInt(100);
+            if(eventGen>=1000){
+                generateEvent();
+                eventGen=0;
+            }
+            DBHandler.setEventGen(eventGen);
             dayOpen = true;
             UpdateCommandsUI();
 
@@ -534,6 +585,73 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private void generateEvent() {
+        Random random = new Random();
+        int type = random.nextInt(5)+1;
+        int magnitude = random.nextInt(70)+31;
+        Event event = new Event(type, magnitude);
+        Events.add(event);
+        DBHandler.addEvent(event, time.totalDays(event.getDuration()));
+        alterOutlooks(event.getType(), event.getMagnitude());
+    }
+
+    public void alterOutlooks(int type, int magnitude){
+        switch (type){
+            case 1: //Earthquake
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Constr"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Defence"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Educ"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Entert"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Food"), -2*(double)magnitude/100);
+                editNews(45+(int)Math.round((double)magnitude/10), "Earthquake", "An EarthQuake of Magnitude "+(double)magnitude/10+" has been reported.");
+                break;
+            case 2: //Typhoon
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Constr"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Telecom"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Oil"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Transp"), -2*(double)magnitude/100);
+                editNews(50+(int)Math.floor(magnitude/20), "Typhoon", "A Typhoon of Category "+(int)Math.floor(magnitude/20)+" has been reported");
+                break;
+            case 3: //Explosion
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Constr"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Defence"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Tech"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Entert"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Tourism"), -2*(double)magnitude/100);
+                editNews(15+magnitude, "Explosion", "An explosion has been reported. The authorities are investigating the causes");
+                break;
+            case 4: //Riots
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Defence"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Telecom"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Tech"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Food"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Oil"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Entert"), -2*(double)magnitude/100);
+                editNews(10+(int)Math.round(magnitude/2), "Riots", "There are reports of riots in the city center. Citizens are advised to avoid the area.");
+                break;
+            case 5: //War
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Defence"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Tech"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Oil"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex( "Constr"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex( "Transp"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex( "Food"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex( "Telecom"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex( "Entert"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex( "Educ"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex( "Tourism"), -2*(double)magnitude/100);
+                editNews(150, "WAR", "An invasion on our territory signals the start of a War. All armed forces have mobilized to deal with the invasion.");
+                break;
+            default: //Unknown event, assume eartquake
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Constr"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Defence"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Educ"), 2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Entert"), -2*(double)magnitude/100);
+                f.setSectorEventOutlook(f.getSectorOutlookIndex("Food"), -2*(double)magnitude/100);
+                editNews(45 + (int) Math.round((double) magnitude / 10), "Earthquake", "An EarthQuake of Magnitude " + (double) magnitude / 10 + " has been reported.");
+        }
+    }
+
     public static int getLinnearRN(int maxSize){
         //Get a linearly multiplied random number
         int randomMultiplier = maxSize * (maxSize + 1) / 2;
@@ -561,6 +679,7 @@ public class MainActivity extends AppCompatActivity {
                 case 2: {
                     priceMoney=-25000;
                     prizeAssets+=2;
+                    setUpGGEs(state, 1);
                     break;
                 }
                 case 3: {
@@ -752,6 +871,19 @@ public class MainActivity extends AppCompatActivity {
             dayOpen = false;
             Toast.makeText(MainActivity.this, "Day Ended", Toast.LENGTH_SHORT).show();
             f.DayCloseShares();
+            for(int i=0; i<=DBHandler.getMaxSID();i++) {
+                DBHandler.DayCloseShare(i, f.getLastClose(i));
+            }
+
+            for(Event event:Events){
+                event.dayEnded();
+                if(event.eventEnded()){
+                    alterOutlooks(event.getType(), -event.getMagnitude());
+                    Events.remove(event);
+                }
+            }
+
+            DBHandler.ClearCompleteEvents(time.totalDays());
 
             if(time.totalDays()%2==0) {//Infos cleared every 2 days
                 Infos.clear();
@@ -838,16 +970,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, MessagesActivity.class);
         Bundle data = new Bundle();
         data.putBoolean("playsound", playSound);
-        String[][] Messages = DBHandler.getMessageDetails();
-        if(Messages!=null) {
-            data.putInt("Number", Messages[0].length);
-            data.putStringArray("Titles", Messages[0]);
-            data.putStringArray("Bodies", Messages[1]);
-        } else {
-            data.putInt("Number", 0);
-            data.putStringArray("Titles", null);
-            data.putStringArray("Bodies", null);
-        }
         intent.putExtras(data);
         startActivity(intent);
     }
@@ -878,6 +1000,8 @@ public class MainActivity extends AppCompatActivity {
             progdialog.show();
 
             //new companies added directly to DB (temp table for QuickGame)
+
+            double PreveconomyOutlook=f.getSectorOutlook(0);
 
             int revenue, TotVal, newInv, oldPerc, newPerc, newFame;
             double divident;
@@ -944,8 +1068,8 @@ public class MainActivity extends AppCompatActivity {
                     DBHandler.addCompany(c, f.getNumComp() + newCompCounter);
                     Share s = new Share(name, f.getNumComp() + newCompCounter, c.shareStart(), c.getTotalShares());
                     DBHandler.addShare(s);
-                    f.outlooks[0][0] += (double)c.getTotalValue()/f.getEconomySize();
-                    f.outlooks[i][0] -= (double)c.getTotalValue()/f.getEconomySize();
+                    f.setSectorOutlook(0, (double)c.getTotalValue()/f.getEconomySize());
+                    f.setSectorOutlook(i, -(double)c.getTotalValue()/f.getEconomySize());
                 }
                 DBHandler.setOutlook(Company.Sectors.values()[i-1].toString(), f.getBaseSectorOutlook(i));
                 DBHandler.setOutlook("economy", f.getBaseSectorOutlook(0));
@@ -956,12 +1080,12 @@ public class MainActivity extends AppCompatActivity {
                 if(DBHandler.getCompPercValue(f.getName(i))<-80){
                     DBHandler.setCompTotValue(f.getName(i), 0);
                     DBHandler.setDBCurrPrice(i, 0);
-                    f.outlooks[0][0] -= (double)f.getCompTotalValue(i)/f.getEconomySize();
-                    f.outlooks[i][0] += (double)f.getCompTotalValue(i)/f.getEconomySize();
+                    f.setSectorOutlook(0,  - (double)f.getCompTotalValue(i)/f.getEconomySize());
+                    f.setSectorOutlook(i, (double)f.getCompTotalValue(i)/f.getEconomySize());
                     NumOfBankrupties++;
                 }
-                DBHandler.setOutlook(Company.Sectors.values()[i-1].toString(), f.outlooks[i][0]);
-                DBHandler.setOutlook("economy", f.outlooks[0][0]);
+                DBHandler.setOutlook(Company.Sectors.values()[i-1].toString(), f.getBaseSectorOutlook(i));
+                DBHandler.setOutlook("economy", f.getBaseSectorOutlook(0));
             }
 
             progdialog.incrementProgressBy(25);
@@ -996,10 +1120,15 @@ public class MainActivity extends AppCompatActivity {
 
             progdialog.incrementProgressBy(15);
 
+            double oldO = f.getSectorOutlook(0);
             double newO = r.nextDouble()*0.2*(double)(newEcon-oldEcon)/oldEcon;
             if(Math.abs(newO)>1) newO = Math.signum(newO);
             f.setSectorOutlook(0, newO);
             DBHandler.setOutlook("economy", newO);
+
+
+            setUpGGEs(state, newO);
+
 
             for (int i = 0; i < Company.Sectors.values().length; i++) {
                 newO = f.getBaseSectorOutlook(i)*(double)SecEconSizes[i]/newEcon;
@@ -1032,16 +1161,13 @@ public class MainActivity extends AppCompatActivity {
             int currScams=DBHandler.getScamsNo();
             int[] ids = DBHandler.getScamSIDs();
             int sid;
-            int j;
             int type;
             int totalDays;
-            boolean go;
             int[] days = new int[currScams+newScams];
             for (int i = 0; i < days.length; i++) {
                 days[i]=DBHandler.getScamResolutionDay(ids[i]);
             }
             for (int i = 0; i < newScams; i++) {
-                go=true;
                 do{
                     sid = DBHandler.getRandomActiveSID();
                 } while(!f.addScam(sid));
@@ -1069,6 +1195,157 @@ public class MainActivity extends AppCompatActivity {
             gaming = true;
         }
     };
+
+    private void setUpGGEs(EconomyState Currstate, double newEconomyOutlook) {
+        switch (Currstate){
+            case Normal:
+                if(newEconomyOutlook>0.75) {
+                    state = EconomyState.Boom;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, 1);
+                    }
+                    editNews(100, "Economic Boom", "The goverment officials report that the economy is Booming, and great profit is to be made in the foreseable future, in all Industries.");
+                } else if(newEconomyOutlook>0.5){
+                    state = EconomyState.Accel;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, 0.5);
+                    }
+                    editNews(100, "Economy Accelerates", "The goverment officials report that the future of our economy is bright, and companies can expect above average profits.");
+                } else if(newEconomyOutlook<-0.5){
+                    state = EconomyState.Recess;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, -0.5);
+                    }
+                    editNews(100, "Economic Reccess", "The goverment officials report that the economy not doing very well, and companies should steer carefully to avoid losses.");
+                } else if(newEconomyOutlook<-0.75){
+                    state = EconomyState.Depres;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, -1);
+                    }
+                    editNews(100, "Depression", "Economy is going from bad to worse, and goverment officials are discussing possible actions to help the economy recover.");
+                } else {
+                    state = EconomyState.Normal;
+                }
+                break;
+            case Accel:
+                if(newEconomyOutlook>0.75) {
+                    state = EconomyState.Boom;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, 0.5);
+                    }
+                    editNews(100, "Economic Boom", "The goverment officials report that the economy is Booming, and great profit is to be made in the foreseable future, in all Industries.");
+                } else if(newEconomyOutlook>0.5){
+                    state = EconomyState.Accel;
+                    editNews(100, "Economy Accelerates", "The goverment officials report that the future of our economy is bright, and companies can expect above average profits.");
+                } else if(newEconomyOutlook<-0.5){
+                    state = EconomyState.Recess;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, -1);
+                    }
+                    editNews(100, "Economic Reccess", "The goverment officials report that the economy not doing very well, and companies should steer carefully to avoid losses.");
+                } else if(newEconomyOutlook<-0.75){
+                    state = EconomyState.Depres;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, -1.5);
+                    }
+                    editNews(100, "Depression", "Economy is going from bad to worse, and goverment officials are discussing possible actions to help the economy recover.");
+                } else {
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, -0.5);
+                    }
+                    state = EconomyState.Normal;
+                }
+                break;
+            case Boom:
+                if(newEconomyOutlook>0.75) {
+                    state = EconomyState.Boom;
+                    editNews(100, "Economic Boom", "The goverment officials report that the economy is Booming, and great profit is to be made in the foreseable future, in all Industries.");
+                } else if(newEconomyOutlook>0.5){
+                    state = EconomyState.Accel;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, -0.5);
+                    }
+                    editNews(100, "Economy Accelerates", "The goverment officials report that the future of our economy is bright, and companies can expect above average profits.");
+                } else if(newEconomyOutlook<-0.5){
+                    state = EconomyState.Recess;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, -1.5);
+                    }
+                    editNews(100, "Economic Reccess", "The goverment officials report that the economy not doing very well, and companies should steer carefully to avoid losses.");
+                } else if(newEconomyOutlook<-0.75){
+                    state = EconomyState.Depres;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, -2);
+                    }
+                    editNews(100, "Depression", "Economy is going from bad to worse, and goverment officials are discussing possible actions to help the economy recover.");
+                } else {
+                    state = EconomyState.Normal;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, -1);
+                    }
+                }
+                break;
+            case Recess:
+                if(newEconomyOutlook>0.75) {
+                    state = EconomyState.Boom;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, 1.5);
+                    }
+                    editNews(100, "Economic Boom", "The goverment officials report that the economy is Booming, and great profit is to be made in the foreseable future, in all Industries.");
+                } else if(newEconomyOutlook>0.5){
+                    state = EconomyState.Accel;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, 1);
+                    }
+                    editNews(100, "Economy Accelerates", "The goverment officials report that the future of our economy is bright, and companies can expect above average profits.");
+                } else if(newEconomyOutlook<-0.5){
+                    state = EconomyState.Recess;
+                    editNews(100, "Economic Reccess", "The goverment officials report that the economy not doing very well, and companies should steer carefully to avoid losses.");
+                } else if(newEconomyOutlook<-0.75){
+                    state = EconomyState.Depres;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, -0.5);
+                    }
+                    editNews(100, "Depression", "Economy is going from bad to worse, and goverment officials are discussing possible actions to help the economy recover.");
+                } else {
+                    state = EconomyState.Normal;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, 0.5);
+                    }
+                }
+                break;
+            case Depres:
+                if(newEconomyOutlook>0.75) {
+                    state = EconomyState.Boom;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, 2);
+                    }
+                    editNews(100, "Economic Boom", "The goverment officials report that the economy is Booming, and great profit is to be made in the foreseable future, in all Industries.");
+                } else if(newEconomyOutlook>0.5){
+                    state = EconomyState.Accel;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, 1.5);
+                    }
+                    editNews(100, "Economy Accelerates", "The goverment officials report that the future of our economy is bright, and companies can expect above average profits.");
+                } else if(newEconomyOutlook<-0.5){
+                    state = EconomyState.Recess;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, 0.5);
+                    }
+                    editNews(100, "Economic Reccess", "The goverment officials report that the economy not doing very well, and companies should steer carefully to avoid losses.");
+                } else if(newEconomyOutlook<-0.75){
+                    state = EconomyState.Depres;
+                    editNews(100, "Depression", "Economy is going from bad to worse, and goverment officials are discussing possible actions to help the economy recover.");
+                } else {
+                    state = EconomyState.Normal;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, 1);
+                    }
+                }
+                break;
+        }
+
+    }
 
     private long taxes() {
         long tax1 = Math.round((p.getLevel()*0.05)*p.getMoney());

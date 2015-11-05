@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -68,10 +69,10 @@ public class MemoryDB extends SQLiteOpenHelper {
     public static final String SHORT_COLUMN_AMOUNT = "amount";
     public static final String SHORT_COLUMN_TOTAL_SETTLE_DAYS = "totalDays";
 
-    public static final String MESSAGE_TABLE_NAME = "Messages";
-    public static final String MESSAGE_COLUMN_TITLE = "title";
-    public static final String MESSAGE_COLUMN_BODY = "body";
-    public static final String MESSAGE_COLUMN_END_DAY = "endday";
+    public static final String EVENTS_TABLE_NAME = "Events";
+    public static final String EVENTS_COLUMN_TYPE = "title";
+    public static final String EVENTS_COLUMN_MAGNITUDE = "body";
+    public static final String EVENTS_COLUMN_END_DAY = "endday";
 
 
     public static synchronized MemoryDB getInstance(Context context){
@@ -89,14 +90,6 @@ public class MemoryDB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL(
-                "CREATE TABLE " + MESSAGE_TABLE_NAME + "(" +
-                        ALL_TABLES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        MESSAGE_COLUMN_TITLE + " TEXT, " +
-                        MESSAGE_COLUMN_BODY + " TEXT, " +
-                        MESSAGE_COLUMN_END_DAY + " INTEGER " +
-                        ");"
-        );
 
         db.execSQL(
                 "CREATE TABLE " + SCAMS_TABLE_NAME + "(" +
@@ -228,24 +221,6 @@ public class MemoryDB extends SQLiteOpenHelper {
         return days;
     }
 
-    public int getMessagesNumber(){
-        int max = 0;
-        int temp;
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select "+ ALL_TABLES_COLUMN_ID + " from " + MESSAGE_TABLE_NAME + " where 1;", null);
-        c.moveToFirst();
-        while (!c.isAfterLast()){
-            temp = c.getInt(c.getColumnIndex(ALL_TABLES_COLUMN_ID));
-            if(temp>max) max = temp;
-            c.moveToNext();
-        }
-        c.close();
-        db.close();
-
-        return max;
-    }
-
     public void storeDay(int day, int term){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + day + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"day\" ;";
@@ -255,74 +230,17 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int[][] getMessages(int currentDay){
-        int No = getMessagesNumber();
-        if(No==0) return null;
-
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select * from " + MESSAGE_TABLE_NAME + " where 1;", null);
-        c.moveToFirst();
-        int[][] Messages = new int[2][c.getCount()];
-        int i = 0;
-        while (!c.isAfterLast()){
-            Messages[0][i] = c.getInt(c.getColumnIndex(ALL_TABLES_COLUMN_ID));
-            Messages[1][i] = c.getInt(c.getColumnIndex(MESSAGE_COLUMN_END_DAY)) - currentDay;
-            c.moveToNext();
-            i++;
-        }
-        c.close();
-        db.close();
-
-        return Messages;
-    }
-
-    public String[][] getMessageDetails(){
-        int No = getMessagesNumber();
-        if(No==0) return null;
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select * from " + MESSAGE_TABLE_NAME + " where 1;", null);
-        c.moveToFirst();
-        String[][] Messages = new String[2][c.getCount()];
-        int i = 0;
-        while (!c.isAfterLast()){
-            Messages[0][i] = c.getString(c.getColumnIndex(MESSAGE_COLUMN_TITLE));
-            Messages[1][i] = c.getString(c.getColumnIndex(MESSAGE_COLUMN_BODY));
-            c.moveToNext();
-            i++;
-        }
-        c.close();
-        db.close();
-
-        return Messages;
-    }
-
-    public int publishMessage(Message message, int CurrentDay){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(MESSAGE_COLUMN_TITLE, message.getTitle());
-        values.put(MESSAGE_COLUMN_BODY, message.getBody());
-        values.put(MESSAGE_COLUMN_END_DAY, message.getDuration() + CurrentDay);
-        db.insert(MESSAGE_TABLE_NAME, null, values);
-        return getMessagesNumber();
-    }
-
-    public void clearDoneMessages(int CurrentDay){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "DELETE FROM " + MESSAGE_TABLE_NAME + "WHERE " + MESSAGE_COLUMN_END_DAY +" = " +CurrentDay+ ";" ;
-        db.execSQL(query);
-        db.close();
-    }
 
     public void clearALL(SQLiteDatabase db){
-        db.execSQL("DROP TABLE " + MESSAGE_TABLE_NAME + ";");
+        db.execSQL("DROP TABLE " + EVENTS_TABLE_NAME + ";");
         db.execSQL("DROP TABLE " + COMPANIES_TABLE_NAME + ";");
         db.execSQL("DROP TABLE " + DATA_TABLE_NAME + ";");
         db.execSQL("DROP TABLE " + OUTLOOK_TABLE_NAME + ";");
         db.execSQL("DROP TABLE " + PROPERTY_TABLE_NAME + ";");
         db.execSQL("DROP TABLE " + SHORT_TABLE_NAME + ";");
         db.execSQL("DROP TABLE " + SHARES_TABLE_NAME + ";");
+        onCreate(db);
+        PrepGame(0, Company.Sectors.values());
     }
 
     public void SellShare(int sid, int NewAmount, long newCash){
@@ -458,7 +376,8 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     public void setOutlook(String name, double outlook){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + OUTLOOK_TABLE_NAME + " SET " + OUTLOOK_COLUMN_OUTLOOK + "=" + outlook + " WHERE " + OUTLOOK_COLUMN_NAME +" = \"" +name+ "\";" ;
+        int IntOutlook = (int)Math.round(outlook*100);
+        String query = "UPDATE " + OUTLOOK_TABLE_NAME + " SET " + OUTLOOK_COLUMN_OUTLOOK + "=" + IntOutlook + " WHERE " + OUTLOOK_COLUMN_NAME +" = \"" +name+ "\";" ;
         db.execSQL(query);
         db.close();
     }
@@ -474,6 +393,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         }
         c.close();
         db.close();
+        last = (double)last/100;
         return last;
     }
 
@@ -891,6 +811,9 @@ public class MemoryDB extends SQLiteOpenHelper {
         values.put(DATA_COLUMN_ENTRY_NAME, "nextInvite");
         values.put(DATA_COLUMN_ENTRY_VALUE, 0);
         db.insert(DATA_TABLE_NAME, null, values);
+        values.put(DATA_COLUMN_ENTRY_NAME, "eventGen");
+        values.put(DATA_COLUMN_ENTRY_VALUE, 0);
+        db.insert(DATA_TABLE_NAME, null, values);
 
         values = new ContentValues();
         values.put(OUTLOOK_COLUMN_NAME, "economy");
@@ -906,6 +829,29 @@ public class MemoryDB extends SQLiteOpenHelper {
 
         db.close();
 
+    }
+
+    public int getEventGen(){
+        int gen = 0;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"eventGen\" ;", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            gen = c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+
+        return gen;
+    }
+
+    public void setEventGen(int gen){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + gen + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"eventGen\" ;";
+        db.execSQL(query);
+        db.close();
     }
 
     public boolean PlaySound(){
@@ -951,7 +897,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + OUTLOOK_TABLE_NAME + " WHERE 1;");
         db.execSQL("DELETE FROM " + SHORT_TABLE_NAME + " WHERE 1;");
         db.execSQL("DELETE FROM " + SHARES_TABLE_NAME + " WHERE 1;");
-        db.execSQL("DELETE FROM " + MESSAGE_TABLE_NAME + " WHERE 1;");
+        db.execSQL("DELETE FROM " + EVENTS_TABLE_NAME + " WHERE 1;");
     }
 
 
@@ -987,6 +933,22 @@ public class MemoryDB extends SQLiteOpenHelper {
         return level;
     }
 
+    public double getEconomyOutlook() {
+        long level = 0;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"economy\" ;", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            level = c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+
+        return (double)level/100;
+    }
+
     public int getMaxSID(){
         int max = 0;
         int temp = 0;
@@ -1009,6 +971,14 @@ public class MemoryDB extends SQLiteOpenHelper {
     public void setLevel(int newLevel){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + newLevel + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"level\" ;";
+        db.execSQL(query);
+        db.close();
+    }
+
+    public void setEconomyOutlook(double newOut){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int outlook = (int)Math.round(newOut*100);
+        String query = "UPDATE " + DATA_TABLE_NAME + " SET " + DATA_COLUMN_ENTRY_VALUE + "=" + outlook + " WHERE " + DATA_COLUMN_ENTRY_NAME +" = \"economy\" ;";
         db.execSQL(query);
         db.close();
     }
@@ -1264,5 +1234,41 @@ public class MemoryDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select * from " + SHARES_TABLE_NAME + " where 1;", null);
         return c.getCount();
+    }
+
+    public void addEvent(Event event, int totalDays) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(EVENTS_COLUMN_TYPE, event.getType());
+        values.put(EVENTS_COLUMN_MAGNITUDE, event.getMagnitude());
+        values.put(EVENTS_COLUMN_END_DAY, totalDays);
+        db.insert(EVENTS_TABLE_NAME, null, values);
+        db.close();
+    }
+
+    public ArrayList<Event> retrieveEvents(int currentDay) {
+        ArrayList<Event> Events = new ArrayList<>();
+
+        int type, magnitude, remDays;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + EVENTS_TABLE_NAME + " where 1;", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            type = c.getInt(c.getColumnIndex(EVENTS_COLUMN_TYPE));
+            magnitude = c.getInt(c.getColumnIndex(EVENTS_COLUMN_MAGNITUDE));
+            remDays = c.getInt(c.getColumnIndex(EVENTS_COLUMN_END_DAY))-currentDay;
+            Events.add(new Event(type, magnitude, remDays));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+        return Events;
+    }
+
+    public void ClearCompleteEvents(int Totalday) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM " + EVENTS_TABLE_NAME + " WHERE " + SHORT_COLUMN_TOTAL_SETTLE_DAYS + " = " + Totalday + ";";
+        db.execSQL(query);
+        db.close();
     }
 }

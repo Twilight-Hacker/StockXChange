@@ -65,94 +65,66 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.6451613">
-              <caret line="469" column="230" selection-start-line="469" selection-start-column="230" selection-end-line="469" selection-end-column="230" />
+            <state vertical-scroll-proportion="-7.479762">
+              <caret line="681" column="29" selection-start-line="681" selection-start-column="20" selection-end-line="681" selection-end-column="29" />
               <folding>
-                <element signature="e#1890#1891#0" expanded="true" />
-                <element signature="e#1914#1915#0" expanded="true" />
-                <element signature="e#1953#1954#0" expanded="true" />
-                <element signature="e#1980#1981#0" expanded="true" />
-                <element signature="e#11153#11154#0" expanded="true" />
-                <element signature="e#11193#11194#0" expanded="true" />
-                <element signature="e#16573#22573#0" expanded="true" />
-                <element signature="e#22572#22573#0" expanded="true" />
-                <element signature="e#27749#28822#0" expanded="true" />
-                <element signature="e#28821#28822#0" expanded="true" />
-                <element signature="e#35483#46048#0" expanded="true" />
-                <element signature="e#35805#35832#0" expanded="true" />
-                <element signature="e#35869#35904#0" expanded="true" />
-                <element signature="e#46047#46048#0" expanded="true" />
-                <element signature="e#52179#52872#0" expanded="true" />
-                <element signature="e#52871#52872#0" expanded="true" />
-                <element signature="e#52916#53135#0" expanded="true" />
-                <element signature="e#53134#53135#0" expanded="true" />
+                <element signature="e#2048#2049#0" expanded="true" />
+                <element signature="e#2076#2077#0" expanded="true" />
+                <element signature="e#2117#2118#0" expanded="true" />
+                <element signature="e#2141#2142#0" expanded="true" />
+                <element signature="e#2180#2181#0" expanded="true" />
+                <element signature="e#2207#2208#0" expanded="true" />
+                <element signature="e#2374#2375#0" expanded="true" />
+                <element signature="e#2420#2421#0" expanded="true" />
+                <element signature="e#4999#5653#0" expanded="true" />
+                <element signature="e#5652#5653#0" expanded="true" />
+                <element signature="e#7072#7275#0" expanded="true" />
+                <element signature="e#7274#7275#0" expanded="true" />
+                <element signature="e#8743#9106#0" expanded="true" />
+                <element signature="e#9105#9106#0" expanded="true" />
+                <element signature="e#9155#9374#0" expanded="true" />
+                <element signature="e#9373#9374#0" expanded="true" />
+                <element signature="e#12695#12696#0" expanded="true" />
+                <element signature="e#12735#12736#0" expanded="true" />
+                <element signature="e#12782#13105#0" expanded="true" />
+                <element signature="e#13104#13105#0" expanded="true" />
+                <element signature="e#18115#24312#0" expanded="true" />
+                <element signature="e#24311#24312#0" expanded="true" />
+                <element signature="e#30026#31269#0" expanded="true" />
+                <element signature="e#31268#31269#0" expanded="true" />
+                <element signature="e#32904#34721#0" expanded="true" />
+                <element signature="e#34720#34721#0" expanded="true" />
+                <element signature="e#34784#35857#0" expanded="true" />
+                <element signature="e#35856#35857#0" expanded="true" />
+                <element signature="e#35914#37167#0" expanded="true" />
+                <element signature="e#37166#37167#0" expanded="true" />
+                <element signature="e#37218#37420#0" expanded="true" />
+                <element signature="e#37419#37420#0" expanded="true" />
+                <element signature="e#37614#40953#0" expanded="true" />
+                <element signature="e#39260#39965#0" expanded="true" />
+                <element signature="e#39964#39965#0" expanded="true" />
+                <element signature="e#40952#40953#0" expanded="true" />
+                <element signature="e#42555#53236#0" expanded="true" />
+                <element signature="e#42877#42904#0" expanded="true" />
+                <element signature="e#42941#42976#0" expanded="true" />
+                <element signature="e#46267#46465#0" expanded="true" />
+                <element signature="e#46464#46465#0" expanded="true" />
+                <element signature="e#53235#53236#0" expanded="true" />
+                <element signature="e#68573#69266#0" expanded="true" />
+                <element signature="e#69265#69266#0" expanded="true" />
+                <element signature="e#69310#69529#0" expanded="true" />
+                <element signature="e#69528#69529#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Finance.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Finance.java">
+      <file leaf-file-name="MessagesActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MessagesActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="341" column="5" selection-start-line="341" selection-start-column="5" selection-end-line="341" selection-end-column="5" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#3818#3819#0" expanded="true" />
-                <element signature="e#3854#3855#0" expanded="true" />
-                <element signature="e#3907#3908#0" expanded="true" />
-                <element signature="e#3946#3947#0" expanded="true" />
-                <element signature="e#6343#6344#0" expanded="true" />
-                <element signature="e#6379#6380#0" expanded="true" />
-                <element signature="e#6415#6416#0" expanded="true" />
-                <element signature="e#6454#6455#0" expanded="true" />
-                <element signature="e#6495#6496#0" expanded="true" />
-                <element signature="e#6534#6535#0" expanded="true" />
-                <element signature="e#6572#6573#0" expanded="true" />
-                <element signature="e#6624#6625#0" expanded="true" />
-                <element signature="e#6857#6858#0" expanded="true" />
-                <element signature="e#6893#6894#0" expanded="true" />
-                <element signature="e#6929#6930#0" expanded="true" />
-                <element signature="e#6961#6962#0" expanded="true" />
-                <element signature="e#6999#7000#0" expanded="true" />
-                <element signature="e#7035#7036#0" expanded="true" />
-                <element signature="e#7607#7608#0" expanded="true" />
-                <element signature="e#7663#7664#0" expanded="true" />
-                <element signature="e#7715#7716#0" expanded="true" />
-                <element signature="e#7771#7772#0" expanded="true" />
-                <element signature="e#8048#8049#0" expanded="true" />
-                <element signature="e#8085#8086#0" expanded="true" />
-                <element signature="e#8125#8126#0" expanded="true" />
-                <element signature="e#8161#8162#0" expanded="true" />
-                <element signature="e#8293#8294#0" expanded="true" />
-                <element signature="e#8329#8330#0" expanded="true" />
-                <element signature="e#8372#8373#0" expanded="true" />
-                <element signature="e#8411#8412#0" expanded="true" />
-                <element signature="e#8465#8466#0" expanded="true" />
-                <element signature="e#8504#8505#0" expanded="true" />
-                <element signature="e#8757#8758#0" expanded="true" />
-                <element signature="e#8799#8800#0" expanded="true" />
-                <element signature="e#8842#8843#0" expanded="true" />
-                <element signature="e#8878#8879#0" expanded="true" />
-                <element signature="e#8921#8922#0" expanded="true" />
-                <element signature="e#8973#8974#0" expanded="true" />
-                <element signature="e#9132#9133#0" expanded="true" />
-                <element signature="e#9184#9185#0" expanded="true" />
-                <element signature="e#9232#9233#0" expanded="true" />
-                <element signature="e#9269#9270#0" expanded="true" />
-                <element signature="e#9328#9329#0" expanded="true" />
-                <element signature="e#9367#9368#0" expanded="true" />
-                <element signature="e#9431#9432#0" expanded="true" />
-                <element signature="e#9471#9472#0" expanded="true" />
-                <element signature="e#9509#9510#0" expanded="true" />
-                <element signature="e#9555#9556#0" expanded="true" />
-                <element signature="e#10021#10022#0" expanded="true" />
-                <element signature="e#10074#10075#0" expanded="true" />
-                <element signature="e#10105#10106#0" expanded="true" />
-                <element signature="e#10135#10136#0" expanded="true" />
-                <element signature="e#10607#10608#0" expanded="true" />
-                <element signature="e#10645#10646#0" expanded="true" />
-              </folding>
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -160,12 +132,12 @@
       <file leaf-file-name="MemoryDB.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MemoryDB.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="577" column="56" selection-start-line="577" selection-start-column="56" selection-end-line="577" selection-end-column="56" />
+            <state vertical-scroll-proportion="-21.205883">
+              <caret line="1271" column="19" selection-start-line="1271" selection-start-column="19" selection-end-line="1271" selection-end-column="19" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3818#3819#0" expanded="true" />
-                <element signature="e#3883#3884#0" expanded="true" />
+                <element signature="e#3844#3845#0" expanded="true" />
+                <element signature="e#3909#3910#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1625,7 +1597,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/main_share.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Share.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_share.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Message.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/menu/menu_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/WelcomeActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_company.xml" />
@@ -1636,7 +1607,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/ShareActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Update.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/CompanyActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MessagesActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/EconomyInfoActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Company.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/PlayerInfoActivity.java" />
@@ -1663,7 +1633,10 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_sell.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Scam.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Finance.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Message.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Event.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MemoryDB.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MessagesActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java" />
       </list>
     </option>
@@ -2091,16 +2064,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2230,13 +2193,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Message.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7285714">
-          <caret line="25" column="33" selection-start-line="25" selection-start-column="32" selection-end-line="25" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Update.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.6010101">
@@ -2249,13 +2205,6 @@
         <state vertical-scroll-proportion="-3.321549">
           <caret line="22" column="21" selection-start-line="22" selection-start-column="16" selection-end-line="22" selection-end-column="21" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MessagesActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.513468">
-          <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -2300,14 +2249,6 @@
             <element signature="e#221#222#0" expanded="false" />
             <element signature="e#249#250#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Company.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="63" selection-start-line="16" selection-start-column="63" selection-end-line="16" selection-end-column="63" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2418,16 +2359,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="184" column="0" selection-start-line="184" selection-start-column="0" selection-end-line="184" selection-end-column="0" />
-          <folding>
-            <element signature="e#2835#3150#0" expanded="true" />
-            <element signature="e#3149#3150#0" expanded="true" />
-            <element signature="e#3189#3700#0" expanded="true" />
-            <element signature="e#3699#3700#0" expanded="true" />
-            <element signature="e#3738#4473#0" expanded="true" />
-            <element signature="e#4472#4473#0" expanded="true" />
-            <element signature="e#4512#5249#0" expanded="true" />
-            <element signature="e#5248#5249#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2481,8 +2412,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="125" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
           <folding>
-            <element signature="e#2252#2744#0" expanded="true" />
-            <element signature="e#2743#2744#0" expanded="true" />
+            <element signature="e#2252#2744#0" expanded="false" />
+            <element signature="e#2743#2744#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2551,13 +2482,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3440476">
           <caret line="17" column="25" selection-start-line="17" selection-start-column="25" selection-end-line="17" selection-end-column="25" />
-          <folding>
-            <element signature="e#366#367#0" expanded="false" />
-            <element signature="e#394#395#0" expanded="false" />
-            <element signature="e#421#422#0" expanded="false" />
-            <element signature="e#458#459#0" expanded="false" />
-            <element signature="e#494#495#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2565,109 +2489,128 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3325062">
           <caret line="268" column="46" selection-start-line="268" selection-start-column="38" selection-end-line="268" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Company.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3325062">
+          <caret line="67" column="25" selection-start-line="67" selection-start-column="19" selection-end-line="67" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Finance.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Message.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="341" column="5" selection-start-line="341" selection-start-column="5" selection-end-line="341" selection-end-column="5" />
+          <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3818#3819#0" expanded="true" />
-            <element signature="e#3854#3855#0" expanded="true" />
-            <element signature="e#3907#3908#0" expanded="true" />
-            <element signature="e#3946#3947#0" expanded="true" />
-            <element signature="e#6343#6344#0" expanded="true" />
-            <element signature="e#6379#6380#0" expanded="true" />
-            <element signature="e#6415#6416#0" expanded="true" />
-            <element signature="e#6454#6455#0" expanded="true" />
-            <element signature="e#6495#6496#0" expanded="true" />
-            <element signature="e#6534#6535#0" expanded="true" />
-            <element signature="e#6572#6573#0" expanded="true" />
-            <element signature="e#6624#6625#0" expanded="true" />
-            <element signature="e#6857#6858#0" expanded="true" />
-            <element signature="e#6893#6894#0" expanded="true" />
-            <element signature="e#6929#6930#0" expanded="true" />
-            <element signature="e#6961#6962#0" expanded="true" />
-            <element signature="e#6999#7000#0" expanded="true" />
-            <element signature="e#7035#7036#0" expanded="true" />
-            <element signature="e#7607#7608#0" expanded="true" />
-            <element signature="e#7663#7664#0" expanded="true" />
-            <element signature="e#7715#7716#0" expanded="true" />
-            <element signature="e#7771#7772#0" expanded="true" />
-            <element signature="e#8048#8049#0" expanded="true" />
-            <element signature="e#8085#8086#0" expanded="true" />
-            <element signature="e#8125#8126#0" expanded="true" />
-            <element signature="e#8161#8162#0" expanded="true" />
-            <element signature="e#8293#8294#0" expanded="true" />
-            <element signature="e#8329#8330#0" expanded="true" />
-            <element signature="e#8372#8373#0" expanded="true" />
-            <element signature="e#8411#8412#0" expanded="true" />
-            <element signature="e#8465#8466#0" expanded="true" />
-            <element signature="e#8504#8505#0" expanded="true" />
-            <element signature="e#8757#8758#0" expanded="true" />
-            <element signature="e#8799#8800#0" expanded="true" />
-            <element signature="e#8842#8843#0" expanded="true" />
-            <element signature="e#8878#8879#0" expanded="true" />
-            <element signature="e#8921#8922#0" expanded="true" />
-            <element signature="e#8973#8974#0" expanded="true" />
-            <element signature="e#9132#9133#0" expanded="true" />
-            <element signature="e#9184#9185#0" expanded="true" />
-            <element signature="e#9232#9233#0" expanded="true" />
-            <element signature="e#9269#9270#0" expanded="true" />
-            <element signature="e#9328#9329#0" expanded="true" />
-            <element signature="e#9367#9368#0" expanded="true" />
-            <element signature="e#9431#9432#0" expanded="true" />
-            <element signature="e#9471#9472#0" expanded="true" />
-            <element signature="e#9509#9510#0" expanded="true" />
-            <element signature="e#9555#9556#0" expanded="true" />
-            <element signature="e#10021#10022#0" expanded="true" />
-            <element signature="e#10074#10075#0" expanded="true" />
-            <element signature="e#10105#10106#0" expanded="true" />
-            <element signature="e#10135#10136#0" expanded="true" />
-            <element signature="e#10607#10608#0" expanded="true" />
-            <element signature="e#10645#10646#0" expanded="true" />
+            <element signature="e#396#397#0" expanded="true" />
+            <element signature="e#424#425#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Event.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7488095">
+          <caret line="39" column="32" selection-start-line="39" selection-start-column="32" selection-end-line="39" selection-end-column="32" />
+          <folding>
+            <element signature="e#548#549#0" expanded="true" />
+            <element signature="e#575#576#0" expanded="true" />
+            <element signature="e#608#609#0" expanded="true" />
+            <element signature="e#640#641#0" expanded="true" />
+            <element signature="e#732#733#0" expanded="true" />
+            <element signature="e#763#764#0" expanded="true" />
+            <element signature="e#797#798#0" expanded="true" />
+            <element signature="e#836#837#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MemoryDB.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="577" column="56" selection-start-line="577" selection-start-column="56" selection-end-line="577" selection-end-column="56" />
+        <state vertical-scroll-proportion="-21.205883">
+          <caret line="1271" column="19" selection-start-line="1271" selection-start-column="19" selection-end-line="1271" selection-end-column="19" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3818#3819#0" expanded="true" />
-            <element signature="e#3883#3884#0" expanded="true" />
+            <element signature="e#3844#3845#0" expanded="true" />
+            <element signature="e#3909#3910#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/Finance.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.66997516">
+          <caret line="313" column="65" selection-start-line="313" selection-start-column="65" selection-end-line="313" selection-end-column="65" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#9812#9813#0" expanded="true" />
+            <element signature="e#9852#9853#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MessagesActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/galadar/stockxchange/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.6451613">
-          <caret line="469" column="230" selection-start-line="469" selection-start-column="230" selection-end-line="469" selection-end-column="230" />
+        <state vertical-scroll-proportion="-7.479762">
+          <caret line="681" column="29" selection-start-line="681" selection-start-column="20" selection-end-line="681" selection-end-column="29" />
           <folding>
-            <element signature="e#1890#1891#0" expanded="true" />
-            <element signature="e#1914#1915#0" expanded="true" />
-            <element signature="e#1953#1954#0" expanded="true" />
-            <element signature="e#1980#1981#0" expanded="true" />
-            <element signature="e#11153#11154#0" expanded="true" />
-            <element signature="e#11193#11194#0" expanded="true" />
-            <element signature="e#16573#22573#0" expanded="true" />
-            <element signature="e#22572#22573#0" expanded="true" />
-            <element signature="e#27749#28822#0" expanded="true" />
-            <element signature="e#28821#28822#0" expanded="true" />
-            <element signature="e#35483#46048#0" expanded="true" />
-            <element signature="e#35805#35832#0" expanded="true" />
-            <element signature="e#35869#35904#0" expanded="true" />
-            <element signature="e#46047#46048#0" expanded="true" />
-            <element signature="e#52179#52872#0" expanded="true" />
-            <element signature="e#52871#52872#0" expanded="true" />
-            <element signature="e#52916#53135#0" expanded="true" />
-            <element signature="e#53134#53135#0" expanded="true" />
+            <element signature="e#2048#2049#0" expanded="true" />
+            <element signature="e#2076#2077#0" expanded="true" />
+            <element signature="e#2117#2118#0" expanded="true" />
+            <element signature="e#2141#2142#0" expanded="true" />
+            <element signature="e#2180#2181#0" expanded="true" />
+            <element signature="e#2207#2208#0" expanded="true" />
+            <element signature="e#2374#2375#0" expanded="true" />
+            <element signature="e#2420#2421#0" expanded="true" />
+            <element signature="e#4999#5653#0" expanded="true" />
+            <element signature="e#5652#5653#0" expanded="true" />
+            <element signature="e#7072#7275#0" expanded="true" />
+            <element signature="e#7274#7275#0" expanded="true" />
+            <element signature="e#8743#9106#0" expanded="true" />
+            <element signature="e#9105#9106#0" expanded="true" />
+            <element signature="e#9155#9374#0" expanded="true" />
+            <element signature="e#9373#9374#0" expanded="true" />
+            <element signature="e#12695#12696#0" expanded="true" />
+            <element signature="e#12735#12736#0" expanded="true" />
+            <element signature="e#12782#13105#0" expanded="true" />
+            <element signature="e#13104#13105#0" expanded="true" />
+            <element signature="e#18115#24312#0" expanded="true" />
+            <element signature="e#24311#24312#0" expanded="true" />
+            <element signature="e#30026#31269#0" expanded="true" />
+            <element signature="e#31268#31269#0" expanded="true" />
+            <element signature="e#32904#34721#0" expanded="true" />
+            <element signature="e#34720#34721#0" expanded="true" />
+            <element signature="e#34784#35857#0" expanded="true" />
+            <element signature="e#35856#35857#0" expanded="true" />
+            <element signature="e#35914#37167#0" expanded="true" />
+            <element signature="e#37166#37167#0" expanded="true" />
+            <element signature="e#37218#37420#0" expanded="true" />
+            <element signature="e#37419#37420#0" expanded="true" />
+            <element signature="e#37614#40953#0" expanded="true" />
+            <element signature="e#39260#39965#0" expanded="true" />
+            <element signature="e#39964#39965#0" expanded="true" />
+            <element signature="e#40952#40953#0" expanded="true" />
+            <element signature="e#42555#53236#0" expanded="true" />
+            <element signature="e#42877#42904#0" expanded="true" />
+            <element signature="e#42941#42976#0" expanded="true" />
+            <element signature="e#46267#46465#0" expanded="true" />
+            <element signature="e#46464#46465#0" expanded="true" />
+            <element signature="e#53235#53236#0" expanded="true" />
+            <element signature="e#68573#69266#0" expanded="true" />
+            <element signature="e#69265#69266#0" expanded="true" />
+            <element signature="e#69310#69529#0" expanded="true" />
+            <element signature="e#69528#69529#0" expanded="true" />
           </folding>
         </state>
       </provider>
