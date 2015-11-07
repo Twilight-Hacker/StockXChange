@@ -64,4 +64,5 @@ public class Gamer {
     public void alterFame(int alteration) {
         this.fame += fame;
     }
+
 }

@@ -24,7 +24,80 @@ public class Finance {
     int numComp;
 
 
-    public Finance(MemoryDB DBHandler){
+    public Finance(int size) { //Quick Game Constructor
+        numComp = size*10;
+        Companies = new int[numComp][6];
+        Shares = new int[numComp][5];
+        Names = new String[numComp];
+        Short = new int[numComp][2];
+        CompaniesNames = new HashSet();
+        Scams = new HashSet();
+        ScamResolution = new int[numComp][2];
+        for(int i=0;i<numComp;i++){
+            String name = randomName();
+            boolean go = CompaniesNames.add(name);
+            if(go) {
+                company = new Company(name);
+                share = new Share(name, i, company.shareStart(), company.getTotalShares());
+                Names[i]=name;
+                Companies[i][0] = company.getTotalValue()*100;
+                Companies[i][1] = company.getSectorInt();
+                Companies[i][2] = company.getRevenue();
+                Companies[i][3] = company.get10000Outlook();
+                Companies[i][4] = company.getLastRevenue();
+                Companies[i][5] = company.getInvestment();
+                Shares[i][0] = share.getCurrentSharePrice();
+                Shares[i][1] = 0; //Amount Owned
+                Shares[i][2] = company.getTotalShares();
+                Shares[i][3] = share.getPrevDayClose();
+                Shares[i][4] = Math.round(share.getTotalShares() / 2);
+                Short[i][0] = 0; //Amount to Settle
+                Short[i][1] = -1; //Remaining days
+                ScamResolution[i][0]=0;
+                ScamResolution[i][1]=-1;
+            } else {
+                i--;
+            }
+        }
+
+        outlooks = new double[Sectors.values().length+1][2];
+
+        outlooks[0][0]=0;
+        outlooks[0][1]=0;
+
+        for(int i=1;i<outlooks.length;i++){
+            outlooks[i][0] = Math.random()*2-1;
+            outlooks[i][1]=0;
+        }
+
+        Random random = new Random();
+
+        int newScams = random.nextInt(10)+5;
+        int sid;
+        int type;
+        int totalDays;
+        for (int i = 0; i < newScams; i++) {
+            do{
+                sid=random.nextInt(getNumComp()-1);
+            } while(!addScam(sid));
+
+            double e = random.nextDouble(); //5 is current total Number of Categories, from 1 to 5, see MainActivity Scam Resolution Function for details.
+
+            if(e<0.1) type = 1;                     //Ponzi Scheme
+            else if (e<=0.3) type = 2;              //Pump&Dump
+            else if (e<=0.5) type = 3;              //Short&Distort
+            else if (e<0.6) type = 4;               //Empty Room
+            else type =5;                           //Lawbreaker Scandal
+
+            totalDays=random.nextInt(30)+25;
+            addScamData(sid, type, totalDays);
+        }
+
+        this.EconomySize = calcEconomySize();
+
+    }
+
+    public Finance(MemoryDB DBHandler){ //Loaded Game Constructor
         String name;
         int CurrentDay = MainActivity.getClock().totalDays();
         numComp = DBHandler.getMaxSID();
@@ -73,7 +146,7 @@ public class Finance {
         outlooks[0][1]=0;
 
         for (int i = 1; i < outlooks.length ; i++) {
-            outlooks[i][0] = DBHandler.getOutlook(Sectors.values()[i].toString());
+            outlooks[i][0] = DBHandler.getOutlook(Sectors.values()[i-1].toString());
             outlooks[i][1] = 0;
         }
 
@@ -101,23 +174,7 @@ public class Finance {
 
     }
 
-    public void resetAllScams(){ //For QuickGame Usage
-
-    }
-
-    public int getNumOfOutlooks(){
-        return outlooks.length+1;
-    }
-
-    public int getRemShares(int id){
-        return Shares[id][4];
-    }
-
-    public void alterRemShares(int id, int amount){
-        Shares[id][4] -= amount;
-    }
-
-    public Finance(MemoryDB DBHandler, int size) {
+    public Finance(MemoryDB DBHandler, int size) { //New Game Contsructor
         numComp = size*10;
         Companies = new int[numComp][6];
         Shares = new int[numComp][5];
@@ -159,15 +216,16 @@ public class Finance {
         outlooks[0][0]=DBHandler.getEconomyOutlook();
         outlooks[0][1]=0;
 
-        for(int i=1;i<=outlooks.length;i++){
+        for(int i=1;i<outlooks.length;i++){
             outlooks[i][0] = Math.random()*2-1;
-            DBHandler.setOutlook(Sectors.values()[i].toString(), outlooks[i][0]);
+            DBHandler.setOutlook(Sectors.values()[i-1].toString(), outlooks[i][0]);
             outlooks[i][1]=0;
         }
 
         this.EconomySize = calcEconomySize();
 
     }
+
 
     public void ShortShare(int sid, int amount, int Days){
         Short[sid][0]=amount;
@@ -183,6 +241,18 @@ public class Finance {
         } else {
             return 0;
         }
+    }
+
+    public int getNumOfOutlooks(){
+        return outlooks.length+1;
+    }
+
+    public int getRemShares(int id){
+        return Shares[id][4];
+    }
+
+    public void alterRemShares(int id, int amount){
+        Shares[id][4] -= amount;
     }
 
     public int getShortRemainingDays(int SID){
@@ -253,12 +323,6 @@ public class Finance {
 
     public int getScamsNo(){
         return ScamResolution.length;
-    }
-
-    public void clearScam(int sid){
-        Scams.remove(getName(sid));
-        ScamResolution[sid][1]=0;
-        ScamResolution[sid][2]=-1;
     }
 
     public void setShareCurrPrice(int id, int price){
@@ -350,6 +414,10 @@ public class Finance {
 
     }
 
+    public void setInvestment(int id, int newInv){
+        Companies[id][5]=newInv;
+    }
+
     public boolean addCompanyName(String name){
         return !CompaniesNames.contains(name);
     }
@@ -394,6 +462,7 @@ public class Finance {
     }
 
     public void removeScam(int i){
+        Scams.remove(getName(i));
         ScamResolution[i][0]=0;
         ScamResolution[i][1]=-1;
     }

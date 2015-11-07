@@ -37,13 +37,14 @@ android:id="@+id/ActivityShareLayout" >
     </LinearLayout>
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="175dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/shares"
         android:id="@+id/ShareImage"
         android:layout_below="@id/TopBar"
         android:layout_gravity="center"
         android:layout_centerHorizontal="true"
-        android:background="@color/white" />
+        android:background="@color/black" />
 
 
     <RelativeLayout

@@ -1,7 +1,9 @@
 package com.example.galadar.stockxchange;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
@@ -30,7 +32,7 @@ public class CompanyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_company);
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        int CID = data.getInt("CID");
+        final int CID = data.getInt("CID");
         f = MainActivity.getFinance();
         time = MainActivity.getClock();
         playSound = data.getBoolean("playSound");
@@ -61,10 +63,35 @@ public class CompanyActivity extends AppCompatActivity {
         InvestView.setText(Double.toString((double)f.getInvestment(CID)/100));
 
         Button Report = (Button)findViewById(R.id.ScamCheck);
+        Report.setEnabled(assets>0);
         Report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CompanyActivity.this.finish();
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(CompanyActivity.this);
+
+                builder.setTitle("Report a Scam");
+                String q = "Reporting a possible scam to the authorities cancels the scams and all its effects. The report will cost you 1 full asset.\n\nIf there is a Scam, you get the asset back immediately, otherwise you lose it. You are not informed officialy of the investigation result for safety reasons.";
+                builder.setMessage(q);
+                builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        CompanyActivity.this.finish();
+                        MainActivity.callScam(CID);
+                    }
+
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog d = builder.create();
+                d.show();
             }
         });
 
@@ -114,7 +141,7 @@ public class CompanyActivity extends AppCompatActivity {
     }
 
     public void UpdateTopBar(TextView player, TextView daytime){
-        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
+        String TBPlayer = "Lvl "+level+": $"+Double.toString((double)money/100)+" ("+assets+") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());
     }

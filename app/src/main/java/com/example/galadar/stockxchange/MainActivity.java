@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -49,10 +50,13 @@ public class MainActivity extends AppCompatActivity {
     static int infoGen;
     static long nextInvite;
     static ArrayList Infos = new ArrayList();
+    static MediaPlayer soundplayer;
+
     public enum EconomyState{Normal, Accel, Boom, Recess, Depres}
     static EconomyState state;
     static String[] News = new String[2]; //News[0] is for title, News[1] is for body (~250 characters)
     static int NewsPriority = 0; //Something with lower news priority cannot change the news. There is only one news at a time. Priority: min=0, max=100.
+    static boolean fullGame;
 
     public static EconomyState getEconomyState(){
         return state;
@@ -81,17 +85,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        DBHandler = MemoryDB.getInstance(getApplicationContext());
+        DBHandler = new MemoryDB(this);
+        fullGame=true;
 
         if(DBHandler.getMaxSID()<1) {
-            f = new Finance(DBHandler, 5);
-            p = new Gamer(DBHandler);
             time = new Daytime(LocalBroadcastManager.getInstance(this.getApplicationContext()));
             DBHandler.PrepGame(0, Company.Sectors.values());
+            f = new Finance(DBHandler, 5);
+            p = new Gamer(DBHandler);
         } else {
+            time = new Daytime(LocalBroadcastManager.getInstance(this.getApplicationContext()), DBHandler.getTerm(), DBHandler.getDay());
             f = new Finance(DBHandler);
             p = new Gamer(DBHandler.getPlayerMoney(), DBHandler.getLevel(), DBHandler.getAssets(), DBHandler.getFame());
-            time = new Daytime(LocalBroadcastManager.getInstance(this.getApplicationContext()), DBHandler.getTerm(), DBHandler.getDay());
             Toast.makeText(this,"Game Loaded", Toast.LENGTH_SHORT).show();
         }
 
@@ -128,7 +133,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        Events=DBHandler.retrieveEvents(time.totalDays());
+        if(fullGame)Events=DBHandler.retrieveEvents(time.totalDays());
+        else {Events = new ArrayList<>();}
 
         if(Events.size()!=0) {
             for (Event event : Events) {
@@ -144,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
         UpdateCentralUI();
 
-        DBHandler.setEconomySize(f.calcEconomySize());
+        if(fullGame)DBHandler.setEconomySize(f.calcEconomySize());
 
         //New thread update time
         final Runnable r = new Runnable() {
@@ -167,10 +173,11 @@ public class MainActivity extends AppCompatActivity {
 
         upd = new Thread(r);
 
-        nextInvite = DBHandler.getNextInviteTime();
+        if(fullGame)nextInvite = DBHandler.getNextInviteTime();
+        else nextInvite = 0;
 
         if(nextInvite==0){
-            DBHandler.setNextInviteTime(System.currentTimeMillis()+82800000);
+            if(fullGame)DBHandler.setNextInviteTime(System.currentTimeMillis()+82800000);
         } else if(System.currentTimeMillis()>=nextInvite){
             callInvite(p.getLevel());
             DBHandler.setNextInviteTime(System.currentTimeMillis() + 82800000);
@@ -191,6 +198,16 @@ public class MainActivity extends AppCompatActivity {
                 resetNews();
             }
         }, new IntentFilter("DayReset"));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(playSound){
+                    soundplayer = MediaPlayer.create(MainActivity.this, R.raw.bell);
+                    soundplayer.start();
+                }
+            }
+        }, new IntentFilter("RingBell"));
 
 
         LocalBroadcastManager.getInstance(this).registerReceiver(AdvanceTime, new IntentFilter("TimeForwarded"));
@@ -225,21 +242,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void callInvite(int level) {
         final int cost = level*(int)Math.round(Math.random() * 300 + 700);
-        final int reward = level*(int)Math.round(Math.random() * 0.03 + 0.07);
+        final int reward = level*(int)Math.round(Math.random() *3 + 7);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Invitation to a party");
-        String q = "You received an Invitation to a party.\nAttending will cost $"+cost+".00 and you will earn "+reward+" assets.\n\nWhat do you want to do?";
+        String q = "You received an Invitation to a party.\nAttending will cost $"+cost+".00 and you will earn "+(double)reward/100+" assets.\n\nWhat do you want to do?";
         builder.setMessage(q);
 
         builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                DBHandler.incAssets(reward);
-                p.setAssets(DBHandler.getAssets());
-                p.alterMoney(cost * 100);
-                DBHandler.setPlayerMoney(p.getMoney());
+                if(fullGame) {
+                    DBHandler.incAssets((double)reward/100);
+                    p.setAssets(DBHandler.getAssets());
+                    p.alterMoney(cost * 100);
+                    DBHandler.setPlayerMoney(p.getMoney());
+                    UpdateTopBar(topBarPlayer, topBarDaytime);
+                }
                 dialog.dismiss();
             }
 
@@ -323,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
             Button Buy = (Button)shareData.findViewById(R.id.BuyButton);
             Buy.setId(300000 + i);
             Buy.setText("Buy");
-            Buy.setEnabled(dayOpen);
+            Buy.setEnabled(dayOpen&(p.getMoney()>0));
             Button Sell = (Button)shareData.findViewById(R.id.SellButton);
             Sell.setId(400000 + i);
             Sell.setText("Sell");
@@ -451,7 +471,7 @@ public class MainActivity extends AppCompatActivity {
         //This automatically adds the info to Infos List, and then returns it;
 
         p.setAssets(p.getAssets()-1);
-        DBHandler.setAssets(p.getAssets());
+        if(fullGame)DBHandler.setAssets(p.getAssets());
 
         String info ="";
         Random r = new Random();
@@ -491,10 +511,10 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < f.getNumComp(); i++) {
                 if(f.getTodaysShort(i)>0){
                     p.alterMoney(f.getTodaysShort(i)*f.getShareCurrPrince(i));
-                    DBHandler.setPlayerMoney(p.getMoney());
+                    if(fullGame)DBHandler.setPlayerMoney(p.getMoney());
                 }
             }
-            DBHandler.ShortSettle(time.totalDays());
+            if(fullGame)DBHandler.ShortSettle(time.totalDays());
             for (int i = 0; i < f.getNumComp(); i++) {
                 if(f.getShortRemainingDays(i)<0){
                     f.ShortShare(i, DBHandler.getShortAmount(i), DBHandler.getShortDays(i));
@@ -505,9 +525,10 @@ public class MainActivity extends AppCompatActivity {
                 generateEvent();
                 eventGen=0;
             }
-            DBHandler.setEventGen(eventGen);
+            if(fullGame)DBHandler.setEventGen(eventGen);
             dayOpen = true;
             UpdateCommandsUI();
+            LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(new Intent("RingBell"));
 
             //Scams are resolved after Day opens
             for (int i = 0; i < f.getScamsNo(); i++) {
@@ -515,8 +536,8 @@ public class MainActivity extends AppCompatActivity {
                     case 1:     //Empty Room (set share price to 0.1, and remaining shares to -total, revenue to - total value)
                         if(f.getScamRemDays(i)==0){
                             f.Backrupt(i);//Bunctrupt company
-                            DBHandler.setDBCurrPrice(i, f.getShareCurrPrince(i));
-                            DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i));
+                            if(fullGame)DBHandler.setDBCurrPrice(i, f.getShareCurrPrince(i));
+                            if(fullGame)DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i));
                             f.removeScam(i);
                             String story = "Company "+f.getName(i)+" suddendly declared bankruptcy today.\n\nThe authorities state that the Company was found to be involved in shady activities, and the CEO was placed under arrest.";
                             editNews(55, "Company Bankrupts", story);
@@ -545,10 +566,10 @@ public class MainActivity extends AppCompatActivity {
                             f.setCompOutlook(i, f.getCompOutlook(i)-5);
                         }
                         if(f.getScamRemDays(i)==0){
-                            f.setCompOutlook(i, f.getCompOutlook(i)+15);
+                            f.setCompOutlook(i, f.getCompOutlook(i) + 15);
                             f.alterRemShares(i, 1581 + random.nextInt(1500));
-                            DBHandler.setCompOutlook(f.getName(i), f.getCompOutlook(i));
-                            DBHandler.setRemShares(i, f.getRemShares(i));
+                            if(fullGame)DBHandler.setCompOutlook(f.getName(i), f.getCompOutlook(i));
+                            if(fullGame)DBHandler.setRemShares(i, f.getRemShares(i));
                             f.removeScam(i);
                             String story = "A Short and Distort scheme was executed today, leaving "+ f.getName(i) +" in a tight situation, counting losses.\n\nLaw enforcement agencies are conducting an investigation to locate the person or persons responsible.";
                             editNews(45, "A company in distress", story);
@@ -557,8 +578,8 @@ public class MainActivity extends AppCompatActivity {
                     case 4:     //Ponzi Scheme (set share price to 0.1, and remaining shares to -total, revenue to - total value)
                         if(f.getScamRemDays(i)==0){
                             f.Backrupt(i);//Bunctrupt company
-                            DBHandler.setDBCurrPrice(i, f.getShareCurrPrince(i));
-                            DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i));
+                            if(fullGame)DBHandler.setDBCurrPrice(i, f.getShareCurrPrince(i));
+                            if(fullGame)DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i));
                             f.removeScam(i);
                             String story = "Company "+f.getName(i)+" suddendly declared bankruptcy today.\n\nThe authorities state that the Company was found to be involved in a Ponzi Scheme, and the CEO was placed under arrest.";
                             editNews(50, "Company Bankrupts", story);
@@ -591,7 +612,7 @@ public class MainActivity extends AppCompatActivity {
         int magnitude = random.nextInt(70)+31;
         Event event = new Event(type, magnitude);
         Events.add(event);
-        DBHandler.addEvent(event, time.totalDays(event.getDuration()));
+        if(fullGame)DBHandler.addEvent(event, time.totalDays(event.getDuration()));
         alterOutlooks(event.getType(), event.getMagnitude());
     }
 
@@ -715,7 +736,7 @@ public class MainActivity extends AppCompatActivity {
         int temp;
         for(int i=0;i<f.getNumComp();i++) {
             if (f.getShareCurrPrince(i) != 0) {
-                temp = getSharesAmount(f.getCompOutlook(i), f.getSectorOutlook(i), f.getRemShares(i), f.getTotalShares(i));
+                temp = getSharesAmount(f.getCompOutlook(i), f.getSectorOutlook(f.getCompSectorInt(i)), f.getRemShares(i), f.getTotalShares(i));
                 if (temp != 0) {
                     Intent intent = new Intent("SharesTransaction");
                     Bundle data = new Bundle();
@@ -764,24 +785,24 @@ public class MainActivity extends AppCompatActivity {
                 f.TransactShares(SID, amount);
                 p.alterMoney(amount*oldPrice);
                 if(amount>0){
-                    DBHandler.BuyShare(SID, amount, p.getMoney());
+                    if(fullGame)DBHandler.BuyShare(SID, amount, p.getMoney());
                 } else {
-                    DBHandler.SellShare(SID, amount, p.getMoney());
+                    if(fullGame)DBHandler.SellShare(SID, amount, p.getMoney());
                 }
             }
 
             f.alterRemShares(SID, amount);
-            DBHandler.setRemShares(SID, f.getRemShares(SID));
+            if(fullGame)DBHandler.setRemShares(SID, f.getRemShares(SID));
 
             double value = (double)f.getCompTotalValue(SID)/100;
             int max = (int)Math.round( value/total );
             int newPrice = oldPrice + (int) Math.round( (1 - (double)remaining/total )*max + Math.random()*50+10 );
 
             f.setShareCurrPrice(SID, newPrice);
-            DBHandler.setDBCurrPrice(SID, newPrice);
+            if(fullGame)DBHandler.setDBCurrPrice(SID, newPrice);
 
             f.UpdateCompRevenue(SID, newPrice - oldPrice);
-            DBHandler.setCompRevenue(SID, f.getCompRevenue(SID));
+            if(fullGame)DBHandler.setCompRevenue(SID, f.getCompRevenue(SID));
 
             Intent intent1 = new Intent("SpecificPriceChange");
             Bundle data1 = new Bundle();
@@ -805,8 +826,8 @@ public class MainActivity extends AppCompatActivity {
             int days = time.totalDays(data.getInt("Days"));
 
             f.ShortShare(SID, amount, days);
-            p.alterMoney(amount*oldPrice);
-            DBHandler.ShortShare(SID, amount, time.totalDays(days), p.getMoney());
+            p.alterMoney(amount * oldPrice);
+            if(fullGame)DBHandler.ShortShare(SID, amount, time.totalDays(days), p.getMoney());
 
             Intent SharesSold = new Intent("SharesTransaction"); //To update prices
             Bundle Sdata = new Bundle();
@@ -856,7 +877,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             playSound = !playSound;
-            DBHandler.setSound(playSound);
+            if(fullGame)DBHandler.setSound(playSound);
         }
     };
 
@@ -865,14 +886,26 @@ public class MainActivity extends AppCompatActivity {
         DT.setText(str);
     }
 
+    public static void callScam(int cid) {
+        if(f.isScam(cid)){
+            f.removeScam(cid);
+            if(fullGame)DBHandler.removeScam(cid);
+        } else {
+            p.setAssets(p.getAssets()-1);
+            if(fullGame)DBHandler.setAssets(p.getAssets());
+        }
+    }
+
     private BroadcastReceiver DayEndedMessageRec = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             dayOpen = false;
-            Toast.makeText(MainActivity.this, "Day Ended", Toast.LENGTH_SHORT).show();
+            LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(new Intent("RingBell"));
             f.DayCloseShares();
-            for(int i=0; i<=DBHandler.getMaxSID();i++) {
-                DBHandler.DayCloseShare(i, f.getLastClose(i));
+            if(fullGame) {
+                for (int i = 0; i <= DBHandler.getMaxSID(); i++) {
+                    DBHandler.DayCloseShare(i, f.getLastClose(i));
+                }
             }
 
             for(Event event:Events){
@@ -883,9 +916,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            DBHandler.ClearCompleteEvents(time.totalDays());
+            if(fullGame)DBHandler.ClearCompleteEvents(time.totalDays());
 
-            if(time.totalDays()%2==0) {//Infos cleared every 2 days
+            if(time.totalDays()%3==0) {//Infos cleared every 2 days
                 Infos.clear();
                 Infos.add("There are no info tips at this point");
             }
@@ -894,7 +927,9 @@ public class MainActivity extends AppCompatActivity {
                 gaming = false;
                 if (p.getAssets() > 0) {
                     p.setAssets(p.getAssets() - 1);
-                    DBHandler.setAssets(p.getAssets());
+                    if(fullGame)DBHandler.setAssets(p.getAssets());
+                    p.setMoney(2500000);
+                    if(fullGame)DBHandler.setPlayerMoney(p.getMoney());
                     Toast.makeText(MainActivity.this, "Used Asset to escape Bankrupty", Toast.LENGTH_SHORT).show();
                 } else {
 
@@ -907,14 +942,17 @@ public class MainActivity extends AppCompatActivity {
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {
-                            DBHandler.clearData();
-                            DBHandler.PrepGame(0, Company.Sectors.values());
-                            f = new Finance(DBHandler, 4);
-                            UpdateCentralUI();
-                            p = new Gamer(DBHandler);
-                            time = new Daytime(LocalBroadcastManager.getInstance(MainActivity.this.getApplicationContext()));
-                            DBHandler.setEconomySize(f.calcEconomySize());
+                            if(fullGame) {
+                                DBHandler.clearData();
+                                DBHandler.PrepGame(0, Company.Sectors.values());
+                                f = new Finance(DBHandler, 4);
+                                UpdateCentralUI();
+                                p = new Gamer(DBHandler);
+                                time = new Daytime(LocalBroadcastManager.getInstance(MainActivity.this.getApplicationContext()));
+                                DBHandler.setEconomySize(f.calcEconomySize());
+                            }
                             dialog.dismiss();
+                            if(!fullGame)ExitClicked();
                         }
 
                     });
@@ -924,15 +962,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 for (int i = 0; i < f.getNumComp(); i++) {
-                    DBHandler.DayCloseShare(i, f.getLastClose(i));
+                    if(fullGame)DBHandler.DayCloseShare(i, f.getLastClose(i));
                 }
                 //Updating DB to show the NEXT day (and possibly term) than the one Just ENDED
                 if (time.getDay() == 60) {
                     time.nextTerm();
-                    DBHandler.storeDay(1, time.getTerm());
+                    if(fullGame)DBHandler.storeDay(1, time.getTerm());
                     LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(new Intent("TermEnded"));
                 } else {
-                    DBHandler.setDay(time.getDay() + 1);
+                    if(fullGame)DBHandler.setDay(time.getDay() + 1);
                 }
             }
             UpdateCommandsUI();
@@ -949,7 +987,7 @@ public class MainActivity extends AppCompatActivity {
         try{
             for (int i = 0; i < f.getNumComp(); i++) {
                 B = (Button) findViewById(300000 + i);
-                B.setEnabled(dayOpen);
+                B.setEnabled(dayOpen & (p.getMoney()>0));
                 B = (Button) findViewById(400000 + i);
                 B.setEnabled(dayOpen & (f.getSharesOwned(i) > 0));
                 if (B.isEnabled()) {
@@ -1011,16 +1049,23 @@ public class MainActivity extends AppCompatActivity {
                 revenue = f.getCompRevenue(i);
                 TotVal = f.getCompTotalValue(i);
 
-                revenue += (int)Math.round( (f.getEconomySize()*DBHandler.getCompMarketShare(f.getName(i))) / (Math.random()*135+45) );
+                double marketShare;
+                if(fullGame)marketShare=DBHandler.getCompMarketShare(f.getName(i));
+                else marketShare = Math.random()*0.5;
+
+                revenue += (int)Math.round( (f.getEconomySize()*marketShare) / (Math.random()*135+45) );
                 double investmentRes = (Math.random()*1.5+0.5)*f.getInvestment(i);          //calculating investment gains
                 revenue +=(int)Math.round(investmentRes);                                   //adding investment gains to revenue
                 revenue -= (int)Math.round( (Math.random()*0.05+0.05)*revenue );            //Remove upkeep costs from revenue
                 revenue -= Math.max( revenue*0.2 , 0);                                      //Remove taxes from remaining revenue
                 newInv = (int)Math.round(revenue*r.nextDouble()*0.2);                       //Calculating new investment based on remaining revenue
-                DBHandler.setCompInvest(f.getName(i), newInv);                              //store to DB
-                oldPerc = DBHandler.getCompPercValue(f.getName(i));                         //Getting Percentage Change in Value
+
+                if(fullGame)DBHandler.setCompInvest(f.getName(i), newInv);                              //store to DB
+                else f.setInvestment(i, newInv);
+                if(fullGame)oldPerc = DBHandler.getCompPercValue(f.getName(i));                         //Getting Percentage Change in Value
+                else oldPerc = 1;
                 newPerc = oldPerc + (int)Math.round((double)revenue/TotVal)*100;            //Calculating new Percentage Change in Value
-                DBHandler.setCompPercValue(f.getName(i), newPerc);                          //Store to DB
+                if(fullGame)DBHandler.setCompPercValue(f.getName(i), newPerc);                          //Store to DB
                 if(newPerc>100 & revenue>f.getShareCurrPrince(i)*f.getTotalShares(i)){      //Decide and Calculate dividents
                     divident = newPerc*(double)f.getShareCurrPrince(i)/100;
                     p.alterMoney(Math.round(divident*f.getSharesOwned(i)));
@@ -1028,12 +1073,14 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     divident=0;
                 }
-                newFame=0;
-                if(divident!=0)newFame+=100;
-                newFame += DBHandler.getCompFame(f.getName(i))*r.nextInt(newPerc);   //Calculate new Fame
-                DBHandler.setCompFame(f.getName(i), newFame);
-                DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i)+revenue);
-                DBHandler.setCompLastRevenue(f.getName(i), revenue);
+                if(fullGame) {
+                    newFame = 0;
+                    if (divident != 0) newFame += 100;
+                    newFame += DBHandler.getCompFame(f.getName(i)) * r.nextInt(newPerc);   //Calculate new Fame
+                    DBHandler.setCompFame(f.getName(i), newFame);
+                    DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i) + revenue);
+                    DBHandler.setCompLastRevenue(f.getName(i), revenue);
+                }
             }
 
             progdialog.incrementProgressBy(25);
@@ -1055,46 +1102,48 @@ public class MainActivity extends AppCompatActivity {
                 d.show();
             }
 
-            DBHandler.setPlayerMoney(p.getMoney()); //Update player money (dividents added)
+            if(fullGame)DBHandler.setPlayerMoney(p.getMoney()); //Update player money (dividents added)
 
-            for (int i = 1; i <= Company.Sectors.values().length; i++) { //Add new Companies
-                while(f.getSectorOutlook(i)>0.6 & (f.getSectorOutlook(i)+f.getSectorOutlook(0))>0){
-                    String name;
-                    do {
-                        name = randomName();
-                    } while (!f.addCompanyName(name));
-                    Company c = new Company(name, Company.Sectors.values()[i-1]);
-                    newCompCounter++;
-                    DBHandler.addCompany(c, f.getNumComp() + newCompCounter);
-                    Share s = new Share(name, f.getNumComp() + newCompCounter, c.shareStart(), c.getTotalShares());
-                    DBHandler.addShare(s);
-                    f.setSectorOutlook(0, (double)c.getTotalValue()/f.getEconomySize());
-                    f.setSectorOutlook(i, -(double)c.getTotalValue()/f.getEconomySize());
+            if(fullGame) {
+                for (int i = 1; i <= Company.Sectors.values().length; i++) { //Add new Companies
+                    while (f.getSectorOutlook(i) > 0.6 & (f.getSectorOutlook(i) + f.getSectorOutlook(0)) > 0) {
+                        String name;
+                        do {
+                            name = randomName();
+                        } while (!f.addCompanyName(name));
+                        Company c = new Company(name, Company.Sectors.values()[i - 1]);
+                        newCompCounter++;
+                        DBHandler.addCompany(c, f.getNumComp() + newCompCounter);
+                        Share s = new Share(name, f.getNumComp() + newCompCounter, c.shareStart(), c.getTotalShares());
+                        DBHandler.addShare(s);
+                        f.setSectorOutlook(0, (double) c.getTotalValue() / f.getEconomySize());
+                        f.setSectorOutlook(i, -(double) c.getTotalValue() / f.getEconomySize());
+                    }
+                    DBHandler.setOutlook(Company.Sectors.values()[i - 1].toString(), f.getBaseSectorOutlook(i));
+                    DBHandler.setOutlook("economy", f.getBaseSectorOutlook(0));
                 }
-                DBHandler.setOutlook(Company.Sectors.values()[i-1].toString(), f.getBaseSectorOutlook(i));
-                DBHandler.setOutlook("economy", f.getBaseSectorOutlook(0));
-            }
 
-            int NumOfBankrupties = 0;
-            for (int i = 0; i < f.getNumComp(); i++) { //Declare Bankrupties
-                if(DBHandler.getCompPercValue(f.getName(i))<-80){
-                    DBHandler.setCompTotValue(f.getName(i), 0);
-                    DBHandler.setDBCurrPrice(i, 0);
-                    f.setSectorOutlook(0,  - (double)f.getCompTotalValue(i)/f.getEconomySize());
-                    f.setSectorOutlook(i, (double)f.getCompTotalValue(i)/f.getEconomySize());
-                    NumOfBankrupties++;
+                int NumOfBankrupties = 0;
+                for (int i = 0; i < f.getNumComp(); i++) { //Declare Bankrupties
+                    if (DBHandler.getCompPercValue(f.getName(i)) < -80) {
+                        DBHandler.setCompTotValue(f.getName(i), 0);
+                        DBHandler.setDBCurrPrice(i, 0);
+                        f.setSectorOutlook(0, -(double) f.getCompTotalValue(i) / f.getEconomySize());
+                        f.setSectorOutlook(i, (double) f.getCompTotalValue(i) / f.getEconomySize());
+                        NumOfBankrupties++;
+                    }
+                    DBHandler.setOutlook(Company.Sectors.values()[i - 1].toString(), f.getBaseSectorOutlook(i));
+                    DBHandler.setOutlook("economy", f.getBaseSectorOutlook(0));
                 }
-                DBHandler.setOutlook(Company.Sectors.values()[i-1].toString(), f.getBaseSectorOutlook(i));
-                DBHandler.setOutlook("economy", f.getBaseSectorOutlook(0));
             }
 
             progdialog.incrementProgressBy(25);
 
             long oldEcon = f.getEconomySize();
-            f = new Finance(DBHandler); //AT this point, the RAM finance tables are updated. All major alterations have been complete (adding and removing companies).
+            if(fullGame)f = new Finance(DBHandler); //AT this point, the RAM finance tables are updated. All major alterations have been complete (adding and removing companies).
 
             f.resetEconomySize();
-            DBHandler.setEconomySize(f.getEconomySize());
+            if(fullGame)DBHandler.setEconomySize(f.getEconomySize());
             long newEcon = f.getEconomySize();
 
             long[] SecEconSizes = new long[Company.Sectors.values().length];
@@ -1105,14 +1154,16 @@ public class MainActivity extends AppCompatActivity {
             double curr, newMS;
             int P, F;
             String name;
-            for (int i = 0; i < DBHandler.getMaxSID(); i++) {
-                name = DBHandler.getDBShareName(i);
-                curr = DBHandler.getCompMarketShare(name);
-                P = DBHandler.getCompPercValue(name);
-                F = DBHandler.getCompFame(name);
+            if(fullGame) {
+                for (int i = 0; i < DBHandler.getMaxSID(); i++) {
+                    name = DBHandler.getDBShareName(i);
+                    curr = DBHandler.getCompMarketShare(name);
+                    P = DBHandler.getCompPercValue(name);
+                    F = DBHandler.getCompFame(name);
 
-                newMS = curr*((double)P/100)*((double)F/500) + ((double)f.getCompTotalValue(i)/f.Companies[i][1]);
-                DBHandler.setCompMarketShare(name, newMS);
+                    newMS = curr * ((double) P / 100) * ((double) F / 500) + ((double) f.getCompTotalValue(i) / f.Companies[i][1]);
+                    DBHandler.setCompMarketShare(name, newMS);
+                }
             }
             //The market share is always positive but does not sum up to 100%, because people may use more than one company in each sector
             //plus verifications and alterations are too difficult at this point, and require direct manipulation on the DB that cannot be implemented safely on a Thread
@@ -1124,7 +1175,7 @@ public class MainActivity extends AppCompatActivity {
             double newO = r.nextDouble()*0.2*(double)(newEcon-oldEcon)/oldEcon;
             if(Math.abs(newO)>1) newO = Math.signum(newO);
             f.setSectorOutlook(0, newO);
-            DBHandler.setOutlook("economy", newO);
+            if(fullGame)DBHandler.setOutlook("economy", newO);
 
 
             setUpGGEs(state, newO);
@@ -1133,7 +1184,8 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < Company.Sectors.values().length; i++) {
                 newO = f.getBaseSectorOutlook(i)*(double)SecEconSizes[i]/newEcon;
                 if(Math.abs(newO)>2) newO = Math.signum(newO)*2;
-                DBHandler.setOutlook(Company.Sectors.values()[i].toString(), newO);
+                if(fullGame)DBHandler.setOutlook(Company.Sectors.values()[i].toString(), newO);
+                else f.setSectorOutlook(i+1, newO);
             }
 
             //Set new market share
@@ -1141,14 +1193,16 @@ public class MainActivity extends AppCompatActivity {
             int nP, nrevenue;
             for (int i = 0; i < f.getNumComp(); i++) {
                 //Market share*Sector outlook + percentage change/100 + Revenue/Economy Size
-                MS = DBHandler.getCompMarketShare(f.getName(i));
-                SO = f.getSectorOutlook(f.getCompSectorInt(i)+1);
-                nP = DBHandler.getCompPercValue(f.getName(i));
+                if(fullGame)MS = DBHandler.getCompMarketShare(f.getName(i));
+                else MS = Math.random()*0.5;
+                SO = f.getSectorOutlook(f.getCompSectorInt(i) + 1);
+                if(fullGame)nP = DBHandler.getCompPercValue(f.getName(i));
+                else nP = 1;
                 nrevenue = f.getLastRevenue(i);
 
                 newOut = MS*SO+ ((double)nP/100) + (double)nrevenue/newEcon;
                 f.setCompOutlook(i, newOut);
-                DBHandler.setCompOutlook(f.getName(i), newOut);
+                if(fullGame)DBHandler.setCompOutlook(f.getName(i), newOut);
             }
 
             progdialog.incrementProgressBy(15);
@@ -1158,18 +1212,23 @@ public class MainActivity extends AppCompatActivity {
             int newScams = random.nextInt(Math.round(f.getNumComp()/10));
             if(newScams<=2)newScams =1;
             if (newScams>=6) newScams =5;               //ADD 1 to 5 Scams
-            int currScams=DBHandler.getScamsNo();
-            int[] ids = DBHandler.getScamSIDs();
+            int currScams;
+            if(fullGame)currScams = DBHandler.getScamsNo();
+            else currScams = f.getScamsNo();
+            int[] ids;
+            if(fullGame)ids = DBHandler.getScamSIDs();
+            else ids=new int[0];
             int sid;
             int type;
             int totalDays;
             int[] days = new int[currScams+newScams];
             for (int i = 0; i < days.length; i++) {
-                days[i]=DBHandler.getScamResolutionDay(ids[i]);
+                if(fullGame)days[i]=DBHandler.getScamResolutionDay(ids[i]);
             }
             for (int i = 0; i < newScams; i++) {
                 do{
-                    sid = DBHandler.getRandomActiveSID();
+                    if(fullGame)sid = DBHandler.getRandomActiveSID();
+                    else sid=random.nextInt(f.getNumComp()-1);
                 } while(!f.addScam(sid));
 
                 double e = random.nextDouble(); //5 is current total Number of Categories, from 1 to 5, see MainActivity Scam Resolution Function for details.
@@ -1182,11 +1241,9 @@ public class MainActivity extends AppCompatActivity {
 
                 totalDays=time.totalDays(random.nextInt(30)+25);
 
-                DBHandler.addScam(sid, type, totalDays);
+                if(fullGame)DBHandler.addScam(sid, type, totalDays);
                 f.addScamData(sid, type, totalDays);
             }
-
-            f.resetAllScams();
             //term update up to here
             //call dialog to report economy size change, number of companies opened and No of companies closed
 
@@ -1482,52 +1539,62 @@ public class MainActivity extends AppCompatActivity {
                 ExitClicked();
                 break;
             case R.id.menu_sound:
+                try {
+                    soundplayer.stop();
+                } catch (NullPointerException e){
+                }
                 playSound = !playSound;
-                DBHandler.setSound(playSound);
+                if(fullGame)DBHandler.setSound(playSound);
                 item.setChecked(playSound);
                 break;
             case R.id.menu_NewGame:
                 SelectNewGame();
+                break;
+            case R.id.About:
+                LoadCredits();
+                break;
+            case R.id.QuickGame:
+                StartQuickGame();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void ExitClicked() {
-        DBHandler.close();
-        upd.interrupt();
-        MainActivity.this.finish();
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
+    private void LoadCredits(){
+        String[] Credits = new String[2];
+        Credits[0] = "Credits";
+        Credits[1] = "This game is the first work created by an independent developer.\nI hope you enjoyed it.\n\nImages come from free stock images sites (like Pixabay).\n\nBell sound by Recorded by Brylon Terry (I only kept the last 5 seconds).\n\nThis game is and will remain free.\n\nIf you liked it, please leave a good review.";
+        Intent intent = new Intent(MainActivity.this, NewsActivity.class);
+        Bundle data = new Bundle();
+        data.putStringArray("NewsArray", Credits);
+        intent.putExtras(data);
+        startActivity(intent);
     }
 
-    private void SelectNewGame(){
+    private void StartQuickGame(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("New Game");
-        String q = "Proceeding will erase all of your data and progress except your full assets. \n\nYou will start again at level 1 with $10000 and nothing owned. \n\nYou will also lose any part-gained assets. \n\nAre you sure you want to proceed?";
+        builder.setTitle("Quick Game");
+        String q = "The quick game option is useful for seeing what a level 5 player is like, and enjoy the full game, without fear of altering the saved data. It is not recomended for new players. Proceed?";
         builder.setMessage(q);
 
-        builder.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 gaming = false;
-                int assets = DBHandler.getAssets();
-                DBHandler.clearData();
-                DBHandler.PrepGame(assets, Company.Sectors.values());
-                f = new Finance(DBHandler, 5);
+                DBHandler.close();
+                fullGame = false;
+                f = new Finance(4);
+                p = new Gamer(500000000, 5, 20, 1000);
                 UpdateCentralUI();
-                p = new Gamer(DBHandler);
-                time = new Daytime(LocalBroadcastManager.getInstance(MainActivity.this.getApplicationContext()));
-                DBHandler.setEconomySize(f.calcEconomySize());
+                UpdateTopBar(topBarPlayer, topBarDaytime);
                 dialog.dismiss();
                 gaming = true;
             }
 
         });
 
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -1538,6 +1605,56 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public void ExitClicked() {
+        if(fullGame)DBHandler.close();
+        upd.interrupt();
+        soundplayer.release();
+        MainActivity.this.finish();
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
+    }
+
+    private void SelectNewGame(){
+        if(fullGame) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("New Game");
+            String q = "Proceeding will erase all of your data and progress except your full assets. \n\nYou will start again at level 1 with $10000 and nothing owned. \n\nYou will also lose any part-gained assets. \n\nAre you sure you want to proceed?";
+            builder.setMessage(q);
+
+            builder.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    gaming = false;
+                    int assets = DBHandler.getAssets();
+                    DBHandler.clearData();
+                    DBHandler.PrepGame(assets, Company.Sectors.values());
+                    f = new Finance(DBHandler, 5);
+                    UpdateCentralUI();
+                    p = new Gamer(DBHandler);
+                    time = new Daytime(LocalBroadcastManager.getInstance(MainActivity.this.getApplicationContext()));
+                    DBHandler.setEconomySize(f.calcEconomySize());
+                    dialog.dismiss();
+                    gaming = true;
+                }
+
+            });
+
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Do nothing
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            Toast.makeText(MainActivity.this, "Not possible in Quick Game", Toast.LENGTH_LONG).show();
+        }
     }
 
     private String randomName() {

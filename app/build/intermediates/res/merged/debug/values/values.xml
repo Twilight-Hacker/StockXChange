@@ -222,6 +222,7 @@
     <integer name="status_bar_notification_info_maxnum">999</integer>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/values/strings.xml -->
     <eat-comment/>
+    <string name="About">About</string>
     <string name="Add">+1 Share</string>
     <string name="Add1">+1</string>
     <string name="Add10">+10</string>
@@ -282,7 +283,7 @@
     <string name="TermEndDialogText">Please wait while data calculation is in progress.</string>
     <string name="TermEndDialogTitle">New Term Starting</string>
     <string name="TotalCompanies">Companies</string>
-    <string name="Total_Shares">Total Number of Shares: </string>
+    <string name="Total_Shares">Shares: </string>
     <string name="Zero">0</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>
@@ -315,6 +316,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="newGame">New Game</string>
     <string name="preference_file_key">com.example.galadar.stockxchange.gamedata</string>
+    <string name="quick_game">Quick Game</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>
     <string name="status_bar_notification_info_overflow">999+</string>

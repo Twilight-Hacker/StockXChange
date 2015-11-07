@@ -16,7 +16,7 @@
     <string name="Company_Name">Shortened Name: </string>
     <string name="Company_Sector">Industry: </string>
     <string name="Company_Total_Value">Total Value Reported: </string>
-    <string name="Total_Shares">Total Number of Shares: </string>
+    <string name="Total_Shares">Shares: </string>
 
     <string name="Player_Activity_Tittle">Player Info</string>
     <string name="Player_Money">Money: </string>
@@ -95,4 +95,6 @@
     <string name="News">News</string>
     <string name="ShortSales">Days to settle:</string>
     <string name="ShortSellWarning">Short sales are settled at day start.</string>
+    <string name="quick_game">Quick Game</string>
+    <string name="About">About</string>
 </resources>

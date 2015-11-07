@@ -38,10 +38,11 @@
 
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="175dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/CompanyImage"
-        android:background="@color/white"
+        android:background="@color/black"
+        android:src="@drawable/company"
         android:foregroundGravity="center"
         android:layout_below="@id/TopBar"
         android:layout_centerHorizontal="true"/>

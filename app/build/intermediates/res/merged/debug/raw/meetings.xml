@@ -4,7 +4,7 @@
     <array name="Meetings">
         <Meeting title="Welcome to the Game" day="1">
             <part>"Welcome to the game. \nI hope you enjoy playing.\nThis game is a stock exchange emulator where you will be able to trade shares and maybe learn something about the Financial World."</part>
-            <part>"These tutorials will help you throughout the game.\nAt first, they are about the game and how to play it, but later they will contain interesting info about how the real stock market works."</part>
+            <part>"These Meetings (tutorials) will help you throughout the game.\nAt first, they are about the game and how to play it, but later they will contain interesting info about how the real stock market works."</part>
             <part>"For now, let's start with the UI.\nIf you want to leave, press \"I don't care\" below, however it is recommended you read through the entire tutorial, if this is your first time playing."</part>
             <part>"In the main Screen you have the Top Bar that gives you your current level, cash available and assets available on the left side.\nOn the right side, you can see the Date as Term, day and time."</part>
             <part>"Below is the main screen were the share names and current prices are. Next to them, buy and sell buttons for every share, that are available while the market is open."</part>
@@ -15,5 +15,18 @@
             <part>"At the bottom, you can see other command buttons.\nFeel free to investigate now, but we will learn about them in future meetings."</part>
         </Meeting>
 
+        <Meeting title="Assets and Invitations" day="2">
+            <part>"Apart from money, a player also posses Assets. Assets represent connections the player has with other people of influence. Assets affect background aspects of the game and have a lot of uses."</part>
+            <part>"Firstly, an asset is spend to escape bankrupty. If your total value is below -$100000.00 at the end of the day, an asset is automatically spend to return you to $25000.00. \n\nIt is recommended to never spend your last asset."</part>
+            <part>"Also, the more assets you have, the more quickly you get info. Info are a crucial part of being a stockbroker, and most of them are true, but not all."</part>
+            <part>"Assets can also be spend to get certain info. The info gained by spending an asset is always true. To separate from other info, an asset info always comes from User 9001."</part>
+            <part>"Finally, you require an asset in order to report a company for a scam.\n\nIf the company was really into a scam, you get the asset back, but if it is not, you lose it."</part>
+            <part>"Assets are gained through invitations to party events. Each party gives about 0.08 times your player level in assets. It also costs money. But do not be afraid to go into a small debt to get assets. They are that important"</part>
+            <part>"Invitations are send evevy 23 hours of real time. So be sure to log into the game once per day, to receive your invitation and earn assets.\n\nInvitations do not accumulate. Every time you log in, you get the invitation, and whether you accept it or not, you will not get another invitation until 23 hours pass."</part>
+            <part>"Parts of an asset (0.***) are not visible but they do accumulate. They are reffered to as partly-gained assets. They are lost only if you start a new game (or lose the current one)"</part>
+            <part>"Integer assets are refered to as full assets. They are also visible in the Top Bar, next to your money and into the parenthesis. They are never lost. Even if you start a New Game, you mentain your assets from the previous one."</part>
+            <part>"You also get assets by Leveling up, although doing so costs some money. More on levels at a future Meeting."</part>
+            <part>"Use your assets wisely. They are rare and valuable, and they can save your game after a bad decision - short selling the wrong share for example."</part>
+        </Meeting>
     </array>
 </resources>

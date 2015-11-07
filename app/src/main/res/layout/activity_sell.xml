@@ -37,14 +37,14 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="175dp"
-        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/TopBar"
+        android:src="@drawable/buysell"
         android:id="@+id/BuyImage"
         android:layout_gravity="center"
         android:layout_centerHorizontal="true"
-        android:background="@color/white" />
+        android:background="@color/black" />
 
     <LinearLayout
         android:layout_width="fill_parent"
