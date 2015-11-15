@@ -228,6 +228,7 @@
     <string name="Add10">+10</string>
     <string name="Add100">+100</string>
     <string name="Amount">Number of Shares: </string>
+    <string name="AppName">Stock XChange 2</string>
     <string name="BackButton">Back</string>
     <string name="Buy_Button">Buy</string>
     <string name="CancelButton">Cancel</string>
@@ -239,7 +240,7 @@
     <string name="Company_Total_Value">Total Value Reported: </string>
     <string name="Cost">Price:</string>
     <string name="Economy">Economy</string>
-    <string name="EconomySize">Economy Size in M$</string>
+    <string name="EconomySize">Economy Size</string>
     <string name="Exit">Exit</string>
     <string name="GetInfo">Get Info</string>
     <string name="InfoButton">INFO</string>
@@ -280,8 +281,8 @@
     <string name="Shares_Owned_Value">Owned Shares Value: </string>
     <string name="ShortSales">Days to settle:</string>
     <string name="ShortSellWarning">Short sales are settled at day start.</string>
+    <string name="TAG">com.example.galadar.stockxchange</string>
     <string name="TermEndDialogText">Please wait while data calculation is in progress.</string>
-    <string name="TermEndDialogTitle">New Term Starting</string>
     <string name="TotalCompanies">Companies</string>
     <string name="Total_Shares">Shares: </string>
     <string name="Zero">0</string>
@@ -333,6 +334,7 @@
     <string name="title_activity_player_info">PlayerInfoActivity</string>
     <string name="title_activity_sell">SellActivity</string>
     <string name="title_activity_share">ShareActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
     <string name="title_activity_welcome">WelcomeActivity</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>
@@ -1418,6 +1420,13 @@
     <style name="RtlOverlay.Widget.AppCompat.SearchView.MagIcon" parent="android:Widget">
         <item name="android:layout_marginLeft">@dimen/abc_dropdownitem_text_padding_left</item>
     </style>
+    <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/stockmarketboard</item>
+    </style>
+    <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
+    <eat-comment/>
     <style name="TextAppearance.AppCompat" parent="Base.TextAppearance.AppCompat"/>
     <style name="TextAppearance.AppCompat.Body1" parent="Base.TextAppearance.AppCompat.Body1"/>
     <style name="TextAppearance.AppCompat.Body2" parent="Base.TextAppearance.AppCompat.Body2"/>

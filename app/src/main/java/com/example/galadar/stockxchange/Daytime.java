@@ -9,22 +9,19 @@ import android.support.v4.content.LocalBroadcastManager;
 /**
  * Created by Galadar on 1/10/2015.
  */
-public class Daytime implements Parcelable{
+public class Daytime{
     int term;
     int day;
     int min;
     int hour;
     LocalBroadcastManager context;
 
-    public Daytime getClock(){
-        return this;
-    }
-
+    // TODO: change this back to day 1
     public Daytime(LocalBroadcastManager context){
         this.term =1;
-        this.day = 0;
+        this.day = 60;
         this.hour = 15;
-        this.min = 40;
+        this.min = 10;
         this.context = context;
     }
 
@@ -35,25 +32,6 @@ public class Daytime implements Parcelable{
         this.min = 40;
         this.context = context;
     }
-
-    protected Daytime(Parcel in) {
-        term = in.readInt();
-        day = in.readInt();
-        min = in.readInt();
-        hour = in.readInt();
-    }
-
-    public static final Creator<Daytime> CREATOR = new Creator<Daytime>() {
-        @Override
-        public Daytime createFromParcel(Parcel in) {
-            return new Daytime(in);
-        }
-
-        @Override
-        public Daytime[] newArray(int size) {
-            return new Daytime[size];
-        }
-    };
 
     public String DTtoString(){
         String zerodigit=" ";
@@ -75,48 +53,33 @@ public class Daytime implements Parcelable{
             Intent i = new Intent("DayEnded");
             this.context.sendBroadcast(i);
             //LocalBroadcastManager.getInstance(this.context).sendBroadcast(i);
-        }
-
-        if(this.hour==15&&this.min>30) {
+        } else if(this.hour==15&&this.min>30) {
             this.day++;
             this.hour = 8;
             this.min = 40;
             Intent i = new Intent("DayReset");
             this.context.sendBroadcast(i);
-        }
-
-        if(this.hour==9&&this.min==0){
+        } else if(this.hour==9&&this.min==0){
             Intent intent2 = new Intent("DayStarted");
             this.context.sendBroadcast(intent2);
         }
 
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(term);
-        dest.writeInt(day);
-        dest.writeInt(min);
-        dest.writeInt(hour);
-    }
-
-    public void nextTerm(){
-            this.term++;
-            this.day =1;
+    public void nextTerm() {
+        this.term++;
+        this.day = 1;
+        this.hour = 8;
+        this.min = 40;
     }
 
     public int totalDays(){
-        return this.term*60 + this.day;
+        return (this.term-1)*60 + this.day;
     }
 
     //returns what the tatal days will be after X days
     public int totalDays(int duration){
-        return this.term*60 + this.day + duration;
+        return (this.term-1)*60 + this.day + duration;
     }
 
     public int getTerm() {

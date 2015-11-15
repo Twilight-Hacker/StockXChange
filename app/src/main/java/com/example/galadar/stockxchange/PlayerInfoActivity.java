@@ -18,6 +18,10 @@ public class PlayerInfoActivity extends AppCompatActivity {
     boolean playSound;
     static Daytime time;
     static TextView daytimeView;
+    static int assets;
+    static int level;
+    static long money;
+    String zerodigit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +32,9 @@ public class PlayerInfoActivity extends AppCompatActivity {
         Bundle data = getIntent().getExtras();
 
         int next = data.getInt("next");
-        long money = data.getLong("Pmoney");
-        int assets =data.getInt("assets");
-        int level = data.getInt("level");
+        money = data.getLong("Pmoney");
+        assets =data.getInt("assets");
+        level = data.getInt("level");
         long NetWorth = data.getLong("NetWorth");
         playSound = data.getBoolean("playSound");
 
@@ -40,7 +44,9 @@ public class PlayerInfoActivity extends AppCompatActivity {
         boolean ena = (((double)value/100)>=next) & (level<6);
 
         TextView playerInfoBar = (TextView)findViewById(R.id.PlayerDataInfo);
-        String q = "Lvl "+level+": $"+Double.toString((double)money/100)+" ("+assets+") ";
+        if(money%10==0)zerodigit="0";
+        else zerodigit = "";
+        String q = "Lvl "+level+": $"+Double.toString((double)money/100)+zerodigit+" ("+assets+") ";
         playerInfoBar.setText(q);
 
         daytimeView = (TextView)findViewById(R.id.DaytimeInfo);
@@ -48,7 +54,9 @@ public class PlayerInfoActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(timeUpdated, new IntentFilter("TimeForwarded"));
 
         TextView MoneyView = (TextView)findViewById(R.id.PlayerMoneyDt);
-        MoneyView.setText(Double.toString((double) money / 100));
+        if(money%10==0)zerodigit="0";
+        else zerodigit = "";
+        MoneyView.setText("$"+Double.toString((double) money / 100)+zerodigit);
 
         TextView AssetsView = (TextView)findViewById(R.id.AssetsDt);
         AssetsView.setText(Integer.toString(assets));
@@ -57,10 +65,12 @@ public class PlayerInfoActivity extends AppCompatActivity {
         LevelView.setText(Integer.toString(level));
 
         TextView NextView = (TextView)findViewById(R.id.NextLevelDt);
-        NextView.setText(Integer.toString(next));
+        NextView.setText("$"+Integer.toString(next));
 
         TextView NetWorthView = (TextView)findViewById(R.id.PlNetWorthDt);
-        NetWorthView.setText(Double.toString((double)value / 100));
+        if(value%10==0)zerodigit="0";
+        else zerodigit = "";
+        NetWorthView.setText("$"+Double.toString((double)value / 100)+zerodigit);
 
         Button Back = (Button)findViewById(R.id.OK);
         Back.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +96,18 @@ public class PlayerInfoActivity extends AppCompatActivity {
                 PlayerInfoActivity.this.finish();
             }
         });
+
+        TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
+        TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
+        UpdateTopBar(topBarPlayer, topBarDaytime);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, final Intent intent) {
+                UpdateTimeView(time);
+            }
+        }, new IntentFilter("TimeForwarded"));
+
     }
 
     private void updateTime() {
@@ -103,6 +125,7 @@ public class PlayerInfoActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_nonmain, menu);
+        menu.findItem(R.id.menu_sound).setChecked(playSound);
         return true;
     }
 
@@ -126,5 +149,19 @@ public class PlayerInfoActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void UpdateTopBar(TextView player, TextView daytime){
+        if(money%10==0)zerodigit="0";
+        else zerodigit = "";
+        String TBPlayer = "Lvl "+level+": $"+Double.toString((double)money/100)+zerodigit+" ("+assets+") ";
+        player.setText(TBPlayer);
+        daytime.setText(time.DTtoString());
+    }
+
+    public void UpdateTimeView(Daytime time){
+        TextView DT = (TextView)findViewById(R.id.DaytimeInfo);
+        DT.setText(time.DTtoString());
+    }
+
 
 }

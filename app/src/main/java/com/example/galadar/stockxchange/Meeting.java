@@ -12,20 +12,20 @@ public class Meeting {
     private ArrayList speech;
 
     public Meeting(int day, String title, ArrayList speech) {
-        this.day = day;
+        this.day=day;
         this.title = title;
         this.speech = speech;
     }
 
-    public int getMeetingDay() {
-        return day;
+    public int getDay() {
+        return this.day;
     }
 
     public String getMeetingTitle() {
-        return title;
+        return this.title;
     }
 
     public ArrayList getMeetingSpeech() {
-        return speech;
+        return this.speech;
     }
 }

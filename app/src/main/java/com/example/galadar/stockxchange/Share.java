@@ -14,10 +14,6 @@ public class Share {
         return total;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
     int total;
 
     public Share(String name, int sid, int currentSharePrice, int total) {
@@ -40,16 +36,8 @@ public class Share {
         return prevDayClose;
     }
 
-    public void setPrevDayClose(int prevDayClose) {
-        this.prevDayClose = prevDayClose;
-    }
-
     public int getCurrentSharePrice() {
 
         return currentSharePrice;
-    }
-
-    public void setCurrentSharePrice(int currentSharePrice) {
-        this.currentSharePrice = currentSharePrice;
     }
 }

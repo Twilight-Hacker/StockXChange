@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,8 +28,10 @@ public class SellActivity extends AppCompatActivity {
     static int owned;
     static int level;
     static int assets;
+    static String Sname;
     static Daytime time;
     static boolean playSound;
+    String zerodigit;
 
 
     @Override
@@ -40,12 +44,12 @@ public class SellActivity extends AppCompatActivity {
         Bundle data = intent.getExtras();
         SID = data.getInt("SID");
         time = MainActivity.getClock();
-        playSound = true;
+        playSound = data.getBoolean("playSound");
+        Sname = data.getString("Sname");
 
-        String name = data.getString("name");
         price = data.getInt("Sprice");
         owned = data.getInt("owned");
-        money = data.getLong("money");
+        money = data.getLong("Pmoney");
         level = data.getInt("level");
         assets = data.getInt("assets");
         amount = 0;
@@ -62,13 +66,30 @@ public class SellActivity extends AppCompatActivity {
             TextView view2 = (TextView)findViewById(R.id.ShortSellWarning);
             view2.setVisibility(TextView.VISIBLE);
             Days.setVisibility(EditText.VISIBLE);
-            Days.setText(Integer.toString(10));
+            Days.setText(Integer.toString(1));
+            Days.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if(Days.getText().toString().length() > 0) {
+                        if (Integer.parseInt(Days.getText().toString()) <= 0)
+                            Days.setText(Integer.toString(1));
+                    }
+                }
+            });
         }
 
         TextView ShareName = (TextView)findViewById(R.id.ShareNameDt);
-        ShareName.setText(name);
+        ShareName.setText(Sname);
         TextView SharePrice = (TextView)findViewById(R.id.ShareCurrPriDt);
-        SharePrice.setText(Double.toString(((double)price)/100));
+        if(price%10==0)zerodigit="0";
+        else zerodigit = "";
+        SharePrice.setText("$"+Double.toString(((double)price)/100)+zerodigit);
         TextView SharesOwned = (TextView)findViewById(R.id.SharesOwnedDt);
         SharesOwned.setText(Integer.toString(owned));
 
@@ -76,7 +97,9 @@ public class SellActivity extends AppCompatActivity {
         final TextView Cost = (TextView)findViewById(R.id.TotalValueDt);
         ShareAmount.setText(Integer.toString(amount));
         total = amount*price;
-        Cost.setText(Double.toString(((double)total)/100));
+        if(total%10==0)zerodigit="0";
+        else zerodigit = "";
+        Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
 
         final Button maxButton = (Button)findViewById(R.id.MaxSharesButton);
         final Button plusOne = (Button)findViewById(R.id.AddSharesButton);
@@ -96,7 +119,9 @@ public class SellActivity extends AppCompatActivity {
                     amount = owned;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double) total) / 100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                     }
                 }
             );
@@ -109,12 +134,16 @@ public class SellActivity extends AppCompatActivity {
                     amount++;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else if(amount<owned) {
                     amount++;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else {
                     Toast.makeText(getApplicationContext(), "You cannot sell more shares than those you have", Toast.LENGTH_SHORT).show();
                 }
@@ -125,21 +154,27 @@ public class SellActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(owned==0){
-                    amount=+10;
+                    amount+=10;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else if(amount+10<=owned) {
-                    amount=+10;
+                    amount+=10;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else {
                     Toast.makeText(getApplicationContext(), "You cannot sell more shares than those you have", Toast.LENGTH_SHORT).show();
                     amount = owned;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double) total) / 100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 }
             }
         });
@@ -148,21 +183,27 @@ public class SellActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(owned==0){
-                    amount=+100;
+                    amount+=100;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else if(amount+100<=owned) {
-                    amount=+100;
+                    amount+=100;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else {
                     Toast.makeText(getApplicationContext(), "You cannot sell more shares than those you have", Toast.LENGTH_SHORT).show();
                     amount = owned;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 }
             }
         });
@@ -174,12 +215,16 @@ public class SellActivity extends AppCompatActivity {
                     amount--;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else if(amount>0) {
                     amount--;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else {
                     Toast.makeText(getApplicationContext(),"You cannot sell less than 0 shares", Toast.LENGTH_SHORT).show();
                 }
@@ -193,18 +238,24 @@ public class SellActivity extends AppCompatActivity {
                     amount-=10;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else if(amount-10>=0) {
                     amount-=10;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else {
                     Toast.makeText(getApplicationContext(),"You cannot sell less than 0 shares", Toast.LENGTH_SHORT).show();
                     amount=0;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double) total) / 100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 }
             }
         });
@@ -216,18 +267,24 @@ public class SellActivity extends AppCompatActivity {
                     amount-=100;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else if(amount-100>=0) {
                     amount-=100;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 } else {
                     Toast.makeText(getApplicationContext(),"You cannot sell less than 0 shares", Toast.LENGTH_SHORT).show();
                     amount=0;
                     ShareAmount.setText(Integer.toString(amount));
                     total = amount * price;
-                    Cost.setText(Double.toString(((double)total)/100));
+                    if(total%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 }
             }
         });
@@ -238,13 +295,15 @@ public class SellActivity extends AppCompatActivity {
                 amount = 0;
                 ShareAmount.setText(Integer.toString(amount));
                 total = amount*price;
-                Cost.setText(Double.toString(((double)total)/100));
+                if(total%10==0)zerodigit="0";
+                else zerodigit = "";
+                Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
             }
         });
 
 
-        Button Execute = (Button)findViewById(R.id.SellButton);
-        Button Cancel = (Button)findViewById(R.id.CancelButton);
+        final Button Execute = (Button)findViewById(R.id.SellButton);
+        final Button Cancel = (Button)findViewById(R.id.CancelButton);
 
         Execute.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,7 +340,21 @@ public class SellActivity extends AppCompatActivity {
             }
         });
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(PricesUpdateMessageRec, new IntentFilter("SpecificPriceUpdated"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(PricesUpdateMessageRec, new IntentFilter("SpecificPriceChange"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Execute.setEnabled(false);
+                Execute.setTextColor(0xff000000);
+            }
+        }, new IntentFilter("DayEnded"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Execute.setEnabled(true);
+                Execute.setTextColor(0xffffffff);
+            }
+        }, new IntentFilter("DayStarted"));
 
         LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
             @Override
@@ -297,6 +370,7 @@ public class SellActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_nonmain, menu);
+        menu.findItem(R.id.menu_sound).setChecked(playSound);
         return true;
     }
 
@@ -322,7 +396,7 @@ public class SellActivity extends AppCompatActivity {
     }
 
     public void UpdateTopBar(TextView player, TextView daytime){
-        String TBPlayer = "Lvl "+level+": $"+Double.toString(money/100)+" ("+assets+") ";
+        String TBPlayer = "Lvl "+level+": $"+Double.toString((double)money/100)+" ("+assets+") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());
     }
@@ -336,9 +410,13 @@ public class SellActivity extends AppCompatActivity {
                 final TextView Cost = (TextView) findViewById(R.id.TotalValueDt);
                 TextView SharePrice = (TextView) findViewById(R.id.ShareCurrPriDt);
                 price = intent.getExtras().getInt("newPrice");
-                SharePrice.setText(Double.toString(((double) price) / 100));
+                if(price%10==0)zerodigit="0";
+                else zerodigit = "";
+                SharePrice.setText("$"+Double.toString(((double) price) / 100)+zerodigit);
                 total = amount * price;
-                Cost.setText(Double.toString(((double) total) / 100));
+                if(total%10==0)zerodigit="0";
+                else zerodigit = "";
+                Cost.setText("$"+Double.toString(((double)total)/100)+zerodigit);
                 Execute.setEnabled(true);
             }
         }

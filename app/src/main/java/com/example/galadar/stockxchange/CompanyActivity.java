@@ -22,9 +22,10 @@ public class CompanyActivity extends AppCompatActivity {
     static Finance f;
     static Daytime time;
     static boolean playSound;
-    static int money;
+    static long money;
     static int level;
     static int assets;
+    String zerodigit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -36,7 +37,7 @@ public class CompanyActivity extends AppCompatActivity {
         f = MainActivity.getFinance();
         time = MainActivity.getClock();
         playSound = data.getBoolean("playSound");
-        money = data.getInt("Pmoney");
+        money = data.getLong("Pmoney");
         level = data.getInt("level");
         assets = data.getInt("assets");
 
@@ -51,16 +52,24 @@ public class CompanyActivity extends AppCompatActivity {
         SectorView.setText(f.getCompSector(CID));
 
         TextView TotalValueView = (TextView)findViewById(R.id.TotalValDt);
-        TotalValueView.setText(Double.toString((double)f.getCompTotalValue(CID)/100));
+        int value = f.getCompTotalValue(CID);
+        value=(int)value/100;
+        TotalValueView.setText("$"+Integer.toString(value));
 
         TextView TotalSharesView = (TextView)findViewById((R.id.TotalSharesDt));
         TotalSharesView.setText(Integer.toString(f.getTotalShares(CID)));
 
+        int rev = f.getLastRevenue(CID);
+        if(rev%10==0)zerodigit="0";
+        else zerodigit="";
         TextView LastRevView = (TextView)findViewById(R.id.LastTermRevenueDt);
-        LastRevView.setText(Double.toString((double)f.getLastRevenue(CID)/100));
+        LastRevView.setText("$"+Double.toString((double)rev/100)+zerodigit);
 
+        int inv = f.getInvestment(CID);
+        if(inv%10==0)zerodigit="0";
+        else zerodigit="";
         TextView InvestView = (TextView)findViewById(R.id.LastTermInvDt);
-        InvestView.setText(Double.toString((double)f.getInvestment(CID)/100));
+        InvestView.setText("$"+Double.toString((double)inv/100)+zerodigit);
 
         Button Report = (Button)findViewById(R.id.ScamCheck);
         Report.setEnabled(assets>0);
@@ -116,6 +125,7 @@ public class CompanyActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_nonmain, menu);
+        menu.findItem(R.id.menu_sound).setChecked(playSound);
         return true;
     }
 
@@ -141,7 +151,9 @@ public class CompanyActivity extends AppCompatActivity {
     }
 
     public void UpdateTopBar(TextView player, TextView daytime){
-        String TBPlayer = "Lvl "+level+": $"+Double.toString((double)money/100)+" ("+assets+") ";
+        if(money%10==0)zerodigit="0";
+        else zerodigit="";
+        String TBPlayer = "Lvl "+level+": $"+Double.toString((double)money/100)+zerodigit+" ("+assets+") ";
         player.setText(TBPlayer);
         daytime.setText(time.DTtoString());
     }

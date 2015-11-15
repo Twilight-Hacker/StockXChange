@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class MeetingActivity extends Activity {
 
-    static int i =0;
+    static int i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +25,9 @@ public class MeetingActivity extends Activity {
         final ArrayList speech = data.getStringArrayList("speech");
 
         MeetingActivity.this.setTitle(title);
-        TextView TitleView = (TextView)findViewById(R.id.TitleBar);
-        TitleView.setText(title);
-
 
         final TextView PartView = (TextView)findViewById(R.id.MessageArea);
+        i=0;
         PartView.setText(speech.get(i).toString());
 
         final Button NextButton = (Button)findViewById(R.id.NextButton);
@@ -41,18 +39,22 @@ public class MeetingActivity extends Activity {
                 i--;
                 PartView.setText(speech.get(i).toString());
                 PrevButton.setEnabled(i > 0);
-                NextButton.setEnabled(i < speech.size());
+                NextButton.setEnabled(true);
             }
         });
 
-        NextButton.setEnabled(i < speech.size());
+        NextButton.setEnabled(i < speech.size()-1);
         NextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 i++;
-                PartView.setText(speech.get(i).toString());
-                PrevButton.setEnabled(i > 0);
-                NextButton.setEnabled(i < speech.size());
+                if(i==speech.size()){
+                    MeetingActivity.this.finish();
+                } else {
+                    PartView.setText(speech.get(i).toString());
+                    PrevButton.setEnabled(i > 0);
+                    NextButton.setEnabled(i < speech.size());
+                }
             }
         });
 
@@ -85,4 +87,6 @@ public class MeetingActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

@@ -19,6 +19,7 @@ public class NewsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+        setTitle("Daily Messanger");
 
         String[] news = getIntent().getExtras().getStringArray("NewsArray");
 

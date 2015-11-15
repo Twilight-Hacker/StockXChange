@@ -72,12 +72,11 @@
     <string name="newGame">New Game</string>
     <string name="backMain">Back to Main</string>
     <string name="title_activity_economy_info">Economy Info</string>
-    <string name="EconomySize">Economy Size in M$</string>
+    <string name="EconomySize">Economy Size</string>
     <string name="TotalCompanies">Companies</string>
     <string name="Economy">Economy</string>
     <string name="NextLevel">Level up at:</string>
     <string name="LevelUp">Level Up</string>
-    <string name="TermEndDialogTitle">New Term Starting</string>
     <string name="TermEndDialogText">Please wait while data calculation is in progress.</string>
     <string name="GetInfo">Get Info</string>
     <string name="title_activity_meeting">MeetingActivity</string>
@@ -97,4 +96,7 @@
     <string name="ShortSellWarning">Short sales are settled at day start.</string>
     <string name="quick_game">Quick Game</string>
     <string name="About">About</string>
+    <string name="TAG">com.example.galadar.stockxchange</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="AppName">StockXChange2</string>
 </resources>

@@ -38,7 +38,7 @@ public class Company {
         this.percentageValue = 0;
         this.totalShares = r.nextInt(10000)+r.nextInt(1000)+r.nextInt(100)+2500;
         this.investment = 0;
-        this.outlook = (double)shareStart()/1000 - 0.1;
+        this.outlook = r.nextDouble();
         this.Sector = RandomSector();
         this.marketShare = Math.min(Math.random(), 0.3);
         this.revenue = 0;
@@ -55,7 +55,7 @@ public class Company {
         this.percentageValue = 0;
         this.totalShares = r.nextInt(10000)+r.nextInt(1000)+r.nextInt(100)+2500;
         this.investment = 0;
-        this.outlook = (double)shareStart()/1000 - 0.1;
+        this.outlook = r.nextDouble();
         this.Sector = sec;
         this.marketShare = Math.min(Math.random(), 0.3);
         this.revenue = 0;
@@ -187,7 +187,6 @@ public class Company {
         return lastRevenue;
     }
 
-    //TODO real last revenue update
     public void setLastRevenue(int lastRevenue) {
         this.lastRevenue = lastRevenue;
     }

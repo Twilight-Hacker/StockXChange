@@ -1,8 +1,11 @@
 package com.example.galadar.stockxchange;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,8 +23,13 @@ import java.util.ArrayList;
 
 public class MessagesActivity extends AppCompatActivity {
 
-    boolean playSound;
+    static boolean playSound;
     static ArrayList MessagesText = new ArrayList();
+    static int assets;
+    static int level;
+    static long money;
+    static Daytime time;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +37,12 @@ public class MessagesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_messages);
         Bundle data = getIntent().getExtras();
         playSound = data.getBoolean("playsound");
+        time = MainActivity.getClock();
+        money = data.getLong("Pmoney");
+        level = data.getInt("level");
+        assets = data.getInt("assets");
+
+        MessagesText.clear();
 
         MainActivity.EconomyState state = MainActivity.getEconomyState();
         if(state!= MainActivity.EconomyState.Normal){
@@ -89,6 +103,19 @@ public class MessagesActivity extends AppCompatActivity {
             }
         });
 */
+
+        TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
+        TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
+        UpdateTopBar(topBarPlayer, topBarDaytime);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, final Intent intent) {
+                UpdateTimeView(time);
+            }
+        }, new IntentFilter("TimeForwarded"));
+
+
     }
 
 
@@ -96,6 +123,7 @@ public class MessagesActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_nonmain, menu);
+        menu.findItem(R.id.menu_sound).setChecked(playSound);
         return true;
     }
 
@@ -151,4 +179,19 @@ public class MessagesActivity extends AppCompatActivity {
 
         return str;
     }
+
+    public void UpdateTopBar(TextView player, TextView daytime){
+        String zerodigit;
+        if(money%10==0)zerodigit="0";
+        else zerodigit = "";
+        String TBPlayer = "Lvl "+level+": $"+Double.toString((double)money/100)+zerodigit+" ("+assets+") ";
+        player.setText(TBPlayer);
+        daytime.setText(time.DTtoString());
+    }
+
+    public void UpdateTimeView(Daytime time){
+        TextView DT = (TextView)findViewById(R.id.DaytimeInfo);
+        DT.setText(time.DTtoString());
+    }
+
 }

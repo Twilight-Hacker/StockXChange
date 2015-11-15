@@ -30,7 +30,7 @@ public class Gamer {
     }
 
     public long getMoney() {
-        return money;
+        return this.money;
     }
 
     public void setMoney(long money) {

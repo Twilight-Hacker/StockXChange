@@ -1,32 +1,43 @@
 package com.example.galadar.stockxchange;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class EconomyInfoActivity extends AppCompatActivity {
 
-    boolean playSound;
+    static boolean playSound;
+    static int assets;
+    static int level;
+    static long money;
+    static Daytime time;
+    String zerodigit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_economy_info);
         Bundle data = getIntent().getExtras();
+        time = MainActivity.getClock();
         long EconSize = data.getLong("Economy_size");
         int totComp = data.getInt("TotalCompanies");
         int SumShares = data.getInt("SumOfShares");
 
-        long money = data.getLong("Pmoney");
-        int level = data.getInt("level");
-        int assets = data.getInt("assets");
+        money = data.getLong("Pmoney");
+        level = data.getInt("level");
+        assets = data.getInt("assets");
 
         TextView EconomySize = (TextView)findViewById(R.id.EconomySizeDt);
-        EconomySize.setText(Long.toString(Math.round(EconSize/100000000)));
+        EconomySize.setText("K$"+Long.toString(Math.round(EconSize/1000)));
         TextView CompanySize = (TextView)findViewById(R.id.TotCompDt);
         CompanySize.setText(Integer.toString(totComp));
         TextView TotalShares = (TextView)findViewById(R.id.TotalSharesDt);
@@ -34,12 +45,32 @@ public class EconomyInfoActivity extends AppCompatActivity {
 
         playSound = data.getBoolean("Sound");
 
+        Button Back = (Button)findViewById(R.id.OK);
+        Back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EconomyInfoActivity.this.finish();
+            }
+        });
+
+        TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
+        TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
+        UpdateTopBar(topBarPlayer, topBarDaytime);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, final Intent intent) {
+                UpdateTimeView(time);
+            }
+        }, new IntentFilter("TimeForwarded"));
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_nonmain, menu);
+        menu.findItem(R.id.menu_sound).setChecked(playSound);
         return true;
     }
 
@@ -62,6 +93,19 @@ public class EconomyInfoActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void UpdateTopBar(TextView player, TextView daytime){
+        if(money%10==0)zerodigit="0";
+        else zerodigit="";
+        String TBPlayer = "Lvl "+level+": $"+Double.toString((double)money/100)+zerodigit+" ("+assets+") ";
+        player.setText(TBPlayer);
+        daytime.setText(time.DTtoString());
+    }
+
+    public void UpdateTimeView(Daytime time){
+        TextView DT = (TextView)findViewById(R.id.DaytimeInfo);
+        DT.setText(time.DTtoString());
     }
 
 }
