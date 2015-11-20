@@ -4,23 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -48,10 +41,13 @@ public class InfoActivity extends AppCompatActivity {
         final ArrayList<String> info = data.getStringArrayList("Info");
         playSound =data.getBoolean("playSound");
 
-        if(info.isEmpty())info.add("There are no info tips at this point");
+        this.setTitle(getString(R.string.title_activity_info));
+
+        assert info != null;
+        if(info.isEmpty())info.add(getString(R.string.noInfo));
 
         ListView infoView = (ListView)findViewById(R.id.InfoList);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.text_simple_whiteonblack, R.id.WhiteOnBlack, info);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.text_simple_whiteonblack, R.id.WhiteOnBlack, info);
         infoView.setAdapter(adapter);
 
         topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
@@ -71,13 +67,13 @@ public class InfoActivity extends AppCompatActivity {
 
         upD.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(info.contains("There are no info tips at this point"))info.remove("There are no info tips at this point");
+                if(info.contains(getString(R.string.noInfo)))info.remove(getString(R.string.noInfo));
                 assets--;
                 if(assets==0){
                     upD.setEnabled(false);
                     upD.setTextColor(0xff000000);
                 }
-                info.add(MainActivity.addAssetInfo());
+                info.add(MainActivity.addAssetInfo(getApplicationContext()));
                 adapter.notifyDataSetChanged();
                 UpdateTopBar(topBarPlayer, topBarDaytime);
             }

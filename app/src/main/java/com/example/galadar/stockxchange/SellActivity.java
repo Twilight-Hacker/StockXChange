@@ -4,10 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -53,6 +52,9 @@ public class SellActivity extends AppCompatActivity {
         level = data.getInt("level");
         assets = data.getInt("assets");
         amount = 0;
+
+        String title = getString(R.string.title_activity_sell) + " " + Sname + " " + getString(R.string.shares);
+        this.setTitle(title);
 
         TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
         TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);

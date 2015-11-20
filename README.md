@@ -1,8 +1,12 @@
 # StockXChange
-An Android game currently in development to serve as a work example
+An Android game currently in development to serve as a work example, to showcase my skills as an Android developer.
 
 To view the main files go to https://github.com/Twilight-Hacker/StockXChange/tree/master/app/src/main .
 
-To view Screenshopt of the app go to https://github.com/Twilight-Hacker/StockXChange/tree/master/Screenshots
+To view (older) Screenshots of the app go to https://github.com/Twilight-Hacker/StockXChange/tree/master/Screenshots . New Screenshots will be added on Beta version Release.
 
-The code is a little inconsistent because the basis of this project is to show my abilities. I realise that this is not a good practice. This game is meant as a work example, and this is why, even after it is launched, it is and will remain free.
+The code is a little inconsistent because the basis of this project is to show my abilities. I realise that this is not a good practice. This game is meant as a work example, and this is why, even after it is launched, it is and will forever remain free.
+
+This code is published under the current (highest) version GPL Licence.
+
+You may use this code as you see fit, as long as you attribute it to the developer (Fragkas P. Vasileios).

@@ -1,11 +1,9 @@
 package com.example.galadar.stockxchange;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +41,9 @@ public class ShareActivity extends AppCompatActivity {
         dayOpen = data.getBoolean("dayOpen");
         playSound = data.getBoolean("playSound");
 
+        String title = f.getName(SID) + " " + getString(R.string.title_activity_share);
+        this.setTitle(title);
+
         TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
         TextView topBarDaytime = (TextView) findViewById(R.id.DaytimeInfo);
         UpdateTopBar(topBarPlayer, topBarDaytime);
@@ -57,7 +58,7 @@ public class ShareActivity extends AppCompatActivity {
         else zerodigit = "";
         SharePrice.setText("$"+Double.toString(((double)price)/100)+zerodigit);
 
-        TextView ShareOwned = (TextView)findViewById((R.id.ShareOwnedData));
+        final TextView ShareOwned = (TextView)findViewById((R.id.ShareOwnedData));
         owned = f.getSharesOwned(SID);
         ShareOwned.setText(Integer.toString(owned));
 
@@ -138,6 +139,7 @@ public class ShareActivity extends AppCompatActivity {
                 if(intent.getExtras().getInt("SID")==SID) {
                     price = intent.getExtras().getInt("newPrice");
                     SharePrice.setText("$"+Double.toString((double)price/100));
+                    ShareOwned.setText("$"+Double.toString((double)price*owned));
                 }
             }
         }, new IntentFilter("SpecificPriceChange"));
@@ -155,11 +157,11 @@ public class ShareActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                dayOpen=true;
-                if(dayOpen & (money>0)) {
+                dayOpen =true;
+                if(money>0) {
                     BuyButton.setEnabled(true);
                     BuyButton.setTextColor(0xffffffff);
-                } else if(dayOpen & (level>=4)){
+                } else if(level>=4){
                     BuyButton.setEnabled(true);
                     BuyButton.setTextColor(0xffff0000);
                 } else {

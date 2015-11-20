@@ -49,6 +49,9 @@ public class BuyActivity extends AppCompatActivity {
         owned = data.getInt("Owned");
         totalShares = data.getInt("totalShares");
 
+        String title = getString(R.string.BuyActivityTitle) +" "+ Sname + " "+getString(R.string.shares);
+        this.setTitle(title);
+
         TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
         TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
         UpdateTopBar(topBarPlayer, topBarDaytime);

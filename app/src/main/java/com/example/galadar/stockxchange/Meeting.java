@@ -4,14 +4,15 @@ import java.util.ArrayList;
 
 /**
  * Created by Galadar on 28/10/2015.
+ * Meeting Object
  */
 public class Meeting {
 
     private int day;
     private String title;
-    private ArrayList speech;
+    private ArrayList<String> speech;
 
-    public Meeting(int day, String title, ArrayList speech) {
+    public Meeting(int day, String title, ArrayList<String> speech) {
         this.day=day;
         this.title = title;
         this.speech = speech;
@@ -25,7 +26,7 @@ public class Meeting {
         return this.title;
     }
 
-    public ArrayList getMeetingSpeech() {
+    public ArrayList<String> getMeetingSpeech() {
         return this.speech;
     }
 }

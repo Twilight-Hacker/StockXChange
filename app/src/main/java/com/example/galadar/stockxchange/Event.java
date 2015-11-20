@@ -2,6 +2,7 @@ package com.example.galadar.stockxchange;
 
 /**
  * Created by Galadar on 5/11/2015.
+ * Event Object
  */
 public class Event {
     private int type;
@@ -37,7 +38,7 @@ public class Event {
     }
 
     public boolean eventEnded(){
-        return this.duration<=0;
+        return this.duration==0;
     }
 
 

@@ -1,21 +1,17 @@
 package com.example.galadar.stockxchange;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,7 +20,7 @@ import java.util.ArrayList;
 public class MessagesActivity extends AppCompatActivity {
 
     static boolean playSound;
-    static ArrayList MessagesText = new ArrayList();
+    static ArrayList<String> MessagesText = new ArrayList<>();
     static int assets;
     static int level;
     static long money;
@@ -43,6 +39,8 @@ public class MessagesActivity extends AppCompatActivity {
         assets = data.getInt("assets");
 
         MessagesText.clear();
+
+        setTitle(getString(R.string.title_activity_messages));
 
         MainActivity.EconomyState state = MainActivity.getEconomyState();
         if(state!= MainActivity.EconomyState.Normal){
@@ -82,7 +80,7 @@ public class MessagesActivity extends AppCompatActivity {
         });
 
         ListView listview = (ListView)findViewById(R.id.MessageView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.text_simple_whiteonblack, R.id.WhiteOnBlack, MessagesText);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.text_simple_whiteonblack, R.id.WhiteOnBlack, MessagesText);
         listview.setAdapter(adapter);
 
 /*

@@ -7,13 +7,14 @@ import java.util.Random;
 
 /**
  * Created by Galadar on 29/9/2015.
+ * Finance Object
  */
 public class Finance {
 
-    long EconomySize;
     private double[][] outlooks;
-    HashSet CompaniesNames;
-    HashSet Scams;
+    long size1, size2;
+    HashSet<String> CompaniesNames;
+    HashSet<String> Scams;
     int[][] ScamResolution;
     String[] Names;
     int[][] Shares;
@@ -23,24 +24,14 @@ public class Finance {
     Share share;
     int numComp;
 
-    public String getSetCompName(int i){
-        Object[] com = CompaniesNames.toArray();
-        return com[i].toString();
-    }
-
-    public int getSetCompNum(){
-        return CompaniesNames.size();
-    }
-
-
     public Finance(int size) { //Quick Game Constructor
         numComp = size*10;
-        Companies = new int[numComp][6];
+        Companies = new int[numComp][7];
         Shares = new int[numComp][5];
         Names = new String[numComp];
         Short = new int[numComp][2];
-        CompaniesNames = new HashSet();
-        Scams = new HashSet();
+        CompaniesNames = new HashSet<>();
+        Scams = new HashSet<>();
         ScamResolution = new int[numComp][2];
         for(int i=0;i<numComp;i++){
             String name = randomName();
@@ -55,6 +46,7 @@ public class Finance {
                 Companies[i][3] = company.get10000Outlook();
                 Companies[i][4] = company.getLastRevenue();
                 Companies[i][5] = company.getInvestment();
+                Companies[i][6] =(int)Math.round(company.getMarketShare());
                 Shares[i][0] = share.getCurrentSharePrice();
                 Shares[i][1] = 0; //Amount Owned
                 Shares[i][2] = company.getTotalShares();
@@ -102,7 +94,8 @@ public class Finance {
             addScamData(sid, type, totalDays);
         }
 
-        this.EconomySize = calcEconomySize();
+        size1 = calcEconSize1();
+        size2 = calcEconSize2();
 
     }
 
@@ -110,12 +103,14 @@ public class Finance {
         String name;
         int CurrentDay = MainActivity.getClock().totalDays();
         numComp = DBHandler.getMaxSID();
-        Companies = new int[numComp][6];
+        size1 = DBHandler.getEconomySize1();
+        size2 = DBHandler.getEconomySize2();
+        Companies = new int[numComp][7];
         Shares = new int[numComp][5];
         Names = new String[numComp];
         Short = new int[numComp][2];
-        CompaniesNames = new HashSet();
-        Scams = new HashSet();
+        CompaniesNames = new HashSet<>();
+        Scams = new HashSet<>();
         for(int i=0; i<DBHandler.getMaxSID();i++){
             name = DBHandler.getDBShareName(i);
             boolean ok = CompaniesNames.add(name);
@@ -134,7 +129,8 @@ public class Finance {
             Companies[i][3] = DBHandler.get10000CompOutlook(name);
             Companies[i][4] = DBHandler.getLastRevenue(name);
             Companies[i][5] = DBHandler.getInvestment(name);
-            Shares[i][0] = DBHandler.getDBCurrPrice(i);
+            Companies[i][6] = (int)Math.round(DBHandler.getCompMarketShare(name) * 1000);
+            Shares[i][0] = DBHandler.getDBLastClose(i);
             Shares[i][1] = DBHandler.getOwnedShare(i);
             Shares[i][2] = DBHandler.getTotalShares(i);
             Shares[i][3] = DBHandler.getDBLastClose(i);
@@ -185,12 +181,12 @@ public class Finance {
 
     public Finance(MemoryDB DBHandler, int size) { //New Game Contsructor
         numComp = size*10;
-        Companies = new int[numComp][6];
+        Companies = new int[numComp][7];
         Shares = new int[numComp][5];
         Names = new String[numComp];
         Short = new int[numComp][2];
-        Scams = new HashSet();
-        CompaniesNames = new HashSet();
+        Scams = new HashSet<>();
+        CompaniesNames = new HashSet<>();
         ScamResolution = new int[numComp][2];
         for(int i=0;i<numComp;i++){
             String name = randomName();
@@ -207,6 +203,7 @@ public class Finance {
                 Companies[i][3] = company.get10000Outlook();
                 Companies[i][4] = company.getLastRevenue();
                 Companies[i][5] = company.getInvestment();
+                Companies[i][6] = (int)Math.round(company.getMarketShare()*1000);
                 Shares[i][0] = share.getCurrentSharePrice();
                 Shares[i][1] = 0; //Amount Owned
                 Shares[i][2] = company.getTotalShares();
@@ -232,7 +229,10 @@ public class Finance {
             outlooks[i][1]=0;
         }
 
-        this.EconomySize = calcEconomySize();
+        size1 = calcEconSize1();
+        size2 = calcEconSize2();
+        DBHandler.setEconomySize1(size1);
+        DBHandler.setEconomySize2(size2);
 
     }
 
@@ -242,9 +242,37 @@ public class Finance {
     }
 
 
+    public long calcEconSize1(){ //Econ Size of shares
+        long size=0;
+        for (int i = 0; i < Companies.length; i++) {
+            size+=getTotalShares(i)*getShareCurrPrince(i);
+        }
+        return size;
+    }
+
+    public long getEconSize1(){ //Econ Size of shares
+        return this.size1;
+    }
+
+    public long calcEconSize2(){ //Econ Size of Companies
+        long size=0;
+        for (int i = 0; i < Companies.length; i++) {
+            size+=getCompTotalValue(i);
+        }
+        return size;
+    }
+
+    public long getEconSize2(){ //Econ Size of Companies
+        return this.size2;
+    }
+
     public void ShortShare(int sid, int amount, int days){
         Short[sid][0]=amount;
         Short[sid][1]=days;
+    }
+
+    public double getMarketShare(int sid){
+        return (double)Companies[sid][6]/1000;
     }
 
     public boolean isShorted(int SID){
@@ -260,35 +288,19 @@ public class Finance {
     }
 
     public void alterRemShares(int id, int amount){
-        Shares[id][4] -= amount;
+        int newAm = Shares[id][4] - amount;
+        if(newAm<0) newAm = 0;
+        else if(newAm>getTotalShares(id))newAm = getTotalShares(id);
+        Shares[id][4] = newAm;
     }
 
     public int getShortRemainingDays(int SID){ return Short[SID][1]; }
 
     public int getPosShortAmount(int SID){ return Math.abs(Short[SID][0]); }
 
-    public long getEconomySize() {
-        return calcEconomySize();
-    }
+    public int getLastRevenue(int id) { return Companies[id][4]; }
 
-    public int getLastRevenue(int id) {
-        return Companies[id][4];
-    }
-
-    public void resetEconomySize() {
-        this.EconomySize = calcEconomySize();
-    }
-
-    public long calcEconomySize(){
-        double size = 0;
-
-        for (int i = 0; i < Companies.length; i++) {
-            size += (double)getCompTotalValue(i)/100;
-        }
-
-        return Math.round(size);
-    }
-
+    public void setLastRevenue(int id, int revenue) { Companies[id][4] = revenue; }
 
     public int getShareCurrPrince(int id){
         return Shares[id][0];
@@ -312,11 +324,11 @@ public class Finance {
             if(ScamResolution[i][1]>=0){
                 ScamResolution[i][1]--;
             }
+            resetRemShares(i);
         }
     }
 
-    public boolean isScam(int i){
-        if (Scams.isEmpty())return false;
+    public boolean isScam(int i) {
         return Scams.contains(getName(i));
     }
 
@@ -373,7 +385,7 @@ public class Finance {
     }
 
     public double getCompOutlook(int id){
-        return (double)Companies[id][3]/1000;
+        return (double)Companies[id][3]/10000;
     }
 
     public void setCompOutlook(int id, double newO){
@@ -485,7 +497,7 @@ public class Finance {
         resetRemShares(i);
     }
 
-    public int getSectorOutlookIndex(String Sector){
+    public int getSectorOutlookIndex(String Sector){ //For Finance Tables
         int index = -1;
         switch (Sector){
             case "Constr":
@@ -523,7 +535,7 @@ public class Finance {
     }
 
     public void resetRemShares(int SID) {
-        Shares[SID][4]=(int)Shares[SID][2]/2;
+        Shares[SID][4]=Shares[SID][2]/2;
     }
 
     public int getRandomActiveSID() {
@@ -539,15 +551,8 @@ public class Finance {
         CompaniesNames.remove(name);
     }
 
-    public int getoldSID(String name) {
-        for (int i = 0; i <Names.length; i++) {
-            if(Names[i]==name) return i;
-        }
-        return -1;
-    }
-
     public int Getdivident(int i, int revenue) {
-        int divident = Math.max((int)getShareCurrPrince(i)/100, 100); //min divident of $1, max at 1%of share price
+        int divident = Math.max(getShareCurrPrince(i)/100, 100); //min divident of $1, max at 1%of share price
         Random random = new Random();
         while (divident*getTotalShares(i)*2>revenue){ //no more than half of revenue to divident
             divident-=random.nextInt(100);
@@ -555,10 +560,12 @@ public class Finance {
         return divident;
     }
 
-    public long getShareEconSize() {
+    public long getSecAvgRev(int Sec) {
         long size=0;
-        for (int i = 0; i < getNumComp(); i++) {
-            size+=getTotalShares(i)*getShareCurrPrince(i);
+        for (int i = 0; i < Companies.length; i++) {
+            if(getCompSectorInt(i)==Sec){
+                size+=getCompRevenue(i);
+            }
         }
         return size;
     }
@@ -570,5 +577,24 @@ public class Finance {
             Names[i]=NamesObj[i].toString();
         }
         numComp=Names.length;
+    }
+
+    public long getMarketSize() {
+        long totalSize = getEconSize1()+getEconSize2();
+        return totalSize/6000*Sectors.values().length; //return average size per industry, per day (60 days in term) /100 (for emulation)
+    }
+
+    public long getSectorValue(int Sec) {
+        long size=0;
+        for (int i = 0; i < Companies.length; i++) {
+            if(getCompSectorInt(i)==Sec){
+                size+=getCompTotalValue(i);
+            }
+        }
+        return size;
+    }
+
+    public long getFullEconSize() {
+        return getEconSize1()+getEconSize2();
     }
 }

@@ -18,6 +18,7 @@ public class PlayerInfoActivity extends AppCompatActivity {
     boolean playSound;
     static Daytime time;
     static TextView daytimeView;
+    static TextView playerInfoBar;
     static int assets;
     static int level;
     static long money;
@@ -27,6 +28,8 @@ public class PlayerInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_info);
+
+        this.setTitle(getString(R.string.title_activity_player_info));
 
         time = MainActivity.getClock();
         Bundle data = getIntent().getExtras();
@@ -43,7 +46,7 @@ public class PlayerInfoActivity extends AppCompatActivity {
         //boolean activate LevelUp button
         boolean ena = (((double)value/100)>=next) & (level<6);
 
-        TextView playerInfoBar = (TextView)findViewById(R.id.PlayerDataInfo);
+        playerInfoBar = (TextView)findViewById(R.id.PlayerDataInfo);
         if(money%10==0)zerodigit="0";
         else zerodigit = "";
         String q = "Lvl "+level+": $"+Double.toString((double)money/100)+zerodigit+" ("+assets+") ";
@@ -97,9 +100,7 @@ public class PlayerInfoActivity extends AppCompatActivity {
             }
         });
 
-        TextView topBarPlayer = (TextView)findViewById(R.id.PlayerDataInfo);
-        TextView topBarDaytime = (TextView)findViewById(R.id.DaytimeInfo);
-        UpdateTopBar(topBarPlayer, topBarDaytime);
+        UpdateTopBar(playerInfoBar, daytimeView);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
             @Override

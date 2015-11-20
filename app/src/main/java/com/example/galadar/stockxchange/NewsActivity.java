@@ -2,13 +2,11 @@ package com.example.galadar.stockxchange;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 public class NewsActivity extends Activity {
@@ -19,9 +17,11 @@ public class NewsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
-        setTitle("Daily Messanger");
+        setTitle(getString(R.string.title_activity_news));
 
         String[] news = getIntent().getExtras().getStringArray("NewsArray");
+
+        assert news!=null;
 
         TextView TitleView = (TextView)findViewById(R.id.NewsTitle);
         TitleView.setText(news[0]);

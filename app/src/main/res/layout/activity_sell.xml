@@ -237,7 +237,7 @@
             android:background="@color/black"
             android:text="@string/Max"
             android:id="@+id/MaxSharesButton"
-            android:layout_weight="0.15"/>
+            android:layout_weight="0.12"/>
 
         <Button
             android:layout_width="0dp"
@@ -246,7 +246,7 @@
             android:background="@color/black"
             android:text="@string/Add100"
             android:id="@+id/Add100SharesButton"
-            android:layout_weight="0.1"/>
+            android:layout_weight="0.13"/>
 
         <Button
             android:layout_width="0dp"

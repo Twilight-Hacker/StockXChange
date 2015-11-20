@@ -28,11 +28,9 @@
     <color name="background_floating_material_light">@android:color/white</color>
     <color name="background_material_dark">@color/material_grey_850</color>
     <color name="background_material_light">@color/material_grey_50</color>
-    <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/values/strings.xml -->
-    <eat-comment/>
-    <color name="black">#000000</color>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/values/colors.xml -->
     <eat-comment/>
+    <color name="black">#000000</color>
     <color name="black_overlay">#66000000</color>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>
@@ -94,7 +92,7 @@
     <color name="switch_thumb_disabled_material_light">#ffbdbdbd</color>
     <color name="switch_thumb_normal_material_dark">#ffbdbdbd</color>
     <color name="switch_thumb_normal_material_light">#fff1f1f1</color>
-    <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/values/colors.xml -->
     <eat-comment/>
     <color name="white">#ffffff</color>
     <declare-styleable name="ActionBar"><attr name="navigationMode"><enum name="normal" value="0"/><enum name="listMode" value="1"/><enum name="tabMode" value="2"/></attr><attr name="displayOptions"><flag name="none" value="0"/><flag name="useLogo" value="0x1"/><flag name="showHome" value="0x2"/><flag name="homeAsUp" value="0x4"/><flag name="showTitle" value="0x8"/><flag name="showCustom" value="0x10"/><flag name="disableHome" value="0x20"/></attr><attr name="title"/><attr format="string" name="subtitle"/><attr format="reference" name="titleTextStyle"/><attr format="reference" name="subtitleTextStyle"/><attr format="reference" name="icon"/><attr format="reference" name="logo"/><attr format="reference" name="divider"/><attr format="reference" name="background"/><attr format="reference|color" name="backgroundStacked"/><attr format="reference|color" name="backgroundSplit"/><attr format="reference" name="customNavigationLayout"/><attr name="height"/><attr format="reference" name="homeLayout"/><attr format="reference" name="progressBarStyle"/><attr format="reference" name="indeterminateProgressStyle"/><attr format="dimension" name="progressBarPadding"/><attr name="homeAsUpIndicator"/><attr format="dimension" name="itemPadding"/><attr format="boolean" name="hideOnContentScroll"/><attr format="dimension" name="contentInsetStart"/><attr format="dimension" name="contentInsetEnd"/><attr format="dimension" name="contentInsetLeft"/><attr format="dimension" name="contentInsetRight"/><attr format="dimension" name="elevation"/><attr format="reference" name="popupTheme"/></declare-styleable>
@@ -222,70 +220,122 @@
     <integer name="status_bar_notification_info_maxnum">999</integer>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/values/strings.xml -->
     <eat-comment/>
-    <string name="About">About</string>
-    <string name="Add">+1 Share</string>
-    <string name="Add1">+1</string>
-    <string name="Add10">+10</string>
-    <string name="Add100">+100</string>
-    <string name="Amount">Number of Shares: </string>
-    <string name="AppName">Stock XChange 2</string>
-    <string name="BackButton">Back</string>
-    <string name="Buy_Button">Buy</string>
-    <string name="CancelButton">Cancel</string>
-    <string name="CompanyInfo">Info</string>
-    <string name="Company_Activity_Tittle">Company Analysis</string>
-    <string name="Company_Name">Shortened Name: </string>
-    <string name="Company_Sector">Industry: </string>
-    <string name="Company_Sectror">Industry:</string>
-    <string name="Company_Total_Value">Total Value Reported: </string>
-    <string name="Cost">Price:</string>
-    <string name="Economy">Economy</string>
-    <string name="EconomySize">Economy Size</string>
-    <string name="Exit">Exit</string>
-    <string name="GetInfo">Get Info</string>
-    <string name="InfoButton">INFO</string>
-    <string name="LastTermInvest">Invested:</string>
-    <string name="LastTermRev">Last Term Revenue:</string>
-    <string name="LevelUp">Level Up</string>
-    <string name="Max">Max</string>
-    <string name="MeetingCancel">I don\'t care</string>
-    <string name="Messages">Messages</string>
-    <string name="News">News</string>
-    <string name="NextButton">Next</string>
-    <string name="NextLevel">Level up at:</string>
-    <string name="OK">Back</string>
-    <string name="Ownership_file_key">com.example.galadar.stockxchange.ownerdata</string>
-    <string name="PlayerButton">Player</string>
-    <string name="PlayerNameLbl">Name</string>
-    <string name="Player_Activity_Tittle">Player Info</string>
-    <string name="Player_Assets">Assets: </string>
-    <string name="Player_Fame">Fame:</string>
-    <string name="Player_Level">Current Level: </string>
-    <string name="Player_Money">Money: </string>
-    <string name="Player_Name">Player Name:</string>
-    <string name="Player_Net_Value">Net Value: </string>
-    <string name="PrevButton">Previous</string>
-    <string name="Remove">-1 Share</string>
-    <string name="Remove1">-1</string>
-    <string name="Remove10">-10</string>
-    <string name="Remove100">-100</string>
-    <string name="Reset">Reset</string>
-    <string name="ScamCheck">Report</string>
-    <string name="Sell_Button">Sell</string>
-    <string name="SettleDate">Settle:</string>
-    <string name="Share_Activity_Tittle">Share Analysis</string>
-    <string name="Share_Current_Price">Current Price: </string>
-    <string name="Share_Name">Name: </string>
-    <string name="Share_Owned">Shares Owned: </string>
-    <string name="Share_Prev_Close">Last Close: </string>
-    <string name="Shares_Owned_Value">Owned Shares Value: </string>
-    <string name="ShortSales">Days to settle:</string>
-    <string name="ShortSellWarning">Short sales are settled at day start.</string>
-    <string name="TAG">com.example.galadar.stockxchange</string>
-    <string name="TermEndDialogText">Please wait while data calculation is in progress.</string>
-    <string name="TotalCompanies">Companies</string>
-    <string name="Total_Shares">Shares: </string>
-    <string name="Zero">0</string>
+    <string name="About">"About"</string>
+    <string name="Add1">"+1"</string>
+    <string name="Add10">"+10"</string>
+    <string name="Add100">"+100"</string>
+    <string name="Amount">"Number of Shares: "</string>
+    <string name="AppName">"StockXChange2"</string>
+    <string name="AvoidBankrupty">"Used Asset to escape Bankrupty"</string>
+    <string name="BackButton">"Back"</string>
+    <string name="BuyActivityTitle">"Buy"</string>
+    <string name="Buy_Button">"Buy"</string>
+    <string name="CancelButton">"Cancel"</string>
+    <string name="CompanyInfo">"Info"</string>
+    <string name="Company_Activity_Title">"Company Analysis"</string>
+    <string name="Company_Name">"Shortened Name: "</string>
+    <string name="Company_Sector">"Industry: "</string>
+    <string name="Company_Sectror">"Industry:"</string>
+    <string name="Company_Total_Value">"Total Value Reported: "</string>
+    <string name="Cost">"Price:"</string>
+    <string name="Credits">""This game is the first work created by an independent developer. I hope you enjoyed it.\n\nImages come from free stock images sites (like Pixabay).\n\nLaunch Image/Icon by Katrina.Tuliao - http://www.flickr.com/photos/thewalkingirony/3051500551/\n\nBell sound recorded by Brylon Terry.\n\nThis game is and will remain free and open source.\n\nIf you liked it, please leave a good review.\n\nBugs and recomendations at\nswilliammccoy@gmail.com\nbill.fragkas@gmail.com""</string>
+    <string name="CreditsTitle">"Credits"</string>
+    <string name="Economy">"Economy"</string>
+    <string name="EconomySize">"Economy Size"</string>
+    <string name="Exit">"Exit"</string>
+    <string name="ExitButton">"Exit"</string>
+    <string name="GameOver">"GAME OVER"</string>
+    <string name="GameOverMessage">"You have been arrested after amassing a tremendous amount of debt.\n\nYou have lost the game."</string>
+    <string name="GetInfo">"Get Info"</string>
+    <string name="Info1">"The %1$s company"</string>
+    <string name="InfoButton">"INFO"</string>
+    <string name="InfoIlligalNeg">"is not involved in illegal activities."</string>
+    <string name="InfoIlligalPos">"is related to shady activities."</string>
+    <string name="InfoShareDown">"share price is expected to decrease"</string>
+    <string name="InfoShareUp">"share price is expected to increase."</string>
+    <string name="InfoUser">"USER "</string>
+    <string name="InvitTitle">"Invitation to a party"</string>
+    <string name="InviteDecline">"Decline"</string>
+    <string name="LastTermInvest">"Invested:"</string>
+    <string name="LastTermRev">"Last Term Revenue:"</string>
+    <string name="LevelUp">"Level Up"</string>
+    <string name="Max">"Max"</string>
+    <string name="MeetingCancel">"I don\'t care"</string>
+    <string name="MessageGo">"Go"</string>
+    <string name="MessageOK">"OK"</string>
+    <string name="Messages">"Messages"</string>
+    <string name="NewGame">"\"Proceeding will erase all of your data and progress except your full assets.\n\nYou will start again at level 1 with $10000 and nothing owned.\n\nYou will also lose any part-gained assets.\n\nAre you sure you want to proceed?\""</string>
+    <string name="NewGameTitle">"New Game"</string>
+    <string name="NewInfo">New Info</string>
+    <string name="News">"News"</string>
+    <string name="NewsAccel">"The government officials report that the future of our economy is bright, and companies can expect above average profits."</string>
+    <string name="NewsAccelTitle">"Economy Accelerates"</string>
+    <string name="NewsBoom">"The government officials report that the economy is Booming, and great profit is to be made in the foreseable future, in all Industries."</string>
+    <string name="NewsBoomTitle">"Economic Boom"</string>
+    <string name="NewsBunkrupty">"Company %1$s suddendly declared bankruptcy today.\n\nThe authorities state that the Company was found to be involved in shady activities, and the CEO was placed under arrest."</string>
+    <string name="NewsBunkruptyTitle">"Company Bankrupts"</string>
+    <string name="NewsDepression">"Economy is going from bad to worse, and government officials are discussing possible actions to help the economy recover."</string>
+    <string name="NewsDepressionTitle">"Depression"</string>
+    <string name="NewsExplosion">"An explosion has been reported. The authorities are investigating the causes"</string>
+    <string name="NewsExplosionTitle">"Explosion"</string>
+    <string name="NewsPonzi">"Company %1$s suddendly declared bankruptcy today.  The authorities state that the Company was found to be involved in a Ponzi Scheme, and the CEO was placed under arrest."</string>
+    <string name="NewsPumpDump">"A Pump and Dump scheme was executed today, leaving %1$s shareholders in a tight situation, counting losses.\n\nLaw enforcement agencies are conducting an investigation to locate the person or persons responsible."</string>
+    <string name="NewsPumpDumpTitle">"Stock Scheme leaves brokers in despair"</string>
+    <string name="NewsQuake">"An EarthQuake of Magnitude %1$f has been reported."</string>
+    <string name="NewsQuakeTitle">"Earthquake"</string>
+    <string name="NewsRecess">"The government officials report that the economy not doing very well, and companies should steer carefully to avoid losses."</string>
+    <string name="NewsRecessTitle">"Economic Reccess"</string>
+    <string name="NewsRiots">"There are reports of riots in the city center. Citizens are advised to avoid the area."</string>
+    <string name="NewsRiotsTitle">"Riots"</string>
+    <string name="NewsScandal">"Company %1$s was found to be in violation of multiple laws and regulations.  The results of the investigation, published by authorities, indicate corruption at the highest levels of the company, and the govemnment has already taken action."</string>
+    <string name="NewsScandalTitle">"Finance world shaken"</string>
+    <string name="NewsShortDistort">"A Short and Distort scheme was executed today, leaving %1$s in a tight situation, counting losses.\n\nLaw enforcement agencies are conducting an investigation to locate the person or persons responsible."</string>
+    <string name="NewsShortDistortTitle">"A company in distress"</string>
+    <string name="NewsTyphoon">"A Typhoon of Category %1$f has hit our area."</string>
+    <string name="NewsTyphoonTitle">"Typhoon"</string>
+    <string name="NewsWar">"An invasion on our territory signals the start of a War. All armed forces have mobilized to deal with the invasion."</string>
+    <string name="NewsWarTitle">"WAR"</string>
+    <string name="NextButton">"Next"</string>
+    <string name="NextLevel">"Level up at:"</string>
+    <string name="NoButton">"NO"</string>
+    <string name="NoNewsBody">"Nothing to report"</string>
+    <string name="NoNewsTitle">"All is well"</string>
+    <string name="OK">"Back"</string>
+    <string name="PlayerButton">"Player"</string>
+    <string name="PlayerNameLbl">"Name"</string>
+    <string name="Player_Activity_Tittle">"Player Info"</string>
+    <string name="Player_Assets">"Assets: "</string>
+    <string name="Player_Fame">"Fame:"</string>
+    <string name="Player_Level">"Current Level: "</string>
+    <string name="Player_Money">"Money: "</string>
+    <string name="Player_Net_Value">"Net Value: "</string>
+    <string name="PrevButton">"Previous"</string>
+    <string name="QuickGame">"The quick game option is useful for seeing what a level 5 player is like, and enjoy the full game, without fear of altering the saved data. It is not recommended for new players. Proceed?"</string>
+    <string name="QuickGameTitle">"Quick Game"</string>
+    <string name="Quit">"Quit"</string>
+    <string name="QuitMessage">"Do you want to exit the game?"</string>
+    <string name="Remove1">"-1"</string>
+    <string name="Remove10">"-10"</string>
+    <string name="Remove100">"-100"</string>
+    <string name="Reset">"Reset"</string>
+    <string name="ScamCheck">"Report"</string>
+    <string name="Sell_Button">"Sell"</string>
+    <string name="SettleDate">"Settle:"</string>
+    <string name="Share_Activity_Tittle">"Share Analysis"</string>
+    <string name="Share_Current_Price">"Current Price: "</string>
+    <string name="Share_Name">"Name: "</string>
+    <string name="Share_Owned">"Shares Owned: "</string>
+    <string name="Share_Prev_Close">"Last Close: "</string>
+    <string name="Shares_Owned_Value">"Owned Shares Value: "</string>
+    <string name="ShortSales">"Days to settle:"</string>
+    <string name="ShortSellWarning">"Short sales are settled at day start."</string>
+    <string name="TAG">"DevLog"</string>
+    <string name="TermEndDialogText">"Please wait while data calculation is in progress."</string>
+    <string name="ToastDayStart">"Day Started"</string>
+    <string name="ToastNewGameImpossible">"Not possible in Quick Game"</string>
+    <string name="TotalCompanies">"Companies"</string>
+    <string name="Total_Shares">"Shares: "</string>
+    <string name="Zero">"0"</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>
     <string name="abc_action_bar_home_description">Navigate home</string>
@@ -307,35 +357,42 @@
     <string name="abc_toolbar_collapse_description">Collapse</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/values/strings.xml -->
     <eat-comment/>
-    <string name="actionBack">Back to main</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_sound">Play Sounds</string>
-    <string name="app_name">StockXchange</string>
-    <string name="backMain">Back to Main</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="newGame">New Game</string>
-    <string name="preference_file_key">com.example.galadar.stockxchange.gamedata</string>
-    <string name="quick_game">Quick Game</string>
+    <string name="actionBack">"Back to main"</string>
+    <string name="action_settings">"Settings"</string>
+    <string name="action_sound">"Play Sounds"</string>
+    <string name="app_name">"Stock Xchange 2"</string>
+    <string name="backMain">"Back to Main"</string>
+    <string name="dummy_button">"Dummy Button"</string>
+    <string name="dummy_content">"DUMMY\nCONTENT"</string>
+    <string name="extra">"Extra:"</string>
+    <string name="hello_world">"Hello world!"</string>
+    <string name="invite1">"You received an Invitation to a party. Attending will cost $"</string>
+    <string name="invite2">".00 and you will earn"</string>
+    <string name="invite3">" assets.  What do you want to do?"</string>
+    <string name="inviteAccept">"Accept"</string>
+    <string name="newGame">"New Game"</string>
+    <string name="noInfo">"There are no info tips at this point."</string>
+    <string name="quick_game">"Quick Game"</string>
+    <string name="shares">"shares"</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>
     <string name="status_bar_notification_info_overflow">999+</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/values/strings.xml -->
     <eat-comment/>
-    <string name="title_activity_activity__info">Activity_Info</string>
-    <string name="title_activity_buy">BuyActivity</string>
-    <string name="title_activity_company">Company Info</string>
-    <string name="title_activity_economy_info">Economy Info</string>
-    <string name="title_activity_info">InfoActivity</string>
-    <string name="title_activity_meeting">MeetingActivity</string>
-    <string name="title_activity_messages">MessagesActivity</string>
-    <string name="title_activity_news">NewsActivity</string>
-    <string name="title_activity_player_info">PlayerInfoActivity</string>
-    <string name="title_activity_sell">SellActivity</string>
-    <string name="title_activity_share">ShareActivity</string>
-    <string name="title_activity_splash">SplashActivity</string>
-    <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="termEnd">"Starting Term"</string>
+    <string name="title_activity_activity__info">"Activity_Info"</string>
+    <string name="title_activity_buy">"BuyActivity"</string>
+    <string name="title_activity_company">"Company Info"</string>
+    <string name="title_activity_economy_info">"Economy Info"</string>
+    <string name="title_activity_info">"Rumors"</string>
+    <string name="title_activity_meeting">"MeetingActivity"</string>
+    <string name="title_activity_messages">"Event Messages"</string>
+    <string name="title_activity_news">"Daily Times"</string>
+    <string name="title_activity_player_info">"My Info"</string>
+    <string name="title_activity_sell">"Sell"</string>
+    <string name="title_activity_share">"Share Analysis"</string>
+    <string name="title_activity_splash">"SplashActivity"</string>
+    <string name="title_activity_welcome">"WelcomeActivity"</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>

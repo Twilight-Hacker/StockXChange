@@ -1,20 +1,14 @@
 package com.example.galadar.stockxchange;
 
-import android.nfc.Tag;
-import android.util.Log;
-import android.util.Xml;
-
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Galadar on 28/10/2015.
+ * Meeting xml parser that returns meeting array list
  */
 public class MeetingXMLParser {
 
@@ -22,19 +16,20 @@ public class MeetingXMLParser {
 
     private int day;
     private String title;
-    private ArrayList speech;
+    private ArrayList<String> speech;
     private String text;
-    private String TAG = "com.example.galadar.stockxchange";
 
+/*
     public ArrayList<Meeting> getMeetings(){
         return meetings;
     }
+*/
 
     public MeetingXMLParser(){
         meetings = new ArrayList<>();
         day = 0;
         title ="";
-        speech = new ArrayList();
+        speech = new ArrayList<>();
     }
 
     public ArrayList<Meeting> parse(InputStream is){
@@ -47,7 +42,7 @@ public class MeetingXMLParser {
             parser.setInput(is, null);
 
             int EventType = parser.getEventType();
-            speech = new ArrayList();
+            speech = new ArrayList<>();
 
             while (EventType != XmlPullParser.END_DOCUMENT){
                 String tagname = parser.getName();
@@ -56,7 +51,7 @@ public class MeetingXMLParser {
                         if(tagname.equalsIgnoreCase("meeting")){
                             day = 0;
                             title = "";
-                            speech = new ArrayList();
+                            speech = new ArrayList<>();
                         }
                         break;
 

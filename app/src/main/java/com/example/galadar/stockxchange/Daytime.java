@@ -1,13 +1,11 @@
 package com.example.galadar.stockxchange;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
 
 /**
  * Created by Galadar on 1/10/2015.
+ * Daytime Object
  */
 public class Daytime{
     int term;
@@ -16,12 +14,11 @@ public class Daytime{
     int hour;
     LocalBroadcastManager context;
 
-    // TODO: change this back to day 1
     public Daytime(LocalBroadcastManager context){
         this.term =1;
-        this.day = 60;
-        this.hour = 15;
-        this.min = 10;
+        this.day = 1;
+        this.hour = 8;
+        this.min = 30;
         this.context = context;
     }
 
@@ -36,8 +33,7 @@ public class Daytime{
     public String DTtoString(){
         String zerodigit=" ";
         if(this.min==0){zerodigit="0 ";}
-        String DT =  "Term "+this.term+", Day "+this.day+"  "+this.hour+":"+this.min+zerodigit;
-        return DT;
+        return "Term "+ this.term+", Day "+ this.day+"  "+ this.hour+":"+ this.min+zerodigit;
     }
 
     public void increment(int UpdateInterval ){
@@ -98,6 +94,7 @@ public class Daytime{
         this.day = day;
     }
 
+/*
     public int getMin() {
         return min;
     }
@@ -113,4 +110,5 @@ public class Daytime{
     public void setHour(int hour) {
         this.hour = hour;
     }
+*/
 }

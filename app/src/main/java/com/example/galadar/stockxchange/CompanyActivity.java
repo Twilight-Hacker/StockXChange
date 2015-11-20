@@ -47,13 +47,14 @@ public class CompanyActivity extends AppCompatActivity {
 
         TextView NameView = (TextView)findViewById(R.id.CompNameDt);
         NameView.setText(f.getName(CID));
+        String title = f.getName(CID) + " "+ getString(R.string.Company_Activity_Title);
+        this.setTitle(title);
 
         TextView SectorView = (TextView)findViewById(R.id.CompSectorDt);
         SectorView.setText(f.getCompSector(CID));
 
         TextView TotalValueView = (TextView)findViewById(R.id.TotalValDt);
         int value = f.getCompTotalValue(CID);
-        value=(int)value/100;
         TotalValueView.setText("$"+Integer.toString(value));
 
         TextView TotalSharesView = (TextView)findViewById((R.id.TotalSharesDt));

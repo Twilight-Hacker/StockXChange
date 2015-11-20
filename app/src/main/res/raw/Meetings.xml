@@ -107,7 +107,7 @@
 
     <meeting>
         <day>10</day>
-        <part>News, messages and events</part>
+        <title>News, messages and events</title>
         <part>Events are ingame situations that affect the prospects of companies, industries, or even the entire economy. There are 2 kinds of events, Game Generated Events and Randomly Generated Events. These become available on later levels, and we will discuss them then.</part>
         <part>When an event takes place, the News box appears, to inform you about the event. You can view the news at any time by pressing the News button in the main screen. Keep in mind two things.</part>
         <part>Firstly, news reset every day. Secondly, you should not rely completely on news for your updates. The news box will only show the biggest Event of the day until now. A smaller Event will not remove a bigger one from the News.</part>
@@ -128,7 +128,7 @@
     </meeting>
 
     <meeting>
-        <day>-55</day>
+        <day>55</day>
         <title>Time and terms</title>
         <part>On the upper right corner of the game screens, you can see the time. Time, in the game, has multiple effects. First of all, the Term. The term represents the highest measure of time ingame, roughly equivalent to a quarter. At the end of every game term, internal game variables are recalculated, allowing the game to proceed. As you will see, this takes a while. Never forcefully exit the game while term update is in process.</part>
         <part>A term is 60 days long. days are counted as workdays only. Ingame, there are no weekends. Each day runs from 8:40 to after 15:30.</part>

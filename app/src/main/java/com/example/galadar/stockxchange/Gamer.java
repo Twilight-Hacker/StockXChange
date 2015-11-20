@@ -1,10 +1,8 @@
 package com.example.galadar.stockxchange;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
 /**
  * Created by Galadar on 29/9/2015.
+ * Gamer Object
  */
 public class Gamer {
 
@@ -57,6 +55,7 @@ public class Gamer {
         this.level = level;
     }
 
+/*
     public int getFame() {
         return fame;
     }
@@ -64,5 +63,6 @@ public class Gamer {
     public void alterFame(int alteration) {
         this.fame += fame;
     }
+*/
 
 }

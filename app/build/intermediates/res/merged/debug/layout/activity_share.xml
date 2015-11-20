@@ -231,8 +231,8 @@ android:id="@+id/ActivityShareLayout" >
         android:weightSum="1.0" >
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_weight="0.3"
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
             android:layout_height="wrap_content"
             android:background="@color/black"
             android:textColor="@color/white"
@@ -241,8 +241,8 @@ android:id="@+id/ActivityShareLayout" >
             android:textSize="30sp"/>
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_weight="0.4"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
             android:layout_height="wrap_content"
             android:background="@color/black"
             android:textColor="@color/white"
@@ -251,8 +251,8 @@ android:id="@+id/ActivityShareLayout" >
             android:textSize="30sp"/>
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_weight="0.3"
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
             android:layout_height="wrap_content"
             android:background="@color/black"
             android:textColor="@color/white"

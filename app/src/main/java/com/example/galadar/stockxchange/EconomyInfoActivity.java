@@ -36,8 +36,10 @@ public class EconomyInfoActivity extends AppCompatActivity {
         level = data.getInt("level");
         assets = data.getInt("assets");
 
+        this.setTitle(getString(R.string.title_activity_economy_info));
+
         TextView EconomySize = (TextView)findViewById(R.id.EconomySizeDt);
-        EconomySize.setText("K$"+Long.toString(Math.round(EconSize/1000)));
+        EconomySize.setText("M$"+Long.toString(Math.round(EconSize/1000000)));
         TextView CompanySize = (TextView)findViewById(R.id.TotCompDt);
         CompanySize.setText(Integer.toString(totComp));
         TextView TotalShares = (TextView)findViewById(R.id.TotalSharesDt);

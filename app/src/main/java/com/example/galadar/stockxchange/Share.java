@@ -2,6 +2,7 @@ package com.example.galadar.stockxchange;
 
 /**
  * Created by Galadar on 1/10/2015.
+ * Share Object
  */
 public class Share {
 

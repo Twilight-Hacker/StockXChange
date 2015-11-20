@@ -3,25 +3,17 @@ package com.example.galadar.stockxchange;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
- * This class is only for aetting and retrieving values from/to the Database. It will only do a minimal amount of Calculations where absolutely required.
+ * This class is only for setting and retrieving values from/to the Database. It will only do a minimal amount of Calculations where absolutely required.
  * Created by Galadar on 11/10/2015.
  */
 
 
 public class MemoryDB extends SQLiteOpenHelper {
-
-    private static MemoryDB DBHandler;
 
     public static final String DATABASE_NAME = "Galadar.DBStockXChange.db";
     public static final int DATABASE_VER = 9;
@@ -189,22 +181,9 @@ public class MemoryDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where 1;", null);
         c.moveToFirst();
-        return c.getCount();
-    }
-
-    public int[] getScamSIDs(){
-        int[] ids = new int[getScamsNo()];
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where 1;", null);
-        c.moveToFirst();
-
-        for (int i = 0; i < ids.length; i++) {
-            ids[i] = c.getInt(c.getColumnIndex(SCAMS_COLUMN_SID));
-            c.moveToNext();
-        }
-
-        return ids;
+        int a = c.getCount();
+        c.close();
+        return a;
     }
 
     public int getScamType(int sid){
@@ -212,6 +191,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where " + SCAMS_COLUMN_SID + "=" + sid + ";", null);
         if(c.moveToFirst()) type=c.getInt(c.getColumnIndex(SCAMS_COLUMN_TYPE));
+        c.close();
         return type;
     }
 
@@ -220,18 +200,8 @@ public class MemoryDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where " + SCAMS_COLUMN_SID + "=" + sid + ";", null);
         if(c.moveToFirst()) days=c.getInt(c.getColumnIndex(SCAMS_COLUMN_RESOLUTION_DAY));
+        c.close();
         return days;
-    }
-
-    public void clearALL(SQLiteDatabase db){
-        //db.execSQL("DROP TABLE " + EVENTS_TABLE_NAME + ";");
-        db.execSQL("DROP TABLE " + COMPANIES_TABLE_NAME + ";");
-        db.execSQL("DROP TABLE " + DATA_TABLE_NAME + ";");
-        db.execSQL("DROP TABLE " + OUTLOOK_TABLE_NAME + ";");
-        db.execSQL("DROP TABLE " + SCAMS_TABLE_NAME + ";");
-        db.execSQL("DROP TABLE " + PROPERTY_TABLE_NAME + ";");
-        db.execSQL("DROP TABLE " + SHORT_TABLE_NAME + ";");
-        db.execSQL("DROP TABLE " + SHARES_TABLE_NAME + ";");
     }
 
     public void ShortShare(int sid, int NewAmount, int days, long Pmoney){ //SEND TOTAL DAYS
@@ -254,8 +224,9 @@ public class MemoryDB extends SQLiteOpenHelper {
             values.put(SHORT_COLUMN_AMOUNT, NewAmount);
             db.update(SHORT_TABLE_NAME, values, where, args);
         }
-        setPlayerMoney(Pmoney);
+        c.close();
         db.close();
+        setPlayerMoney(Pmoney);
     }
 
     public void ShortSettle(int Totalday){
@@ -277,10 +248,6 @@ public class MemoryDB extends SQLiteOpenHelper {
         }
 
         if(c.moveToFirst())amount=c.getInt(c.getColumnIndex(SHORT_COLUMN_AMOUNT));
-        /*while (!c.isAfterLast()){
-
-            c.moveToNext();
-        }*/
         c.close();
         db.close();
 
@@ -384,8 +351,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         }
         c.close();
         db.close();
-        last = (double)last/100;
-        return last;
+        return last/100;
     }
 
     public int getCompPercValue(String name){
@@ -403,7 +369,7 @@ public class MemoryDB extends SQLiteOpenHelper {
     }
 
     public int get10000CompOutlook(String name){
-        int last = 0;
+        int last;
         double temp = 0;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select " + COMPANIES_COLUMN_OUTLOOK + " from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
@@ -576,6 +542,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         }
         c.close();
         db.close();
+        last = Math.round(last/100);
         return last;
     }
 
@@ -709,7 +676,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         c.close();
         db.close();
         //the main app and the user never see the assets stored as thousands, they only get the full assets as int
-        return (double)assets/1000;
+        return assets/1000;
     }
 
     public void incAssets(double amount){
@@ -764,14 +731,13 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     }
 
-    public void PrepGame(long time, int assets, Company.Sectors[] sectors){
+    public void PrepGame(long time, int assets, Company.Sectors[] sectors, int sound){
         assets *= 1000;     //Because full assets are stored as thousands
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + DATA_TABLE_NAME + " WHERE 1;");
         ContentValues values = new ContentValues();
         values.put(DATA_COLUMN_ENTRY_NAME, "money");
-        // TODO: change this back to 1000000
-        values.put(DATA_COLUMN_ENTRY_VALUE, 12500000);
+        values.put(DATA_COLUMN_ENTRY_VALUE, 1000000);
         db.insert(DATA_TABLE_NAME, null, values);
         values = new ContentValues();
         values.put(DATA_COLUMN_ENTRY_NAME, "level");
@@ -790,7 +756,11 @@ public class MemoryDB extends SQLiteOpenHelper {
         values.put(DATA_COLUMN_ENTRY_VALUE, 0);
         db.insert(DATA_TABLE_NAME, null, values);
         values = new ContentValues();
-        values.put(DATA_COLUMN_ENTRY_NAME, "economysize");
+        values.put(DATA_COLUMN_ENTRY_NAME, "economysize1");
+        values.put(DATA_COLUMN_ENTRY_VALUE, 0);
+        db.insert(DATA_TABLE_NAME, null, values);
+        values = new ContentValues();
+        values.put(DATA_COLUMN_ENTRY_NAME, "economysize2");
         values.put(DATA_COLUMN_ENTRY_VALUE, 0);
         db.insert(DATA_TABLE_NAME, null, values);
         values = new ContentValues();
@@ -803,23 +773,25 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.insert(DATA_TABLE_NAME, null, values);
         values = new ContentValues();
         values.put(DATA_COLUMN_ENTRY_NAME, "sound");
-        values.put(DATA_COLUMN_ENTRY_VALUE, 1);
+        values.put(DATA_COLUMN_ENTRY_VALUE, sound);
         db.insert(DATA_TABLE_NAME, null, values);
+        values.clear();
         values.put(DATA_COLUMN_ENTRY_NAME, "nextInvite");
         values.put(DATA_COLUMN_ENTRY_VALUE, time);
         db.insert(DATA_TABLE_NAME, null, values);
+        values.clear();
         values.put(DATA_COLUMN_ENTRY_NAME, "eventGen");
         values.put(DATA_COLUMN_ENTRY_VALUE, 0);
         db.insert(DATA_TABLE_NAME, null, values);
 
-        values = new ContentValues();
+        values.clear();
         values.put(OUTLOOK_COLUMN_NAME, "economy");
         values.put(OUTLOOK_COLUMN_OUTLOOK, 0);
         db.insert(OUTLOOK_TABLE_NAME, null, values);
 
-        for (int i = 0; i < sectors.length; i++) {
+        for (Company.Sectors sector : sectors) {
             values = new ContentValues();
-            values.put(OUTLOOK_COLUMN_NAME, sectors[i].toString());
+            values.put(OUTLOOK_COLUMN_NAME, sector.toString());
             values.put(OUTLOOK_COLUMN_OUTLOOK, 0);
             db.insert(OUTLOOK_TABLE_NAME, null, values);
         }
@@ -893,11 +865,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         c.close();
         db.close();
 
-        if(play==1){
-            return true;
-        } else {
-            return false;
-        }
+        return play == 1;
     }
 
     public void setSound(boolean play){
@@ -938,15 +906,9 @@ public class MemoryDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select * from " + SHARES_TABLE_NAME + " where 1;", null);
         c.moveToFirst();
-        return c.getCount();
-    }
-
-    public void bankrupt(int id) {
-        final String[] sid={Integer.toString(id)};
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM " + COMPANIES_TABLE_NAME + " WHERE " + COMPANIES_COLUMN_CID + "= " + sid + ";");
-        db.execSQL("DELETE FROM " + SHARES_TABLE_NAME + " WHERE " + SHARES_COLUMN_SID + "= " + sid + ";");
-        db.close();
+        int a = c.getCount();
+        c.close();
+        return a;
     }
 
     public void UpdateSID(int primaryID, int oldSID, int NewSID) {
@@ -1019,7 +981,7 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     public int getMaxSID(){
         int max = 0;
-        int temp = 0;
+        int temp;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select "+ SHARES_COLUMN_SID + " from " + SHARES_TABLE_NAME + " where 1;", null);
@@ -1078,7 +1040,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         String[] args = {"term"};
         ContentValues values = new ContentValues();
         values.put(DATA_COLUMN_ENTRY_VALUE, newTerm);
-        db.update(DATA_TABLE_NAME,values, where, args);
+        db.update(DATA_TABLE_NAME, values, where, args);
         db.close();
     }
 
@@ -1104,7 +1066,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         String[] args = {"day"};
         ContentValues values = new ContentValues();
         values.put(DATA_COLUMN_ENTRY_VALUE, newDay);
-        db.update(DATA_TABLE_NAME,values, where, args);
+        db.update(DATA_TABLE_NAME, values, where, args);
         db.close();
     }
 
@@ -1126,20 +1088,6 @@ public class MemoryDB extends SQLiteOpenHelper {
         values.put(COMPANIES_COLUMN_NAME, newName);
         db.update(COMPANIES_TABLE_NAME, values, where, args);
         db.close();
-    }
-
-    public int getTotalShares(String name) {
-        int last = -1;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select "+SHARES_COLUMN_TOTAL_SHARES+" from " + SHARES_TABLE_NAME + " where " + SHARES_COLUMN_NAME + "=\"" + name + "\";", null);
-        c.moveToFirst();
-        while (!c.isAfterLast()){
-            last = c.getInt(c.getColumnIndex(SHARES_COLUMN_TOTAL_SHARES));
-            c.moveToNext();
-        }
-        c.close();
-        db.close();
-        return last;
     }
 
     public int getTotalShares(int sid) {
@@ -1199,46 +1147,10 @@ public class MemoryDB extends SQLiteOpenHelper {
         return sect;
     }
 
-    public int getSumShares() {
-
-        int last = 0;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select "+SHARES_COLUMN_TOTAL_SHARES+" from " + SHARES_TABLE_NAME + " where 1;", null);
-        c.moveToFirst();
-        while (!c.isAfterLast()){
-            last += c.getInt(c.getColumnIndex(SHARES_COLUMN_TOTAL_SHARES));
-            c.moveToNext();
-        }
-        c.close();
-        db.close();
-        return last;
-
-    }
-
-    public int getSharesTotalValue(int sid){
-        int prod = 0;
-        int amount = 0;
-        int price = 0;
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select * from " + SHARES_TABLE_NAME + " where " + SHARES_COLUMN_SID + "=" + sid + ";", null);
-        c.moveToFirst();
-        while (!c.isAfterLast()){
-            amount = c.getInt(c.getColumnIndex(SHARES_COLUMN_TOTAL_SHARES));
-            price = c.getInt(c.getColumnIndex(SHARES_COLUMN_CURRENT_PRICE));
-            prod += amount*price;
-            c.moveToNext();
-        }
-        c.close();
-        db.close();
-        return prod;
-
-    }
-
-    public long getEconomySize() {
+    public long getEconomySize1() {
         long size = 0;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"economysize\" ;", null);
+        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"economysize1\" ;", null);
 
         c.moveToFirst();
         while (!c.isAfterLast()){
@@ -1250,10 +1162,35 @@ public class MemoryDB extends SQLiteOpenHelper {
         return size;
     }
 
-    public void setEconomySize(long size) {
+    public long getEconomySize2() {
+        long size = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"economysize2\" ;", null);
+
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            size = c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+        return size;
+    }
+
+    public void setEconomySize1(long size) {
         SQLiteDatabase db = this.getWritableDatabase();
         String where = DATA_COLUMN_ENTRY_NAME+"=?";
-        String[] args = {"economysize"};
+        String[] args = {"economysize1"};
+        ContentValues values = new ContentValues();
+        values.put(DATA_COLUMN_ENTRY_VALUE, size);
+        db.update(DATA_TABLE_NAME, values, where, args);
+        db.close();
+    }
+
+    public void setEconomySize2(long size) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = DATA_COLUMN_ENTRY_NAME+"=?";
+        String[] args = {"economysize2"};
         ContentValues values = new ContentValues();
         values.put(DATA_COLUMN_ENTRY_VALUE,size);
         db.update(DATA_TABLE_NAME, values, where, args);
@@ -1292,14 +1229,10 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     public boolean isScam(int sid){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where " + SCAMS_COLUMN_SID + "=" +sid+";", null);
-        return c.getCount()>0;
-    }
-
-    public int getNumofCompanies(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select * from " + SHARES_TABLE_NAME + " where 1;", null);
-        return c.getCount();
+        Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where " + SCAMS_COLUMN_SID + "=" + sid + ";", null);
+        boolean a = c.getCount()>0;
+        c.close();
+        return a;
     }
 
     public void addEvent(Event event, int totalDays) {
@@ -1360,7 +1293,7 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     public int getDBSharePrimaryID(String name) {
         int size = -1;
-        if(name=="")return size;
+        if(name.equals(""))return size;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select * from " + SHARES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + " = \""+name+"\" ;", null);
         if(c.getCount()==0)return size;
