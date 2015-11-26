@@ -88,14 +88,15 @@
     <string name="NoNewsTitle">"All is well"</string>
     <string name="termEnd">"Starting Term"</string>
     <string name="NoNewsBody">"Nothing to report"</string>
-    <string name="extra">"Extra:"</string>
+    <string name="extra">"Extra: "</string>
     <string name="InvitTitle">"Invitation to a party"</string>
     <string name="invite1">"You received an Invitation to a party. Attending will cost $"</string>
-    <string name="invite2">".00 and you will earn"</string>
+    <string name="invite2">".00 and you will earn "</string>
     <string name="invite3">" assets.  What do you want to do?"</string>
     <string name="inviteAccept">"Accept"</string>
     <string name="InviteDecline">"Decline"</string>
     <string name="InfoUser">"USER "</string>
+    <string name="InfoUserID">"USER %1$d"</string>
     <string name="Info1">"The %1$s company"</string>
     <string name="InfoIlligalPos">"is related to shady activities."</string>
     <string name="InfoIlligalNeg">"is not involved in illegal activities."</string>
@@ -103,18 +104,23 @@
     <string name="InfoShareDown">"share price is expected to decrease"</string>
     <string name="NewsBunkrupty">"Company %1$s suddendly declared bankruptcy today.\n\nThe authorities state that the Company was found to be involved in shady activities, and the CEO was placed under arrest."</string>
     <string name="NewsBunkruptyTitle">"Company Bankrupts"</string>
+    <string name="NewsDoubleSharesBody">"Company %1$s has decided to double its shares, to accommodate new investors through lower prices.\n\nAll investor shares have been doubled."</string>
+    <string name="NewsDoubleShares">"%1$s Doubles Shares"</string>
+    <string name="NewsHalfSharesBody">"Company %1$s has decided to half its shares, to accommodate new investors through higher prices.\n\nAll investor shares have been halved."</string>
+    <string name="NewsHalfShares">"%1$s Halves Shares"</string>
     <string name="NewsPumpDump">"A Pump and Dump scheme was executed today, leaving %1$s shareholders in a tight situation, counting losses.\n\nLaw enforcement agencies are conducting an investigation to locate the person or persons responsible."</string>
     <string name="NewsPumpDumpTitle">"Stock Scheme leaves brokers in despair"</string>
     <string name="NewsShortDistort">"A Short and Distort scheme was executed today, leaving %1$s in a tight situation, counting losses.\n\nLaw enforcement agencies are conducting an investigation to locate the person or persons responsible."</string>
     <string name="NewsShortDistortTitle">"A company in distress"</string>
-    <string name="NewsPonzi">"Company %1$s suddendly declared bankruptcy today.  The authorities state that the Company was found to be involved in a Ponzi Scheme, and the CEO was placed under arrest."</string>
+    <string name="NewsPonziTitle">"%1$s CEO Arrested"</string>
+    <string name="NewsPonzi">"Company %1$s CEO was suddendly arrested today.  The authorities state that the Company was found to be involved in a Ponzi Scheme, and the CEO was placed under arrest."</string>
     <string name="NewsScandal">"Company %1$s was found to be in violation of multiple laws and regulations.  The results of the investigation, published by authorities, indicate corruption at the highest levels of the company, and the govemnment has already taken action."</string>
     <string name="NewsScandalTitle">"Finance world shaken"</string>
     <string name="ToastDayStart">"Day Started"</string>
     <string name="NewsQuakeTitle">"Earthquake"</string>
-    <string name="NewsQuake">"An EarthQuake of Magnitude %1$f has been reported."</string>
+    <string name="NewsQuake">"An EarthQuake of Magnitude %1$0.1f has been reported."</string>
     <string name="NewsTyphoonTitle">"Typhoon"</string>
-    <string name="NewsTyphoon">"A Typhoon of Category %1$f has hit our area."</string>
+    <string name="NewsTyphoon">"A Typhoon of Category %1$d has hit our area."</string>
     <string name="NewsExplosionTitle">"Explosion"</string>
     <string name="NewsExplosion">"An explosion has been reported. The authorities are investigating the causes"</string>
     <string name="NewsRiotsTitle">"Riots"</string>
@@ -146,5 +152,18 @@
     <string name="NewsDepressionTitle">"Depression"</string>
     <string name="NewsDepression">"Economy is going from bad to worse, and government officials are discussing possible actions to help the economy recover."</string>
     <string name="NewInfo">New Info</string>
+    <string name="EndTitle">Congratulations</string>
+    <string name="EndBody">You are now a billionaire.   You can continue playing or start a new game.   You have completed this game in %1$d days.</string>
+    <string name="TermReport">Previous term Report</string>
+    <string name="TermReportBody1">In this term, %1$d companies declared bunkrupty,</string>
+    <string name="TermReportBody2">%1$d companies entered the stock Exchange,</string>
+    <string name="TermReportBody3">the Economy size changed by $ K%1$d, and the economic outlook for the new term is </string>
+    <string name="TermReportPositive">positive</string>
+    <string name="TermReportNegative">negative</string>
+    <string name="TermReportBody4">".\n\nYou paid $ %1$.2f"</string>
+    <string name="TermReportBody5">in taxes and received from dividents $ %1$.2f</string>
+    <string name="ReportTitle">Report a Scam</string>
+    <string name="ReportBody">Reporting a possible scam to the authorities cancels the scams and all its effects. The report will cost you 1 full asset.  If there is a Scam, you get the asset back immediately, otherwise you lose it. You are not informed officially of the investigation result for safety reasons.</string>
+    <string name="ReportYes">Report</string>
 
-    "</resources>
+</resources>

@@ -2,14 +2,15 @@ package com.example.galadar.stockxchange;
 
 import java.util.Random;
 
-/**
+/*
  * Created by Galadar on 29/9/2015.
  * Company Object
  */
+
 public class Company {
     String name;
-    int totalValue;
-    int currentValue;
+    long totalValue;
+    long currentValue;
     int percentageValue;
     int investment;
     int totalShares;
@@ -34,16 +35,16 @@ public class Company {
     public Company(String name) {
         Random r = new Random();
         this.name = name;
-        this.totalValue = r.nextInt(500000)+r.nextInt(100000)+r.nextInt(10000)+250000;
-        this.currentValue = 0;
+        this.totalValue = r.nextInt(400000)+r.nextInt(10000)+r.nextInt(1000)+452500;
+        this.currentValue = totalValue;
         this.percentageValue = 0;
-        this.totalShares = r.nextInt(10000)+r.nextInt(1000)+r.nextInt(100)+2500;
+        this.totalShares = Math.round(totalValue/(30 + r.nextInt(599)/100));
         this.investment = 0;
-        this.outlook = r.nextDouble();
+        this.outlook = r.nextDouble()*0.5-0.2;
         this.Sector = RandomSector();
-        this.marketShare = Math.min(Math.random(), 0.3);
+        this.marketShare = Math.random()*0.2 + 0.1;
         this.revenue = 0;
-        this.lastRevenue = r.nextInt(10000000);
+        this.lastRevenue = (int)Math.round( r.nextDouble()*0.3*totalValue );
 
         fame = 300;
     }
@@ -51,16 +52,16 @@ public class Company {
     public Company(String name, Sectors sec) {
         Random r = new Random();
         this.name = name;
-        this.totalValue = r.nextInt(1000000)+r.nextInt(100000)+r.nextInt(10000)+250000;
-        this.currentValue = 0;
+        this.totalValue = 2*r.nextInt(400000)+r.nextInt(10000)+r.nextInt(1000)+2500;
+        this.currentValue = totalValue;
         this.percentageValue = 0;
-        this.totalShares = r.nextInt(10000)+r.nextInt(1000)+r.nextInt(100)+2500;
+        this.totalShares = Math.round(totalValue/(30 + r.nextInt(599)/100));
         this.investment = 0;
         this.outlook = r.nextDouble();
         this.Sector = sec;
-        this.marketShare = Math.min(Math.random(), 0.3);
+        this.marketShare = Math.random()*0.5 - 0.15;
         this.revenue = 0;
-        this.lastRevenue = r.nextInt(10000000);
+        this.lastRevenue = r.nextInt(100000);
 
         fame = 300;
     }
@@ -101,11 +102,11 @@ public class Company {
         return i;
     }
 
-    public int getTotalValue() {
+    public long getTotalValue() {
         return totalValue;
     }
 
-    public int getCurrentValue() {
+    public long getCurrentValue() {
         return currentValue;
     }
 
@@ -130,7 +131,7 @@ public class Company {
     }
 
     public int getSectorInt(){
-        return Sector.ordinal();
+        return Sector.getValue();
     }
 
     public double getMarketShare() {
@@ -142,7 +143,7 @@ public class Company {
     }
 
     public int shareStart(){
-        return (int)Math.round((double)this.totalValue*100/(double)this.totalShares);
+        return (int)Math.round(100*(double)this.totalValue/(double)this.totalShares);
     }
 
 

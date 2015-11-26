@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -98,13 +99,13 @@ public class MainActivity extends AppCompatActivity {
             progdialog.setProgress(0);
             progdialog.show();
 
+
             if (p.getLevel() > 5 & ((p.getMoney() + f.NetWorth()) / 100) > 1000000000) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Congratulations");
-                String q = "You are now a billionaire. \n\nYou can continue playing or start a new game. \n\nYou have completed this game in " + time.totalDays() + " days.";
+                builder.setTitle(getString(R.string.EndTitle));
                 //Store High Score Here, and transmit to Google
-                builder.setMessage(q);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setMessage(getString(R.string.EndBody, time.totalDays()));
+                builder.setPositiveButton(getString(R.string.MessageOK), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
@@ -147,17 +148,22 @@ public class MainActivity extends AppCompatActivity {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             String out;
-            if (f.getBaseSectorOutlook(0) > 0) out = "positive";
-            else out = "negative";
-            builder.setTitle("Term Report");
+            if (f.getBaseSectorOutlook(0) > 0) out = getString(R.string.TermReportPositive);
+            else out = getString(R.string.TermReportNegative);
+            builder.setTitle(getString(R.string.TermReport));
             String zerodigit1, zerodigit2;
             if (tax % 10 == 0) zerodigit1 = "0";
             else zerodigit1 = "";
             zerodigit2 = "0";
-            String q = "In this term, " + NumOfBankrupties + " companies declared bunkrupty, " + newCompCounter + " companies entered the stock Exchange, the Economy size changed by $" + Long.toString(f.getEconSize2()-oldEcon) + ", and the economic outlook for the new term is " + out + ".\n\nYou paid $" + Double.toString((double) tax / 100) + zerodigit1 + " in taxes and got $" + Double.toString((double) playerDivident / 100) + zerodigit2 + " from dividents.";
-            builder.setMessage(q);
+            String tr = getString(R.string.TermReportBody1, NumOfBankrupties);
+            tr+= " "+ getString(R.string.TermReportBody2, newCompCounter);
+            tr+= " " + getString(R.string.TermReportBody3, f.getEconSize2()-oldEcon) + " " + out;
+            tr+= " " + getString(R.string.TermReportBody4, (double)tax / 100 ) + zerodigit1;
+            tr+= " " + getString(R.string.TermReportBody5, (double)playerDivident / 100 ) + zerodigit2;
 
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            builder.setMessage(tr);
+
+            builder.setPositiveButton(getString(R.string.MessageOK), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     Intent i = new Intent("DayReset");
                     dialog.dismiss();
@@ -192,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
                 DBHandler.setEconomySize1(Size1);
                 DBHandler.setEconomySize2(Size2);
             } else {
-                PSize1 = r.nextLong()*2;
-                PSize2 = r.nextLong()*4;
+                PSize1 = Math.round( Size1*(r.nextDouble()*0.4+0.8) );
+                PSize2 = Math.round( Size2*(r.nextDouble()*0.4+0.8) );
             }
 
             //New Economic Outlook
@@ -220,84 +226,84 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            long[] AvgRev = new long[Company.Sectors.values().length];
-
-            for (int i = 0; i < AvgRev.length; i++) {
-                AvgRev[i] = f.getSecAvgRev(i);
-            }
-
             Integer[] values=new Integer[1];
-            int revenue, TotVal, newInv, oldPerc, newPerc, newFame;
+            long TotVal, CurrVal;
+            int revenue, newInv, oldPerc, newPerc, newFame;
             int divident;
             double newOut;
             long playerDivident = 0;
             for (int i = 0; i < f.getNumComp(); i++) {
-                TotVal = f.getCompTotalValue(i);
-                if(TotVal==0)continue;
-                revenue = f.getCompRevenue(i);
-                newFame = 0;
-                newFame += revenue-AvgRev[f.getCompSectorInt(i)];                                   //Set New Fame, part 1
-                if(Math.abs(newFame)>150)newFame=150*(int)Math.signum(newFame);
-                long investmentRes = Math.round( (PreveconomyOutlook+1)*f.getInvestment(i) );       //calculating investment gains
-                revenue += (int) investmentRes;                                                     //add investment returns to revenue
-                revenue -= (int) Math.max(revenue * 0.18, 0);                                       //Remove taxes from remaining revenue
+                CurrVal = f.getCompCurrValue(i);
+                Log.e("CurrVal", f.getName(i)+" "+Long.toString(CurrVal));
+                if(CurrVal<=0) continue;
+                if(fullGame) TotVal = DBHandler.getCompTotalValue(f.getName(i));
+                else TotVal = f.getCompTotalValue(i);
 
-                if (revenue > 0)
-                    newInv = (int)Math.round(revenue * (double)(r.nextInt(42)+33)/100);             //Calculating new investment based on remaining revenue, from 1/3 to 3/4
-                else newInv = 0;
-
-                revenue -= newInv;                                                                  //remove invested money from revenue
-
-                if (fullGame)
-                    DBHandler.setCompInvest(f.getName(i), newInv);                                  //store to DB
-                else f.setInvestment(i, newInv);
-
-                if (fullGame)
-                    oldPerc = DBHandler.getCompPercValue(f.getName(i));                             //Getting Percentage Change in Value
+                if (fullGame) oldPerc = DBHandler.getCompPercValue(f.getName(i));                   //Getting Percentage Change in Value
                 else oldPerc = 0;
 
-                newPerc = (int)Math.round(((double)(TotVal+revenue)/TotVal)*100);                   //Calculating new Percentage Change in Value
+                long investmentRes = Math.round( (PreveconomyOutlook+1)*f.getInvestment(i) );       //calculating investment gains
+                CurrVal += (int) investmentRes/2;                                                   //add investment returns to Current and Total Values (half each)
+                TotVal +=  (int) investmentRes/2;
+
+                newPerc = (int)Math.round(((double)CurrVal/TotVal)*100);                            //Calculating new Percentage Change in Value
+                newPerc -= 100;
                 newPerc += oldPerc;
+                if (fullGame) DBHandler.setCompPercValue(f.getName(i), newPerc);                    //Store to DB
 
-                if (fullGame)
-                    DBHandler.setCompPercValue(f.getName(i), newPerc);                              //Store to DB
+                revenue = (int)(CurrVal - TotVal);
 
-                if (newPerc > 0 & revenue > 200*f.getTotalShares(i)) {                              //Decide dividends, give if percentage value positive and revenue more than twice the total shares
+                int tax = (int) Math.max(revenue * 0.18, 0);                                        //Calculate corporate tax
+
+                CurrVal -= (long)tax;                                                                     //Remove taxes from remaining revenue
+                revenue -= tax;                                                                     //Remove taxes from remaining revenue
+
+                if (revenue > 0)
+                    newInv = (int)Math.round(revenue * (double)(r.nextInt(26)+25)/100);             //Calculating new investment based on remaining revenue, from 1/2 to 1/4
+                else newInv = 0;
+
+                CurrVal -= (long)newInv;
+                revenue -= newInv;                                                                  //remove invested money from revenue
+
+                if (fullGame) DBHandler.setCompInvest(f.getName(i), newInv);                        //store to DB
+                else f.setInvestment(i, newInv);
+
+
+                if (newPerc > 0 & revenue*50 > f.getTotalShares(i)) {                              //Decide dividends, give if percentage value positive and revenue more than twice the total shares (in $)
                     divident = f.Getdivident(i, revenue);                                           //Give as dividend 1% of share price, with a min of $1
-                    p.alterMoney(Math.round(divident * f.getSharesOwned(i)));
                     playerDivident += divident * f.getSharesOwned(i);
-                    revenue -= divident * f.getTotalShares(i);
+                    int Totdivident = divident * f.getTotalShares(i);
+                    Totdivident = Math.round(Totdivident/100);
+                    CurrVal -= (long)Totdivident;
+                    revenue -= Totdivident;
                 } else {
                     divident = 0;
                 }
+                //This will never spend more than 50% of the revenue
 
-                if (divident != 0) newFame += 100;
-                if (fullGame) newFame += DBHandler.getCompFame(f.getName(i));                       //Calculate new Fame, part 2
-
-                f.setLastRevenue(i, revenue);
-                revenue = Math.round(revenue/100);                                             //because total value does not use float digits
-                f.setCompTotalValue(i, TotVal+revenue);                                             //Update total value
-
-                if(fullGame){                                                                       //store new values to DB
-                    DBHandler.setCompFame(f.getName(i), newFame);
-                    DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i));
-                    DBHandler.setCompLastRevenue(f.getName(i), revenue);
-                }
-
-                newOut = (revenue/TotVal) + (newFame/1000) + (newPerc/100) + ((double)(newInv-revenue)/revenue);   //Get New Company Outlook
-                newOut += f.getCompOutlook(i);
+                newOut = (double)CurrVal/TotVal;                                                    //Get New Company Outlook
+                newOut += f.getCompOutlook(i);                                                      //add previous outlook
 
                 if(fullGame)DBHandler.setOutlook(f.getName(i), newOut);
                 else f.setCompOutlook(i, newOut);
 
-                if (fullGame) {
-                    DBHandler.setRemShares(i, f.getTotalShares(i) / 2);                       //reset remaining prshares for price determinant
-                    DBHandler.setCompRevenue(i, 0);                                                 //reset company revenue
+                if(fullGame){                                                                       //store new values to DB
+                    newFame = (int)Math.round(100*(double)CurrVal/TotVal);                          //Old fame is discarded
+                    if (divident != 0) newFame += 100;
+                    newFame += DBHandler.getCompFame(f.getName(i));                                 //Calculate new Fame
+
+                    DBHandler.setCompFame(f.getName(i), newFame);
+                    DBHandler.setCompTotValue(f.getName(i), CurrVal);
+                    DBHandler.setCompCurrValue(f.getName(i), CurrVal);
+                    DBHandler.setCompLastRevenue(f.getName(i), revenue);
                 } else {
-                    f.resetRemShares(i);
-                    f.ResetCompRevenue(i);
+                    f.setLastRevenue(i, revenue);
+                    f.setCompTotalValue(i, CurrVal);                                                    //Update total value
+                    f.setCompCurrValue(i, CurrVal);
                 }
+                Log.e("CurrVal", f.getName(i)+" "+Long.toString(CurrVal));
             }
+
 
             values[0]=25;
             publishProgress(values);
@@ -305,14 +311,17 @@ public class MainActivity extends AppCompatActivity {
             long prevWorth;
 
             if (fullGame) prevWorth = DBHandler.getPrevNetWorth();
-            else prevWorth = f.NetWorth() / 2;
+            else prevWorth = Math.round( f.NetWorth()*0.7 );
+
+            p.alterMoney(0-playerDivident);
 
             long tax = taxes(f.NetWorth() + p.getMoney() - prevWorth);
             p.setMoney(p.getMoney() - tax);
 
-            if (fullGame) DBHandler.setPrevNetWorth(f.NetWorth());
-
-            if (fullGame) DBHandler.setPlayerMoney(p.getMoney()); //Update player money (dividents added)
+            if (fullGame) {
+                DBHandler.setPrevNetWorth(f.NetWorth()+p.getMoney());
+                DBHandler.setPlayerMoney(p.getMoney()); //Update player money (dividents added)
+            }
 
             int newCompCounter =0;
             int NumOfBankrupties = 0;
@@ -321,7 +330,8 @@ public class MainActivity extends AppCompatActivity {
 
                 int sid;
                 for (int i = 1; i <= Company.Sectors.values().length; i++) { //Add new Companies
-                    while (f.getSectorOutlook(i) > 0.5 & (f.getSectorOutlook(i) + f.getSectorOutlook(0)) > 0) {
+                    // No more than 7 active Companies per sector at any time
+                    while (f.getSecCompNum(i-1) < 7 & f.getBaseSectorOutlook(i) > 0.5 & (f.getSectorOutlook(i) + f.getSectorOutlook(0)) > 0) {
                         String name;
                         do {
                             name = Finance.randomName();
@@ -332,8 +342,8 @@ public class MainActivity extends AppCompatActivity {
                         Share s = new Share(name, sid, c.shareStart(), c.getTotalShares());
                         DBHandler.addCompany(c, sid);
                         DBHandler.addShare(s);
-                        f.alterSectorOutlook(0, (double) c.getTotalValue() / f.getSecEconSize(f.getCompSectorInt(i)));
-                        f.alterSectorOutlook(i, -(double) c.getTotalValue() / f.getSecEconSize(f.getCompSectorInt(i)));
+                        f.alterSectorOutlook(0, 2*(double) c.getTotalValue() / f.getSecEconSize(f.getCompSectorInt(i)));
+                        f.alterSectorOutlook(i, -2*(double) c.getTotalValue() / f.getSecEconSize(f.getCompSectorInt(i)));
                     }
                     DBHandler.setOutlook(Company.Sectors.values()[i - 1].toString(), f.getBaseSectorOutlook(i));
                 }
@@ -346,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
             if(fullGame){
 
                 for (int i = 0; i < f.getNumComp(); i++) { //Declare Bankrupties
-                    if (DBHandler.getCompPercValue(f.getName(i)) < -80 || DBHandler.getCompTotalValue(f.getName(i)) == 0) {
+                    if (DBHandler.getCompPercValue(f.getName(i)) < -80 || DBHandler.getCompTotalValue(f.getName(i)) <= 0 || DBHandler.getCompCurrValue(f.getName(i))<=0 ) {
                         f.removeCompanyName(f.getName(i));
                         DBHandler.bankrupt(f.getName(i));
                         f.alterSectorOutlook(0, -(double) f.getCompTotalValue(i) / f.getSecEconSize(f.getCompSectorInt(i)));
@@ -403,7 +413,7 @@ public class MainActivity extends AppCompatActivity {
             values[0]=25;
             publishProgress(values);
 
-            int newScams = r.nextInt(6)+2;
+            int newScams = r.nextInt(5)+2;
             int sid;
             int type;
             int totalDays;
@@ -414,13 +424,13 @@ public class MainActivity extends AppCompatActivity {
 
                 double e = r.nextDouble(); //5 is current total Number of Categories, from 1 to 5, see MainActivity Scam Resolution Function for details.
 
-                if (e < 0.05) type = 1;                    //Ponzi Scheme
-                else if (e <= 0.3) type = 2;              //Pump&Dump
-                else if (e <= 0.5) type = 3;              //Short&Distort
-                else if (e < 0.55) type = 4;              //Empty Room
-                else type = 5;                           //Lawbreaker Scandal
+                if (e < 0.01) type = 1;                     //Empty Room
+                else if (e <= 0.3) type = 2;                //Pump&Dump
+                else if (e <= 0.5) type = 3;                //Short&Distort
+                else if (e < 0.55) type = 4;                //Ponzi Scheme
+                else type = 5;                              //Lawbreaker Scandal
 
-                totalDays = time.totalDays(r.nextInt(25) + 25);
+                totalDays = time.totalDays(r.nextInt(25) + 25); //25 to 49 days
 
                 f.addScamData(sid, type, totalDays-currentDay);
                 if (fullGame) DBHandler.addScam(sid, type, totalDays);
@@ -471,22 +481,22 @@ public class MainActivity extends AppCompatActivity {
         switch (state) { //SetUp Current GGE
             case Boom:
                 for (int i = 1; i < f.getNumOfOutlooks(); i++) {
-                    f.setSectorEventOutlook(i, 1);
+                    f.setSectorEventOutlook(i, 0.5);
                 }
                 break;
             case Accel:
                 for (int i = 1; i < f.getNumOfOutlooks(); i++) {
-                    f.setSectorEventOutlook(i, 0.5);
+                    f.setSectorEventOutlook(i, 0.25);
                 }
                 break;
             case Recess:
                 for (int i = 1; i < f.getNumOfOutlooks(); i++) {
-                    f.setSectorEventOutlook(i, -0.5);
+                    f.setSectorEventOutlook(i, -0.25);
                 }
                 break;
             case Depres:
                 for (int i = 1; i < f.getNumOfOutlooks(); i++) {
-                    f.setSectorEventOutlook(i, -1);
+                    f.setSectorEventOutlook(i, -0.5);
                 }
                 break;
             default:
@@ -511,8 +521,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(new Intent("TimeForwarded"));
-                //TODO set this to 10000
-                BgHandler.postDelayed(this, 2000);
+                BgHandler.postDelayed(this, 10000);
             }
         };
 
@@ -560,6 +569,85 @@ public class MainActivity extends AppCompatActivity {
                     shareprice = (TextView) findViewById(100000 + i);
                     shareprice.setTextColor(0xffffffff);
                 }
+
+                Random random = new Random();
+                //Scams are resolved after Day restarts
+                for (int i = 0; i < f.getScamsNo(); i++) {
+                    switch (f.getScamType(i)){
+                        case 1:     //Empty Room (set share price to 0.1, and remaining shares to -total, revenue to - total value)
+                            if(f.getScamRemDays(i)==0){
+                                f.Bankrupt(i);//Banctrupt company
+                                if(fullGame)DBHandler.setDBCurrPrice(i, f.getShareCurrPrince(i));
+                                if(fullGame)DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i));
+                                f.removeScam(i);
+                                String story = getString(R.string.NewsBunkrupty, f.getName(i));
+                                editNews(55, getString(R.string.NewsBunkruptyTitle), story);
+                            }
+                            break;
+                        case 2:     //Pump and Dump
+                            if(f.getScamRemDays(i)<=5){
+                                f.setCompOutlook(i, f.getCompOutlook(i)+0.5);
+                                addCertainInfo(getApplicationContext(), i, random.nextInt(4000)+1007);
+                            }
+                            if(f.getScamRemDays(i)==0){
+                                Intent intent1 = new Intent("SharesTransaction");
+                                Bundle data1 = new Bundle();
+                                data1.putInt("SID", i);
+                                data1.putInt("amount", -(random.nextInt(4000)+1857));
+                                int droppedPrice = 4*(f.getShareCurrPrince(i)/5); //This is to further drop the new price
+                                data1.putInt("atPrice", droppedPrice);
+                                data1.putBoolean("ByPlayer", false);
+                                f.setCompOutlook(i, f.getCompOutlook(i) - 3.2); //Because 6 pumps in total
+                                intent1.putExtras(data1);
+                                LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent1);
+                                f.removeScam(i);
+                                String story = getString(R.string.NewsPumpDump, f.getName(i));
+                                editNews(40, getString(R.string.NewsPumpDumpTitle), story);
+                            }
+                            break;
+                        case 3:     //Short and Distort
+                            if(f.getScamRemDays(i)<=3){
+                                f.setCompOutlook(i, f.getCompOutlook(i)-0.8);
+                                addCertainInfo(getApplicationContext(), i, random.nextInt(4000) + 1007);
+                            }
+                            if(f.getScamRemDays(i)==0){
+                                f.setCompOutlook(i, f.getCompOutlook(i) + 3.0);
+                                if(fullGame) DBHandler.setCompOutlook(f.getName(i), f.getCompOutlook(i));
+                                f.removeScam(i);
+                                String story = getString(R.string.NewsShortDistort, f.getName(i));
+                                editNews(45, getString(R.string.NewsShortDistortTitle), story);
+                            }
+                            break;
+                        case 4:     //Ponzi Scheme (set share price to 0.1, and remaining shares to -total, revenue to - total value)
+                            if(f.getScamRemDays(i)==0){
+                                f.setCompCurrValue(i, f.getCompCurrValue(i)/2);
+                                if(fullGame)DBHandler.setDBCurrPrice(i, f.getShareCurrPrince(i));
+                                if(fullGame)DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i));
+                                f.removeScam(i);
+                                String story = getString(R.string.NewsPonzi, f.getName(i));
+                                editNews(50, getString(R.string.NewsPonziTitle, f.getName(i)), story);
+                            }
+                            break;
+                        case 5:     //Lawbreaker Scandal
+                            if(f.getScamRemDays(i)==0){
+                                int magnitude = getLinnearRN(14)+1;
+
+                                f.setCompOutlook(i, f.getCompOutlook(i) - magnitude * 0.05);
+                                if(magnitude>4) f.setCompCurrValue(i, f.getCompCurrValue(i) - 10000*magnitude);
+                                f.removeScam(i);
+                                if(fullGame){
+                                    DBHandler.setCompOutlook(f.getName(i), f.getCompOutlook(i));
+                                    DBHandler.setCompRevenue(i, f.getCompRevenue(i));
+                                }
+                                String story = getString(R.string.NewsScandal, f.getName(i));
+                                editNews(30+magnitude*10, getString(R.string.NewsScandalTitle), story);
+                            }
+                            break;
+                        default:    //Do nothing, since category/type is 0, thus no Scams
+                            break;
+                    }
+                }
+
                 callforMeetings();
             }
         }, new IntentFilter("DayReset"));
@@ -608,7 +696,7 @@ public class MainActivity extends AppCompatActivity {
     public void editNews(int priority, String title, String body){
         if(priority>NewsPriority){
             News[0]="";
-            if(NewsPriority>1)News[0]+=R.string.extra;
+            if(NewsPriority>1)News[0]+=getString(R.string.extra);
             News[0]+=title;
             News[1]=body;
             NewsPriority=priority;
@@ -670,7 +758,6 @@ public class MainActivity extends AppCompatActivity {
         if(today!=null){
             LaunchMeeting(today.getMeetingTitle(), today.getMeetingSpeech());
         }
-
         gaming=true;
     }
 
@@ -748,6 +835,7 @@ public class MainActivity extends AppCompatActivity {
                 UpdateTopBar(topBarPlayer, topBarDaytime);
                 callforTransactions();
                 callInfoGen();
+                f.revenue(DBHandler);
             }
         }
     };
@@ -798,10 +886,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             default:
-                double perLeft = (double)f.getRemShares(reference)/f.getTotalShares(reference);
-                double offer = ( (double)f.getShareCurrPrince(reference)*0.01 ) / ( (double)f.getCompTotalValue(reference)/f.getTotalShares(reference) );
-                double demand = f.getCompOutlook(reference)*2 + f.getSectorOutlook(f.getCompSectorInt(reference)+1);
-                double a = getDeterminant(perLeft, offer, demand); //f.getCompOutlook(reference)+f.getSectorOutlook(f.getCompSectorInt(reference)+1)+((double)f.getRemShares(reference)/f.getTotalShares(reference))-0.5;
+                double a = getDeterminant(f.getAvg(reference), f.getCap(reference));
                 if(truth){
                     if(a>0) {
                         info+=" "+getString(R.string.InfoShareUp);
@@ -819,29 +904,29 @@ public class MainActivity extends AppCompatActivity {
         return info;
     }
 
-    public static String addCertainInfo(int reference, int user){
+    public static String addCertainInfo(Context context, int reference, int user){
         //These infos are always true. They are to be used for Scams.
         //For Asset info use function below
         //This automatically adds the info to Infos List;
 
         String info ="";
         if(reference>f.getNumComp()) return info;
-        info+="USER "+user+": ";
+        info+= context.getString(R.string.InfoUserID, user);
 
-        info+="The "+f.getName(reference)+" company ";
+        info+=context.getString(R.string.Info1, f.getName(reference));
 
-        double a = f.getCompOutlook(reference)+f.getSectorOutlook(reference)+((double)f.getRemShares(reference)/f.getTotalShares(reference))-0.5;
+        double a = f.getAvg(reference)/f.getCap(reference) - 1.0;
         if(a>0) {
-            info+="share price is expected to increase";
+            info+=context.getString(R.string.InfoShareUp);
         } else {
-            info+="share price is expected to decrease";
+            info+=context.getString(R.string.InfoShareDown);
         }
-        if(MainActivity.Infos.contains("There are no info tips at this point"))MainActivity.Infos.remove("There are no info tips at this point");
+        if (MainActivity.Infos.contains(context.getString(R.string.noInfo))) MainActivity.Infos.remove(context.getString(R.string.noInfo));
         if(!MainActivity.Infos.contains(info)){
             MainActivity.Infos.add(info);
             return info;
         } else {
-            return addCertainInfo(reference, user);
+            return addCertainInfo(context, reference, user);
         }
     }
 
@@ -862,14 +947,14 @@ public class MainActivity extends AppCompatActivity {
 
         if(f.isScam(reference)) {
             info += context.getString(R.string.InfoIlligalPos);
-            if (Infos.contains(info)) return addCertainInfo(reference, 9001);
+            if (Infos.contains(info)) return addCertainInfo(context, reference, 9001);
             if (MainActivity.Infos.contains(context.getString(R.string.noInfo)))
                 MainActivity.Infos.remove(context.getString(R.string.noInfo));
             MainActivity.Infos.add(info);
             return info;
         }
 
-        double a = f.getCompOutlook(reference)+f.getSectorOutlook(f.getCompSectorInt(reference)+1)+((double)f.getRemShares(reference)/f.getTotalShares(reference))-0.5;
+        double a = f.getAvg(reference)/f.getCap(reference) - 1.0;
         if(a>0) {
             info+=context.getString(R.string.InfoShareUp);
         } else {
@@ -912,88 +997,30 @@ public class MainActivity extends AppCompatActivity {
             if(fullGame)DBHandler.setEventGen(eventGen);
             dayOpen = true;
             UpdateCommandsUI();
+
+            switch (time.getDay()) {        //In Term outlook alteration (outlook partially achieved)
+                case 25: //half company outlooks
+                    for (int i = 0; i < f.getNumComp(); i++) {
+                        f.setCompOutlook(i, f.getCompOutlook(i) / 2);
+                        DBHandler.setCompOutlook(f.getName(i), f.getCompOutlook(i));
+                    }
+                    break;
+                case 50: //zero all company outlooks
+                    for (int i = 0; i < f.getNumComp(); i++) {
+                        f.setCompOutlook(i, 0);
+                        DBHandler.setCompOutlook(f.getName(i), 0);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
             LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(new Intent("RingBell"));
 
-            //Scams are resolved after Day opens
-            for (int i = 0; i < f.getScamsNo(); i++) {
-                switch (f.getScamType(i)){
-                    case 1:     //Empty Room (set share price to 0.1, and remaining shares to -total, revenue to - total value)
-                        if(f.getScamRemDays(i)==0){
-                            f.Backrupt(i);//Banctrupt company
-                            if(fullGame)DBHandler.setDBCurrPrice(i, f.getShareCurrPrince(i));
-                            if(fullGame)DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i));
-                            f.removeScam(i);
-                            String story = getString(R.string.NewsBunkrupty, f.getName(i));
-                            editNews(55, getString(R.string.NewsBunkruptyTitle), story);
-                        }
-                        break;
-                    case 2:     //Pump and Dump
-                        if(f.getScamRemDays(i)<=5){
-                            f.setCompOutlook(i, f.getCompOutlook(i)+0.5);
-                        }
-                        if(f.getScamRemDays(i)==0){
-                            Intent intent1 = new Intent("SharesTransaction");
-                            Bundle data1 = new Bundle();
-                            data1.putInt("SID", i);
-                            data1.putInt("amount", -(random.nextInt(4000)+1857));
-                            int droppedPrice = 4*(f.getShareCurrPrince(i)/5); //This is to further drop the new price
-                            data1.putInt("atPrice", droppedPrice);
-                            data1.putBoolean("ByPlayer", false);
-                            f.setCompOutlook(i, f.getCompOutlook(i) - 3.5); //Because 6 pumps in total
-                            intent1.putExtras(data1);
-                            LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent1);
-                            f.removeScam(i);
-                            String story = getString(R.string.NewsPumpDump, f.getName(i));
-                            editNews(40, getString(R.string.NewsPumpDumpTitle), story);
-                            f.resetRemShares(i);
-                        }
-                        break;
-                    case 3:     //Short and Distort
-                        if(f.getScamRemDays(i)<=3){
-                            f.setCompOutlook(i, f.getCompOutlook(i)-0.8);
-                        }
-                        if(f.getScamRemDays(i)==0){
-                            f.setCompOutlook(i, f.getCompOutlook(i) + 2.5);
-                            f.alterRemShares(i, 1581 + random.nextInt(1500));
-                            if(fullGame)DBHandler.setCompOutlook(f.getName(i), f.getCompOutlook(i));
-                            if(fullGame)DBHandler.setRemShares(i, f.getRemShares(i));
-                            f.removeScam(i);
-                            String story = getString(R.string.NewsShortDistort, f.getName(i));
-                            editNews(45, getString(R.string.NewsShortDistortTitle), story);
-                        }
-                        break;
-                    case 4:     //Ponzi Scheme (set share price to 0.1, and remaining shares to -total, revenue to - total value)
-                        if(f.getScamRemDays(i)==0){
-                            f.Backrupt(i);//Bunctrupt company
-                            if(fullGame)DBHandler.setDBCurrPrice(i, f.getShareCurrPrince(i));
-                            if(fullGame)DBHandler.setCompTotValue(f.getName(i), f.getCompTotalValue(i));
-                            f.removeScam(i);
-                            String story = getString(R.string.NewsPonzi, f.getName(i));
-                            editNews(50, getString(R.string.NewsBunkruptyTitle), story);
-                        }
-                        break;
-                    case 5:     //Lawbreaker Scandal
-                        if(f.getScamRemDays(i)==0){
-                            int magnitude = getLinnearRN(14)+1;
-
-                            f.setCompOutlook(i, f.getCompOutlook(i) - magnitude * 0.1);
-                            if(magnitude>4) f.UpdateCompRevenue(i, -1000000*magnitude);
-                            f.removeScam(i);
-                            if(fullGame){
-                                DBHandler.setCompOutlook(f.getName(i), f.getCompOutlook(i));
-                                DBHandler.setCompRevenue(i, f.getCompRevenue(i));
-                            }
-                            String story = getString(R.string.NewsScandal, f.getName(i));
-                            editNews(30+magnitude*10, getString(R.string.NewsScandalTitle), story);
-                        }
-                        break;
-                    default:    //Do nothing, since category/type is 0, thus no Scams
-                        break;
-                }
-            }
             Toast.makeText(MainActivity.this, getString(R.string.ToastDayStart), Toast.LENGTH_SHORT).show();
         }
     };
+
 
     private void generateEvent() {
         Random random = new Random();
@@ -1137,50 +1164,49 @@ public class MainActivity extends AppCompatActivity {
     private void callforTransactions() {
         if(!dayOpen) return;
         int temp;
+        Random random = new Random();
+
         for(int i=0;i<f.getNumComp();i++) {
-            if (f.getCompTotalValue(i) != 0) {
-                double pricePer = ( (double)f.getShareCurrPrince(i)*0.01 ) / ( (double)f.getCompTotalValue(i)/f.getTotalShares(i) ) ; //Current price over Average value
-                temp = getSharesAmount(f.getCompOutlook(i), f.getSectorOutlook(f.getCompSectorInt(i) + 1), f.getRemShares(i), f.getTotalShares(i), pricePer);
-                if (temp != 0) {
+            if (f.getCompCurrValue(i) <= 0){ //If Company bankrupt, sell all shares.
+                if(f.getShareCurrPrince(i)>100){
                     Intent intent = new Intent("SharesTransaction");
                     Bundle data = new Bundle();
                     data.putInt("SID", i);
-                    data.putInt("amount", temp);
+                    data.putInt("amount", f.getTotalShares(i)/5);
                     data.putInt("atPrice", f.getShareCurrPrince(i));
                     data.putBoolean("ByPlayer", false);
                     intent.putExtras(data);
                     LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
                 }
+            } else {
+            temp = getSharesAmount(random, f.getAvg(i), f.getCap(i), f.getTotalShares(i));
+            if (temp != 0) {
+                Intent intent = new Intent("SharesTransaction");
+                Bundle data = new Bundle();
+                data.putInt("SID", i);
+                data.putInt("amount", temp);
+                data.putInt("atPrice", f.getShareCurrPrince(i));
+                data.putBoolean("ByPlayer", false);
+                intent.putExtras(data);
+                LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(intent);
+            }
             }
         }
     }
 
-    public int getSharesAmount(double C, double S, int remaining, int total, double offer){
-        Random random = new Random();
-        double perLeft = (double)remaining/total;
+    public int getSharesAmount(Random random, double Avg, double Cap, int total) {
+        double determinant = getDeterminant(Avg, Cap);
 
-        double demand = 2*C+S;
+        determinant += random.nextDouble() * 2 - 1;
+        double am = Math.min(Math.abs(random.nextGaussian()), 3) * determinant * 100;
+        if (Math.abs(am) <= 20) am = Math.signum(determinant) * random.nextInt(50) + 20;
+        if (Math.abs(am) > 0.1 * total) am = Math.signum(am) * 0.1 * total;
+        return (int) Math.round(am);
 
-        double determinant = getDeterminant(perLeft, offer, demand); //higher price->sell, higher outlook->buy, higher perLeft->sell , perLeft base is 0.5
-        boolean buy = (determinant>0)^(random.nextDouble()<0.9);  //if perOwned >0, 90% buy, else 90% sell
-        if(perLeft<=0.02) buy = false;
-        else if(perLeft>=0.98) buy = true;
-        determinant = Math.abs(determinant);
-        boolean temp = (random.nextDouble()<0.8)^(determinant<0.1); //80% chance of transaction if determinant>0.1, 20% otherwise
-
-        if(!temp) {
-            return 0;
-        } else {
-            double am = random.nextDouble()*50*determinant;
-            if(Math.abs(am)<=50) am = random.nextInt(49)+52;
-            int amount = (int)Math.round(am);
-            if(!buy) amount = 0-amount; //decide buy sell here
-            return amount;
-        }
     }
 
-    private double getDeterminant(double perLeft, double offer, double demand){
-        return perLeft - (offer/demand);
+    public double getDeterminant(double Avg, double Cap){
+        return Avg/Cap - 1;
     }
 
     private BroadcastReceiver SharesTransactionedRec = new BroadcastReceiver() {
@@ -1192,8 +1218,6 @@ public class MainActivity extends AppCompatActivity {
             int oldPrice = data.getInt("atPrice");
             boolean byPlayer = data.getBoolean("ByPlayer");
 
-            int total = f.getTotalShares(SID);
-
             if(byPlayer){
                 f.TransactShares(SID, amount);
                 p.alterMoney(amount*oldPrice);
@@ -1203,19 +1227,37 @@ public class MainActivity extends AppCompatActivity {
             }
 
             f.alterRemShares(SID, amount);
-            int remaining = f.getRemShares(SID);
-            if(fullGame)DBHandler.setRemShares(SID, remaining);
+            if(fullGame)DBHandler.setRemShares(SID, f.getRemShares(SID));
 
-            double value = (double)f.getCompTotalValue(SID)*100;
-            int avg = (int)Math.round( value/total );
-            int base = f.getLastClose(SID);
+            double cap = (2*f.getCap(SID) + f.getAvg(SID))/3;
 
-            int newPrice = base + (int) Math.round( ( (double)amount/(remaining+1) )*(avg/10) + (Math.random()*2-1)*30 );
-            if(newPrice<=20) newPrice=20+(int)Math.round(Math.random() * 30);
-            else if(newPrice>2.1*avg)newPrice = 2*avg;
+            int newPrice;
+
+            double dnewPrice = getNewPrice(cap, (double)f.getRemShares(SID)/f.getTotalShares(SID)) + Math.random()*35;
+            dnewPrice = ((double)oldPrice+dnewPrice)/2;
+
+            if(dnewPrice>35000){
+                f.doubleShares(SID);
+                cap = (2*f.getCap(SID) + f.getAvg(SID))/3;
+                if(fullGame)DBHandler.setCompTotalShares(SID, f.getTotalShares(SID));
+                editNews(25, getString(R.string.NewsDoubleShares, f.getName(SID)), getString(R.string.NewsDoubleSharesBody, f.getName(SID)));
+                dnewPrice = getNewPrice(cap, (double)f.getRemShares(SID)/f.getTotalShares(SID)) + Math.random()*35;
+            } else if(dnewPrice<1500){
+                f.halfShares(SID);
+                cap = (2*f.getCap(SID) + f.getAvg(SID))/3;
+                if(fullGame)DBHandler.setCompTotalShares(SID, f.getTotalShares(SID));
+                editNews(25, getString(R.string.NewsHalfShares, f.getName(SID)), getString(R.string.NewsHalfSharesBody, f.getName(SID)));
+                dnewPrice = getNewPrice(cap, (double)f.getRemShares(SID)/f.getTotalShares(SID)) + Math.random()*35;
+            }
+
+            newPrice = (int)Math.round(dnewPrice);
+
+            if(newPrice<=50) {
+                newPrice=50+(int)Math.round(Math.random() * 30);   //No price less than $0.50
+            }
 
             f.setShareCurrPrice(SID, newPrice);
-            if(fullGame)DBHandler.setDBCurrPrice(SID, newPrice);
+            if (fullGame) DBHandler.setDBCurrPrice(SID, newPrice);
 
             Intent intent1 = new Intent("SpecificPriceChange");
             Bundle data1 = new Bundle();
@@ -1228,6 +1270,11 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private double getNewPrice(double cap, double x){
+        x = 0.5-x;                          //To center at 0, reversing sign
+        return 0.5 * cap + 1.5 * cap / (1 + Math.exp(x));
+    }
+
     private BroadcastReceiver SharesShortTransactionedRec = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1236,8 +1283,6 @@ public class MainActivity extends AppCompatActivity {
             int amount = data.getInt("amount");
             int oldPrice = data.getInt("atPrice");
             int days = data.getInt("Days");
-
-            int total = f.getTotalShares(SID);
 
             f.ShortShare(SID, amount, days);
             p.alterMoney(amount * oldPrice);
@@ -1250,13 +1295,30 @@ public class MainActivity extends AppCompatActivity {
 
             UpdateCommandsUI();
 
-            double value = (double)f.getCompTotalValue(SID)/100;
-            int avg = (int)Math.round( value/total );
-            int base = f.getLastClose(SID);
+            int newPrice;
+            double cap = (2*f.getCap(SID) + f.getAvg(SID))/3;
+            double dnewPrice = getNewPrice(cap, (double)f.getRemShares(SID)/f.getTotalShares(SID)) + Math.random()*35;
 
-            int newPrice = base + (int) Math.round( ( (double)amount/(remaining+1) )*(avg/10) + (Math.random()*2-1)*30 );
-            if(newPrice<=20) newPrice=20+(int)Math.round(Math.random() * 30);
-            else if(newPrice>2.1*avg)newPrice = 2*avg;
+
+            if(dnewPrice>65000){
+                f.doubleShares(SID);
+                cap = (2*f.getCap(SID) + f.getAvg(SID))/3;
+                if(fullGame)DBHandler.setCompTotalShares(SID, f.getTotalShares(SID));
+                editNews(25, getString(R.string.NewsDoubleShares, f.getName(SID)), getString(R.string.NewsDoubleSharesBody, f.getName(SID)));
+                dnewPrice = getNewPrice(cap, (double)f.getRemShares(SID)/f.getTotalShares(SID)) + Math.random()*35;
+            } else if(dnewPrice<1000){
+                f.halfShares(SID);
+                cap = (2*f.getCap(SID) + f.getAvg(SID))/3;
+                if(fullGame)DBHandler.setCompTotalShares(SID, f.getTotalShares(SID));
+                editNews(25, getString(R.string.NewsHalfShares, f.getName(SID)), getString(R.string.NewsHalfSharesBody, f.getName(SID)));
+                dnewPrice = getNewPrice(cap, (double)f.getRemShares(SID)/f.getTotalShares(SID)) + Math.random()*35;
+            }
+
+            newPrice = (int)Math.round(dnewPrice);
+
+            if(newPrice<=50) {
+                newPrice=50+(int)Math.round(Math.random() * 30);   //No price less than $0.50
+            }
 
 
             f.setShareCurrPrice(SID, newPrice);
@@ -1316,7 +1378,7 @@ public class MainActivity extends AppCompatActivity {
                 soundplayer.release();
             }
             playSound = !playSound;
-            if(playSound)        soundplayer = MediaPlayer.create(MainActivity.this, R.raw.bell);
+            if(playSound) soundplayer = MediaPlayer.create(MainActivity.this, R.raw.bell);
             if(fullGame)DBHandler.setSound(playSound);
         }
     };
@@ -1337,51 +1399,18 @@ public class MainActivity extends AppCompatActivity {
             dayOpen = false;
             LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(new Intent("RingBell"));
 
-            double upper, lower;
-
-            switch (getEconomyState()){
-                case Normal:
-                    upper = 0.6;
-                    lower = -0.4;
-                    break;
-                case Accel:
-                    upper = 0.8;
-                    lower = -0.2;
-                    break;
-                case Boom:
-                    upper = 1.0;
-                    lower = -0.1;
-                    break;
-                case Recess:
-                    upper = 0.4;
-                    lower = -0.6;
-                    break;
-                default: //Assume depression (to avoid might not have been initialized error)
-                    upper = 0.2;
-                    lower = -0.9;
-                    break;
-            }
-
-            long marketSize = f.getMarketSize();
-            for (int i = 0; i < f.getNumComp(); i++) { //Add revenue
-                if(f.getCompTotalValue(i)==0)continue; //Exclude bunkrupt companies
-                upper+=f.getCompOutlook(i);
-                lower+=f.getCompOutlook(i);
-                f.UpdateCompRevenue(i, (int)Math.round(marketSize*f.getMarketShare(i)*(RangedRandom(upper, lower)) ));
-            }
-
             f.DayCloseShares();
             if(fullGame) {
                 for (int i = 0; i < DBHandler.getMaxSID(); i++) {
                     DBHandler.DayCloseShare(i, f.getLastClose(i));
-                    DBHandler.setCompRevenue(i, f.getCompRevenue(i));
+                    DBHandler.setCompCurrValue(f.getName(i), f.getCompCurrValue(i));
                 }
             }
 
             for(Event event:Events){
                     event.dayEnded();
                 if(event.eventEnded()) {
-                    alterOutlooks(event.getType(), -event.getMagnitude());
+                    alterOutlooks(event.getType(), 0-event.getMagnitude());
                 }
             }
 
@@ -1523,25 +1552,25 @@ public class MainActivity extends AppCompatActivity {
                 if(newEconomyOutlook>0.75) {
                     state = EconomyState.Boom;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, 1);
+                        f.setSectorEventOutlook(i, 0.5);
                     }
                     editNews(100, getString(R.string.NewsBoomTitle), getString(R.string.NewsBoom));
                 } else if(newEconomyOutlook>0.5){
                     state = EconomyState.Accel;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, 0.5);
+                        f.setSectorEventOutlook(i, 0.25);
                     }
                     editNews(100, getString(R.string.NewsAccelTitle), getString(R.string.NewsAccel));
                 } else if(newEconomyOutlook<-0.5){
                     state = EconomyState.Recess;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, -0.5);
+                        f.setSectorEventOutlook(i, -0.25);
                     }
                     editNews(100, getString(R.string.NewsRecessTitle), getString(R.string.NewsRecess));
                 } else if(newEconomyOutlook<-0.75){
                     state = EconomyState.Depres;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, -1);
+                        f.setSectorEventOutlook(i, -0.5);
                     }
                     editNews(100, getString(R.string.NewsDepressionTitle), getString(R.string.NewsDepression));
                 } else {
@@ -1552,7 +1581,7 @@ public class MainActivity extends AppCompatActivity {
                 if(newEconomyOutlook>0.75) {
                     state = EconomyState.Boom;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, 0.5);
+                        f.setSectorEventOutlook(i, 0.25);
                     }
                     editNews(100, getString(R.string.NewsBoomTitle), getString(R.string.NewsBoom));
                 } else if(newEconomyOutlook>0.5){
@@ -1561,48 +1590,52 @@ public class MainActivity extends AppCompatActivity {
                 } else if(newEconomyOutlook<-0.5){
                     state = EconomyState.Recess;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, -1);
+                        f.setSectorEventOutlook(i, -0.5);
                     }
                     editNews(100, getString(R.string.NewsRecessTitle), getString(R.string.NewsRecess));
                 } else if(newEconomyOutlook<-0.75){
                     state = EconomyState.Depres;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, -1.5);
+                        f.setSectorEventOutlook(i, -0.75);
                     }
                     editNews(100, getString(R.string.NewsDepressionTitle), getString(R.string.NewsDepression));
                 } else {
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, -0.5);
+                        f.setSectorEventOutlook(i, -0.25);
                     }
                     state = EconomyState.Normal;
                 }
                 break;
             case Boom:
                 if(newEconomyOutlook>0.75) {
-                    state = EconomyState.Boom;
-                    editNews(100, getString(R.string.NewsBoomTitle), getString(R.string.NewsBoom));
+                    state = EconomyState.Normal;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, -0.5);
+                    }
+                    f.setSectorOutlook(0,0);
+                    DBHandler.setOutlook("economy", 0);
                 } else if(newEconomyOutlook>0.5){
                     state = EconomyState.Accel;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, -0.5);
+                        f.setSectorEventOutlook(i, -0.25);
                     }
                     editNews(100, getString(R.string.NewsAccelTitle), getString(R.string.NewsAccel));
                 } else if(newEconomyOutlook<-0.5){
                     state = EconomyState.Recess;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, -1.5);
+                        f.setSectorEventOutlook(i, -0.75);
                     }
                     editNews(100, getString(R.string.NewsRecessTitle), getString(R.string.NewsRecess));
                 } else if(newEconomyOutlook<-0.75){
                     state = EconomyState.Depres;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, -2);
+                        f.setSectorEventOutlook(i, -1);
                     }
                     editNews(100, getString(R.string.NewsDepressionTitle), getString(R.string.NewsDepression));
                 } else {
                     state = EconomyState.Normal;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, -1);
+                        f.setSectorEventOutlook(i, -0.5);
                     }
                 }
                 break;
@@ -1610,28 +1643,28 @@ public class MainActivity extends AppCompatActivity {
                 if(newEconomyOutlook>0.75) {
                     state = EconomyState.Boom;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, 1.5);
+                        f.setSectorEventOutlook(i, 0.75);
                     }
                     editNews(100, getString(R.string.NewsBoomTitle), getString(R.string.NewsBoom));
                 } else if(newEconomyOutlook>0.5){
                     state = EconomyState.Accel;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, 1);
+                        f.setSectorEventOutlook(i, 0.5);
                     }
                     editNews(100, getString(R.string.NewsAccelTitle), getString(R.string.NewsAccel));
-                } else if(newEconomyOutlook<-0.5){
+                } else if(newEconomyOutlook<-0.25){
                     state = EconomyState.Recess;
                     editNews(100, getString(R.string.NewsRecessTitle), getString(R.string.NewsRecess));
                 } else if(newEconomyOutlook<-0.75){
                     state = EconomyState.Depres;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, -0.5);
+                        f.setSectorEventOutlook(i, -0.25);
                     }
                     editNews(100, getString(R.string.NewsDepressionTitle), getString(R.string.NewsDepression));
                 } else {
                     state = EconomyState.Normal;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, 0.5);
+                        f.setSectorEventOutlook(i, 0.25);
                     }
                 }
                 break;
@@ -1639,28 +1672,32 @@ public class MainActivity extends AppCompatActivity {
                 if(newEconomyOutlook>0.75) {
                     state = EconomyState.Boom;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, 2);
+                        f.setSectorEventOutlook(i, 1);
                     }
                     editNews(100, getString(R.string.NewsBoomTitle), getString(R.string.NewsBoom));
                 } else if(newEconomyOutlook>0.5){
                     state = EconomyState.Accel;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, 1.5);
+                        f.setSectorEventOutlook(i, 0.75);
                     }
                     editNews(100, getString(R.string.NewsAccelTitle), getString(R.string.NewsAccel));
                 } else if(newEconomyOutlook<-0.5){
                     state = EconomyState.Recess;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, 0.5);
+                        f.setSectorEventOutlook(i, 0.2);
                     }
                     editNews(100, getString(R.string.NewsRecessTitle), getString(R.string.NewsRecess));
                 } else if(newEconomyOutlook<-0.75){
-                    state = EconomyState.Depres;
-                    editNews(100, getString(R.string.NewsDepressionTitle), getString(R.string.NewsDepression));
+                    state = EconomyState.Normal;
+                    for(int i=1;i<f.getNumOfOutlooks();i++){
+                        f.setSectorEventOutlook(i, 0.5);
+                    }
+                    f.setSectorOutlook(0,0);
+                    DBHandler.setOutlook("economy", 0);
                 } else {
                     state = EconomyState.Normal;
                     for(int i=1;i<f.getNumOfOutlooks();i++){
-                        f.setSectorEventOutlook(i, 1);
+                        f.setSectorEventOutlook(i, 0.5);
                     }
                 }
                 break;
@@ -1696,7 +1733,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             tax2=0;
         }
-        int[] Upkeep = {50000, 125000, 750000, 1250000, 2500000, 5000000};
+        int[] Upkeep = {25000, 85000, 750000, 1250000, 2500000, 5000000};
 
         return tax1+tax2+Upkeep[p.getLevel()-1];
     }
@@ -1913,6 +1950,7 @@ public class MainActivity extends AppCompatActivity {
                 f = new Finance(4);
                 p = new Gamer(500000000, 5, 20, 1000);
                 time = new Daytime(LocalBroadcastManager.getInstance(MainActivity.this));
+                state = getEconomyState(f.getSectorOutlook(0));
                 UpdateCentralUI();
                 UpdateTopBar(topBarPlayer, topBarDaytime);
                 dialog.dismiss();
@@ -1967,6 +2005,7 @@ public class MainActivity extends AppCompatActivity {
                     time = new Daytime(LocalBroadcastManager.getInstance(MainActivity.this.getApplicationContext()));
                     DBHandler.setEconomySize1(f.getEconSize1());
                     DBHandler.setEconomySize2(f.getEconSize2());
+                    state = getEconomyState(f.getSectorOutlook(0));
                     dialog.dismiss();
                     UpdateCentralUI();
                     UpdateTopBar(topBarPlayer, topBarDaytime);
@@ -1988,11 +2027,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(MainActivity.this, getString(R.string.ToastNewGameImpossible), Toast.LENGTH_LONG).show();
         }
-    }
-
-    private double RangedRandom(double Upper, double Lower){
-        double diff = Upper-Lower;
-        return Math.random()*diff + Lower;
     }
 
 }

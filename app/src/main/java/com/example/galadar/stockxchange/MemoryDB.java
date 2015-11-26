@@ -231,7 +231,7 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     public void ShortSettle(int Totalday){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(SHORT_TABLE_NAME, SHORT_COLUMN_TOTAL_SETTLE_DAYS+"=?", new String[] {Integer.toString(Totalday)});
+        db.delete(SHORT_TABLE_NAME, SHORT_COLUMN_TOTAL_SETTLE_DAYS + "=?", new String[]{Integer.toString(Totalday)});
         db.close();
     }
 
@@ -282,10 +282,10 @@ public class MemoryDB extends SQLiteOpenHelper {
         String where = PROPERTY_COLUMN_SHARE+"=?";
         String[] args = {Integer.toString(SID)};
         ContentValues values = new ContentValues();
-        values.put(PROPERTY_COLUMN_AMOUNT,NewAmount);
+        values.put(PROPERTY_COLUMN_AMOUNT, NewAmount);
         db.update(PROPERTY_TABLE_NAME, values, where, args);
-        setPlayerMoney(newCash);
         db.close();
+        setPlayerMoney(newCash);
     }
 
     public int getOwnedShare(int sid){
@@ -315,7 +315,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COMPANIES_COLUMN_NAME, company.getName());
-        values.put(COMPANIES_COLUMN_TOTAL_VALUE, company.getTotalValue()*100);
+        values.put(COMPANIES_COLUMN_TOTAL_VALUE, company.getTotalValue());
         values.put(COMPANIES_COLUMN_CURRENT_VALUE, company.getCurrentValue());
         values.put(COMPANIES_COLUMN_PERCENTAGE_VALUE, company.getPercentageValue());
         values.put(COMPANIES_COLUMN_INVESTMENT, company.getInvestment());
@@ -331,11 +331,10 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     public void setOutlook(String name, double outlook){
         SQLiteDatabase db = this.getWritableDatabase();
-        int IntOutlook = (int)Math.round(outlook*100);
         String where = OUTLOOK_COLUMN_NAME+"=?";
         String[] args = {name};
         ContentValues values = new ContentValues();
-        values.put(OUTLOOK_COLUMN_OUTLOOK, IntOutlook);
+        values.put(OUTLOOK_COLUMN_OUTLOOK, outlook);
         db.update(OUTLOOK_TABLE_NAME, values, where, args);
         db.close();
     }
@@ -346,12 +345,12 @@ public class MemoryDB extends SQLiteOpenHelper {
         Cursor c =  db.rawQuery("select " + OUTLOOK_COLUMN_OUTLOOK + " from " + OUTLOOK_TABLE_NAME + " where " + OUTLOOK_COLUMN_NAME + "=\"" + name + "\";", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
-            last = c.getInt(c.getColumnIndex(OUTLOOK_COLUMN_OUTLOOK));
+            last = c.getDouble(c.getColumnIndex(OUTLOOK_COLUMN_OUTLOOK));
             c.moveToNext();
         }
         c.close();
         db.close();
-        return last/100;
+        return last;
     }
 
     public int getCompPercValue(String name){
@@ -384,13 +383,13 @@ public class MemoryDB extends SQLiteOpenHelper {
         return last;
     }
 
-    public int getCompRevenue(String name){
-        int last = 0;
+    public long getCompRevenue(String name){
+        long last = 0;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select " + COMPANIES_COLUMN_REVENUE + " from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
-            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_REVENUE));
+            last = c.getLong(c.getColumnIndex(COMPANIES_COLUMN_REVENUE));
             c.moveToNext();
         }
         c.close();
@@ -404,7 +403,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         Cursor c =  db.rawQuery("select " + COMPANIES_COLUMN_MARKET_SHARE + " from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
-            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_MARKET_SHARE));
+            last = c.getDouble(c.getColumnIndex(COMPANIES_COLUMN_MARKET_SHARE));
             c.moveToNext();
         }
         c.close();
@@ -456,7 +455,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void setCompRevenue(int sid, int amount){
+    public void setCompRevenue(int sid, long amount){
         SQLiteDatabase db = this.getWritableDatabase();
         String where = COMPANIES_COLUMN_CID+"=?";
         String[] args = {Integer.toString(sid)};
@@ -531,18 +530,18 @@ public class MemoryDB extends SQLiteOpenHelper {
         return last;
     }
 
-    public int getCompTotalValue(String name){
-        int last = 0;
+    public long getCompTotalValue(String name){
+        long last = 0;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select "+COMPANIES_COLUMN_TOTAL_VALUE+" from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
-            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_TOTAL_VALUE));
+            last = c.getLong(c.getColumnIndex(COMPANIES_COLUMN_TOTAL_VALUE));
             c.moveToNext();
         }
         c.close();
         db.close();
-        last = Math.round(last/100);
+        last = Math.round(last);
         return last;
     }
 
@@ -590,7 +589,7 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void setCompTotValue(String name, int newV){
+    public void setCompTotValue(String name, long newV){
         SQLiteDatabase db = this.getWritableDatabase();
         String where = COMPANIES_COLUMN_NAME+"=?";
         String[] args = {name};
@@ -963,19 +962,19 @@ public class MemoryDB extends SQLiteOpenHelper {
     }
 
     public double getEconomyOutlook() {
-        long level = 0;
+        double level = 0;
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"economy\" ;", null);
+        Cursor c =  db.rawQuery("select * from " + OUTLOOK_TABLE_NAME + " where " + OUTLOOK_COLUMN_NAME + " = \"economy\" ;", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
-            level = c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
+            level = c.getDouble(c.getColumnIndex(OUTLOOK_COLUMN_OUTLOOK));
             c.moveToNext();
         }
         c.close();
         db.close();
 
-        return (double)level/100;
+        return level;
     }
 
 
@@ -1104,13 +1103,13 @@ public class MemoryDB extends SQLiteOpenHelper {
         return last;
     }
 
-    public int getInvestment(String name) {
-        int last = -1;
+    public long getInvestment(String name) {
+        long last = -1;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select "+COMPANIES_COLUMN_INVESTMENT+" from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
-            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_INVESTMENT));
+            last = c.getLong(c.getColumnIndex(COMPANIES_COLUMN_INVESTMENT));
             c.moveToNext();
         }
         c.close();
@@ -1118,13 +1117,13 @@ public class MemoryDB extends SQLiteOpenHelper {
         return last;
     }
 
-    public int getLastRevenue(String name){
-        int last = -1;
+    public long getLastRevenue(String name){
+        long last = -1;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select "+COMPANIES_COLUMN_LAST_REVENUE+" from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + "=\"" + name + "\";", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
-            last = c.getInt(c.getColumnIndex(COMPANIES_COLUMN_LAST_REVENUE));
+            last = c.getLong(c.getColumnIndex(COMPANIES_COLUMN_LAST_REVENUE));
             c.moveToNext();
         }
         c.close();
@@ -1227,6 +1226,16 @@ public class MemoryDB extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void setCompCurrValue(String name, long newV) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = COMPANIES_COLUMN_NAME+"=?";
+        String[] args = {name};
+        ContentValues values = new ContentValues();
+        values.put(COMPANIES_COLUMN_CURRENT_VALUE, newV);
+        db.update(COMPANIES_TABLE_NAME,values, where, args);
+        db.close();
+    }
+
     public boolean isScam(int sid){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c =  db.rawQuery("select * from " + SCAMS_TABLE_NAME + " where " + SCAMS_COLUMN_SID + "=" + sid + ";", null);
@@ -1301,5 +1310,27 @@ public class MemoryDB extends SQLiteOpenHelper {
         c.close();
         db.close();
         return size;
+    }
+
+    public long getCompCurrValue(String name) {
+        long size = -1;
+        if(name.equals(""))return size;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =  db.rawQuery("select * from " + COMPANIES_TABLE_NAME + " where " + COMPANIES_COLUMN_NAME + " = \""+name+"\" ;", null);
+        if(c.getCount()==0)return size;
+        if(c.moveToFirst())size = c.getLong(c.getColumnIndex(COMPANIES_COLUMN_CURRENT_VALUE));
+        c.close();
+        db.close();
+        return size;
+    }
+
+    public void setCompTotalShares(int sid, int totalShares) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = SHARES_COLUMN_SID+"=?";
+        String[] args = {Integer.toString(sid)};
+        ContentValues values = new ContentValues();
+        values.put(SHARES_COLUMN_TOTAL_SHARES, totalShares);
+        db.update(SHARES_TABLE_NAME, values, where, args);
+        db.close();
     }
 }

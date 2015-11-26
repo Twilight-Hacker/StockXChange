@@ -65,14 +65,17 @@ public class ShareActivity extends AppCompatActivity {
         TextView ShareTotal = (TextView)findViewById(R.id.ShareTotalData);
         ShareTotal.setText(Integer.toString(f.getTotalShares(SID)));
 
-        TextView SharesValue = (TextView)findViewById(R.id.ShareOwnedVData);
+        final TextView SharesValue = (TextView)findViewById(R.id.ShareOwnedVData);
         int val = owned*price;
         if(val%10==0)zerodigit="0";
         else zerodigit = "";
         SharesValue.setText("$" + Double.toString((double) val / 100) + zerodigit);
 
         final TextView ShareLast = (TextView)findViewById(R.id.SharePrevData);
-        ShareLast.setText("$"+Double.toString((double) f.getLastClose(SID) / 100));
+        final int last = f.getLastClose(SID);
+        if(last%10==0)zerodigit = " ";
+        else zerodigit = "";
+        ShareLast.setText("$"+Double.toString((double)last / 100)+zerodigit);
 
         final Button BuyButton = (Button)findViewById(R.id.BuyButton);
         if(dayOpen & (money>0)) {
@@ -138,8 +141,14 @@ public class ShareActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 if(intent.getExtras().getInt("SID")==SID) {
                     price = intent.getExtras().getInt("newPrice");
-                    SharePrice.setText("$"+Double.toString((double)price/100));
-                    ShareOwned.setText("$"+Double.toString((double)price*owned));
+                    String zerodigit;
+                    if(price%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    SharePrice.setText("$"+Double.toString(((double)price)/100)+zerodigit);
+                    int val = owned*price;
+                    if(val%10==0)zerodigit="0";
+                    else zerodigit = "";
+                    SharesValue.setText("$" + Double.toString((double) val / 100) + zerodigit);
                 }
             }
         }, new IntentFilter("SpecificPriceChange"));
@@ -147,10 +156,16 @@ public class ShareActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                BuyButton.setEnabled(false);
-                SellButton.setEnabled(false);
                 dayOpen=false;
-                ShareLast.setText("$"+Double.toString((double)f.getLastClose(SID)/100));
+                BuyButton.setEnabled(false);
+                BuyButton.setTextColor(0xff000000);
+                SellButton.setEnabled(false);
+                SellButton.setTextColor(0xff000000);
+                int last = f.getLastClose(SID);
+                String zerodigit;
+                if(last%10==0)zerodigit = "0";
+                else zerodigit = "";
+                ShareLast.setText("$"+Double.toString((double)last/100)+zerodigit);
             }
         }, new IntentFilter("DayEnded"));
 
@@ -193,7 +208,7 @@ public class ShareActivity extends AppCompatActivity {
         data.putBoolean("playSound", playSound);
         data.putString("Sname", f.getName(SID));
         data.putInt("Sprice", f.getShareCurrPrince(SID));
-        data.putInt("Owned", f.getSharesOwned(SID));
+        data.putInt("owned", f.getSharesOwned(SID));
         data.putInt("totalShares", f.getTotalShares(SID));
         intent.putExtras(data);
         startActivity(intent);

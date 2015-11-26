@@ -31,8 +31,8 @@ public class CompanyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company);
-        Intent intent = getIntent();
-        Bundle data = intent.getExtras();
+
+        Bundle data = getIntent().getExtras();
         final int CID = data.getInt("CID");
         f = MainActivity.getFinance();
         time = MainActivity.getClock();
@@ -54,23 +54,19 @@ public class CompanyActivity extends AppCompatActivity {
         SectorView.setText(f.getCompSector(CID));
 
         TextView TotalValueView = (TextView)findViewById(R.id.TotalValDt);
-        int value = f.getCompTotalValue(CID);
-        TotalValueView.setText("$"+Integer.toString(value));
+        long value = f.getCompTotalValue(CID);
+        TotalValueView.setText("$"+Long.toString(value));
 
         TextView TotalSharesView = (TextView)findViewById((R.id.TotalSharesDt));
         TotalSharesView.setText(Integer.toString(f.getTotalShares(CID)));
 
-        int rev = f.getLastRevenue(CID);
-        if(rev%10==0)zerodigit="0";
-        else zerodigit="";
+        long rev = f.getLastRevenue(CID);
         TextView LastRevView = (TextView)findViewById(R.id.LastTermRevenueDt);
-        LastRevView.setText("$"+Double.toString((double)rev/100)+zerodigit);
+        LastRevView.setText("$"+Long.toString(rev));
 
         int inv = f.getInvestment(CID);
-        if(inv%10==0)zerodigit="0";
-        else zerodigit="";
         TextView InvestView = (TextView)findViewById(R.id.LastTermInvDt);
-        InvestView.setText("$"+Double.toString((double)inv/100)+zerodigit);
+        InvestView.setText("$"+Long.toString(inv));
 
         Button Report = (Button)findViewById(R.id.ScamCheck);
         Report.setEnabled(assets>0);
@@ -81,10 +77,9 @@ public class CompanyActivity extends AppCompatActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(CompanyActivity.this);
 
-                builder.setTitle("Report a Scam");
-                String q = "Reporting a possible scam to the authorities cancels the scams and all its effects. The report will cost you 1 full asset.\n\nIf there is a Scam, you get the asset back immediately, otherwise you lose it. You are not informed officialy of the investigation result for safety reasons.";
-                builder.setMessage(q);
-                builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
+                builder.setTitle(getString(R.string.ReportTitle));
+                builder.setMessage(getString(R.string.ReportBody));
+                builder.setPositiveButton(getString(R.string.ReportYes), new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -94,7 +89,7 @@ public class CompanyActivity extends AppCompatActivity {
 
                 });
 
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getString(R.string.CancelButton), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
