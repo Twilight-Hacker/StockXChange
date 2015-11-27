@@ -4,7 +4,7 @@
     <string name="Share_Name">"Name: "</string>
     <string name="Share_Current_Price">"Current Price: "</string>
     <string name="Share_Owned">"Shares Owned: "</string>
-    <string name="Shares_Owned_Value">"Owned Shares Value: "</string>
+    <string name="Shares_Owned_Value">"Owned Value: "</string>
     <string name="Share_Prev_Close">"Last Close: "</string>
     <string name="Buy_Button">"Buy"</string>
     <string name="Sell_Button">"Sell"</string>
@@ -102,7 +102,7 @@
     <string name="InfoIlligalNeg">"is not involved in illegal activities."</string>
     <string name="InfoShareUp">"share price is expected to increase."</string>
     <string name="InfoShareDown">"share price is expected to decrease"</string>
-    <string name="NewsBunkrupty">"Company %1$s suddendly declared bankruptcy today.\n\nThe authorities state that the Company was found to be involved in shady activities, and the CEO was placed under arrest."</string>
+    <string name="NewsBunkrupty">"Company %1$s suddenly declared bankruptcy today.\n\nThe authorities state that the Company was found to be involved in shady activities, and the CEO was placed under arrest."</string>
     <string name="NewsBunkruptyTitle">"Company Bankrupts"</string>
     <string name="NewsDoubleSharesBody">"Company %1$s has decided to double its shares, to accommodate new investors through lower prices.\n\nAll investor shares have been doubled."</string>
     <string name="NewsDoubleShares">"%1$s Doubles Shares"</string>

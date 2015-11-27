@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/alpha"
     android:orientation="vertical"
-    tools:context="com.example.galadar.stockxchange.MeetingActivity">
+    tools:context="com.galadar.example.stockxchange.MeetingActivity">
 
     <RelativeLayout
         android:layout_width="wrap_content"

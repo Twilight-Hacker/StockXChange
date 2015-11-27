@@ -2,9 +2,44 @@
 <meetings>
 
     <meeting>
+        <day>-4</day>
+        <title>Short Positions I</title>
+        <part>Well done reaching this level. Now, you are established as an experienced Stockbroker with a stable income, good sense, and a good base capital. As such, the bank has allowed you to take short positions and extra credit, indicated by red command buttons.</part>
+        <part>Short positions are key to advancing your career, but can also become your downfall. Let me explain how exactly they work.</part>
+        <part>Let us suppose that you know that a particular share price will decrease. If you have money invested on it, you will certainly sell them immediately. But there is a way to make money out of a share whose prise will decrease, by selling it short.</part>
+        <part>In particular, you make a contract to sell an amount of shares at some point in the future, and recieve the compensation for the sale today, at the share current price. At the end of the agreed period, you buy the shares to settle the short sales contract.</part>
+        <part>This way, if you short sold at $10 a share, and settled at $5, you make $5 per share. A very good payday.</part>
+        <part>Of course, this works both ways. If you short at $10, and settle at $15, you lose $5 dollars per share. Be sure you have good info if you decide to short a lot of shares.</part>
+        <part>There are 2 things to keep in mind. Firstly, shares are settled at the opening of the market (9:00). And secondly, the money to settle are always taken from your cash deposits in full, even if you possess enough of the particular shares to settle. You can, of course, sell the shares you own immediately, but you must do so yourself.</part>
+        <part>Finally, you cannot short sell a share you already own, until you sell all of it. Short selling a share means you believe its price will drop, so it makes no sense to keep those shares.</part>
+        <part>Whatever happens, remember that you must never end the day with a net value (cash+value of shares owned at closing price) of $-100000 or less and no assets, or you will be arrested for debts and lose the game.</part>
+    </meeting>
+
+    <meeting>
+        <day>-3</day>
+        <title>Random Events</title>
+        <part>Randomly Generated Events (RGEs) are Events generated at random intervals, and affect sectors and companies. Each event has a magnitude factor that decides its duration and the strength of its effect. The effects vary according to the type of the event, but are reasonable.</part>
+        <part>For example, an Earthquake will have a beneficial effect to Companies of the Construction Industry, because theynare expected to make revenue by fixing the damages caused by the earthquake, but Companies of the Tourism industry will be negatively impacted, as people cancel their trip plans to an area hit by the earthquake.</part>
+        <part>As with all Events, you can check the currently active effects by going to the messages screen.</part>
+        <part>There are many types of RGEs, and discussing their effects here will take up too much time. For now try to experiment and think how each industry will react to each event. At a later level, you will have the oportunity to talk to experts about the subject.</part>
+    </meeting>
+
+    <meeting>
+        <day>-2</day>
+        <title>Game Events</title>
+        <part>Game Generated events (GGEs for short) are events controlled by the game internal variables. A good example is an Economic boom.</part>
+        <part>During an Economic boom, all share prices tend to increase, companies make greater revenues, and give off more to dividents.</part>
+        <part>Like with all other events, you can check all events out through the Messages Screen. The messages screen presents a list with one message for every event that is currently active.</part>
+        <part>All events work with particular companies, entire sectors, or the whole economy. They can have either positive or negative effects, and most events have both.</part>
+        <part>The effects of each event in each sector are too advanced to be discussed in this meeting, but other meetings will clarify more on the subject.</part>
+        <part>GGEs in particular start and end at term turnovers, where the internal variables are recalculated.</part>
+        <part>For now, as an extra reward to reaching Level 2, enjoy an Economic Boom.</part>
+    </meeting>
+
+    <meeting>
         <day>1</day>
         <title>Welcome</title>
-        <part>Welcome to the game. I hope you enjoy playing.This game is a stock exchange emulator where you will be able to trade shares and maybe learn something about the financial world, by stockbroking in this newly opened stock exchane of a developing market.</part>
+        <part>Welcome to the game. I hope you enjoy playing.This game is a stock exchange emulator where you will be able to trade shares and maybe learn something about the financial world, by stockbroking in this newly opened stock exchange of a developing market.</part>
         <part>These Meetings (tutorials) will help you throughout the game.At first, they are about the game and how to play it, but later they will contain interesting info about how the real stock market works.</part>
         <part>For now, let ups start with the UI.If you want to leave, press I dont care below, however it is recommended you read through the entire tutorial, if this is your first time playing.</part>
         <part>In the main Screen you have the Top Bar that gives you your current level, cash available and assets available on the left side.On the right side, you can see the Date as Term, day and time.</part>
@@ -33,49 +68,14 @@
     </meeting>
 
     <meeting>
-        <day>-2</day>
-        <title>Game Events</title>
-        <part>Game Generated events (GGEs for short) are events controlled by the game internal variables. A good example is an Economic boom.</part>
-        <part>During an Economic boom, all share prices tend to increase, companies make greater revenues, and give off more to dividents.</part>
-        <part>Like with all other events, you can check all events out through the Messages Screen. The messages screen presents a list with one message for every event that is currently active.</part>
-        <part>All events work with particular companies, entire sectors, or the whole economy. They can have either positive or negative effects, and most events have both.</part>
-        <part>The effects of each event in each sector are too advanced to be discussed in this meeting, but other meetings will clarify more on the subject.</part>
-        <part>GGEs in particular start and end at term turnovers, where the internal variables are recalculated.</part>
-        <part>For now, as an extra reward to reaching Level 2, enjoy an Economic Boom.</part>
-    </meeting>
-
-    <meeting>
-        <day>-3</day>
-        <title>Random Events</title>
-        <part>Randomly Generated Events (RGEs) are Events generated at random intervals, and affect sectors and companies. Each event has a magnitude factor that decides its duration and the strength of its effect. The effects vary according to the type of the event, but are reasonable.</part>
-        <part>For example, an Earthquake will have a beneficial effect to Companies of the Construction Industry, because theynare expected to make revenue by fixing the damages caused by the earthquake, but Companies of the Tourism industry will be negatively impacted, as people cancel their trip plans to an area hit by the earthquake.</part>
-        <part>As with all Events, you can check the currently active effects by going to the messages screen.</part>
-        <part>There are many types of RGEs, and discussing their effects here will take up too much time. For now try to experiment and think how each industry will react to each event. At a later level, you will have the oportunity to talk to experts about the subject.</part>
-    </meeting>
-
-    <meeting>
-        <day>-4</day>
-        <title>Short Positions I</title>
-        <part>Well done reaching this level. Now, you are established as an experienced Stockbroker with a stable income, good sense, and a good base capital. As such, the bank has allowed you to take short positions and extra credit, indicated by red command buttons.</part>
-        <part>Short positions are key to advancing your career, but can also become your downfall. Let me explain how exactly they work.</part>
-        <part>Let us suppose that you know that a particular share price will decrease. If you have money invested on it, you will certainly sell them immediately. But there is a way to make money out of a share whose prise will decrease, by selling it short.</part>
-        <part>In particular, you make a contract to sell an amount of shares at some point in the future, and recieve the compensation for the sale today, at the share current price. At the end of the agreed period, you buy the shares to settle the short sales contract.</part>
-        <part>This way, if you short sold at $10 a share, and settled at $5, you make $5 per share. A very good payday.</part>
-        <part>Of course, this works both ways. If you short at $10, and settle at $15, you lose $5 dollars per share. Be sure you have good info if you decide to short a lot of shares.</part>
-        <part>There are 2 things to keep in mind. Firstly, shares are settled at the opening of the market (9:00). And secondly, the money to settle are always taken from your cash deposits in full, even if you possess enough of the particular shares to settle. You can, of course, sell the shares you own immediatelly, but you must do so yourself.</part>
-        <part>Finally, you cannot short sell a share you already own, until you sell all of it. Short selling a share means you believe its price will drop, so it makes no sense to keep those shares.</part>
-        <part>Whatever happens, remember that you must never end the day with a net value (cash+value of shares owned at closing price) of $-100000 or less and no assets, or you will be arrested for debts and lose the game.</part>
-    </meeting>
-
-    <meeting>
         <day>3</day>
         <title>Share-Company Info</title>
         <part>If you click on either the name or the price of the share in the main screen you will be taken to the Share Info Screen. There you can see data for the share in question, like the last closing price (price at closing of the market the previous day).</part>
-        <part>From that screen, by clicking on buy and sell, you can be taken to the sespective transaction screens. If you click on the Info Button, you will be taken to the respective company info screen, where you can get more info on the company, like:</part>
+        <part>From that screen, by clicking on buy and sell, you can be taken to the respective transaction screens. If you click on the Info Button, you will be taken to the respective company info screen, where you can get more info on the company, like:</part>
         <part>The Industry this company belongs to, which will be very important when Events start later in the game. It will be discussed in a later meeting.</part>
         <part>The Economic data of the previous term, like the last term revenue and the money invested this term by t0he company. Keep these numbers at the back of your head when investing in the company, because they affect company revenues.</part>
         <part>The Total value of the company, which determines the power of the company. This affects everything from share prices to revenues to the economy size.</part>
-        <part>Total Shares is another value to keep your eye on. The less shares a company has (in conjuction with total value), the higher their price will be, and the more sought after the shares theselves.</part>
+        <part>Total Shares is another value to keep your eye on. The less shares a company has (in conjuction with total value), the higher their price will be, and the more sought after the shares themselves.</part>
         <part>A good Stockbroker does not play with all companies. He knows a few companies and invests in them, and if he decides to gamble in the stock market, he does some amount of research in the companies.</part>
     </meeting>
 
@@ -85,9 +85,22 @@
         <part>If you press the Player Button at the bottom of the Main Screen, you will be taken to the Player Info Screen. There you will find information about you in the game.</part>
         <part>First is your cash. If it drops below zero, you will no longer be able to buy shares, until you return to positive cash.</part>
         <part>Then is your level. This affects the game greatly. For example, at level 2, Game Generated Events start. At level 3, Randomly Generated Events start, and at level 4, you can take short positions and extra credit (buy shares with non-positive cash). More on leveling up in a while.</part>
-        <part>Your Net Worth is a very important value. It is your cash plus the value of all the shares you own at present value. If this is at $-100000 at the end of the day, you are arrested for debts, and lose the game. If you find yourself in such a predicament, an asset will save you. If at the time you are arrested you possess an asset, you spend it automatically to escape bunkrupty and return to $25000 cash. In the Player Info Screen, the Net Worth Value does not Update automatically.</part>
-        <part>The Next level value indicates the Net Worth you need to level up. Leveling up costs money and rewards in full assets. Your level indicates your abilities as a stockbrocker, opens new abilities in the game, but can send you to negative cash. It also increases the taxes you pay.</part>
+        <part>Your Net Worth is a very important value as well. It is your cash plus the value of all the shares you own at present value. If this is at $-100000 at the end of the day, you are arrested for debts, and lose the game. </part>
+        <part>If you find yourself in such a predicament, an asset will save you. If at the time you are arrested you possess an asset, you spend it automatically to escape bankruptcy and return to $25000 cash. In the Player Info Screen, the Net Worth Value does not Update automatically.</part>
+        <part>The Next level value indicates the Net Worth you need to level up. Leveling up costs money and rewards in full assets. Your level indicates your abilities as a stockbroker, opens new abilities in the game, but can send you to negative cash. It also increases the taxes you pay.</part>
         <part>The cash you pay goes towards moving to a better house and buying staff to enhance your image, necessary for the progression of your career. The assets indicate the people who approach you stunned by your skills as a stockbroker and seek to be added to your network. It also affects the amount invitation rewards you get.</part>
+    </meeting>
+
+    <meeting>
+        <day>5</day>
+        <title>Time and terms</title>
+        <part>On the upper right corner of the game screens, you can see the time. Time, in the game, has multiple effects. </part>
+        <part>First of all, the Term. The term represents the highest measure of time ingame, roughly equivalent to a quarter. At the end of every game term, internal game variables are recalculated, allowing the game to proceed. As you will see, this takes a while. Never forcefully exit the game while term update is in process.</part>
+        <part>A term is 60 days long. days are counted as workdays only. Ingame, there are no weekends. Each day runs from 8:40 to after 15:30.</part>
+        <part>At 9:00 the market opens. Use the time before it opens to read news and meetings, as well as think about your strategy. The market closes at 15:30. This follows the New York Stock Exchange market (NYSE for short) schedule.</part>
+        <part>In real time terms, the clock proceeds 10 minutes every 10 seconds of real time, price updates by the system (other stockbrokers) happen at these intervals. Of course, you can buy and sell anytime while the market is open.</part>
+        <part>Keep an eye on the time. After the market is closed, you will not be able to execute any orders until the market opens again the next day.</part>
+        <part>Finally, because at the end of every term all Companies present results of their term balance, it is not unusual to notice some stangation in the market as the 60 days mark approaches.</part>
     </meeting>
 
     <meeting>
@@ -102,7 +115,7 @@
         <part>Thirdly, not all info is accurate. Always keep this in mind. The good news is, you will become able to seperate good info from bad. As your level increases, the accuracy of the info you get increases as well.</part>
         <part>The amount of info you get depends on the amount of assets you possess. The more assets you have, the more info you get.</part>
         <part>Finally, you can use an asset to get certain info, also referred to as Asset Info. This info, to seperate from others, comes from user 9001, and is always accurate (it is awesome). User 9001 is the only one worth remembering, becuse his code indicates Asset info.</part>
-        <part>Because infos reset often, it is recomended that if you want to buy an Asset info, you do so just after the market opens. But you can buy an info anytime you want, regardless whether the market is open or not.</part>
+        <part>Because infos reset often, it is recommended that if you want to buy an Asset info, you do so just after the market opens. But you can buy an info anytime you want, regardless whether the market is open or not.</part>
     </meeting>
 
     <meeting>
@@ -117,25 +130,14 @@
 
     <meeting>
         <day>12</day>
-        <title>Divercification I</title>
+        <title>Diversification I</title>
         <part>Ask any stockbroker worth his salt, and he will tell you that although share prices are changing randomly, they are not independent. Mainly because share prices are affected greatly by prospects. It is like a self fulfilling prophesy.</part>
-        <part>If stock brokers believe that a shares price will increase, they will seek to buy that share, driving the price up. Likewise, the price will drop when stockbrockers believe it will and start getting rid of that share.</part>
+        <part>If stock brokers believe that a shares price will increase, they will seek to buy that share, driving the price up. Likewise, the price will drop when stockbrokers believe it will and start getting rid of that share.</part>
         <part>An important aspect in all these, is the Industry the company belongs to. This helps because it is easier to determine the prospects of an Industry through Events (for the game, these start at higher levels) on local, national and global scale. Events affect Industry prospects, which, in turn, affect share prices of the companies of that industry. Every event benefits some Industry while harming the prospects of another.</part>
         <part>A good advise is to keep your money spread across more than one Industry, and certainly in more than one company. That way, even if a company drops or bankrupts, the other companies in the Industry will pick up the slack (the market share/the clients) and their share prices will increase.</part>
         <part>This way, it is possible to dampen or even cancel out your losses. The same principle applies to whole industries. Do not keep all your money in one Industry to avoid heavy losses in case of an unexpected event.</part>
         <part>In real life, of course, things are more complicated, to the point of becoming chaotic. First of all, the effects of an event are not so clear cut, Companies (especially large corporations) can belong to more than one Industry (which does not apply to this game), and there is an infinite amount of events, factors, rumors, discoveries and mistakes that can affect or even reverse prospects of companies, industries and even whole nations.</part>
         <part>In this game, it will not be so chaotic. Events will have a few, clear cut effects on Industries, and they are limited in number. That said, the same principle applies to the game as in reality: Keep your investment spread out across multiple companies and industries to avoid heavy losses in case something goes wrong. It is important now, it will become vital when scams come into play at the start of term 2, and essential when events start at higher levels.</part>
-    </meeting>
-
-    <meeting>
-        <day>55</day>
-        <title>Time and terms</title>
-        <part>On the upper right corner of the game screens, you can see the time. Time, in the game, has multiple effects. First of all, the Term. The term represents the highest measure of time ingame, roughly equivalent to a quarter. At the end of every game term, internal game variables are recalculated, allowing the game to proceed. As you will see, this takes a while. Never forcefully exit the game while term update is in process.</part>
-        <part>A term is 60 days long. days are counted as workdays only. Ingame, there are no weekends. Each day runs from 8:40 to after 15:30.</part>
-        <part>At 9:00 the market opens. Use the time before it opens to read news and meetings, as well as think about your strategy. The market closes at 15:30. This follows the New York Stock Exchange market (NYSE for short) schedule.</part>
-        <part>In real time terms, the clock proceeds 10 minutes every 10 seconds of real time, price updates by the system (other stockbrokers) happen at these intervals. Of course, you can buy and sell anytime while the market is open.</part>
-        <part>Keep an eye on the time. After the market is closed, you will not be able to execute any orders until the market opens again the next day.</part>
-        <part>Finally, because at the end of every term all Companies present results of their term balance, it is not unusual to notice some stangation in the market as the 60 days mark approaches.</part>
     </meeting>
 
     <meeting>
