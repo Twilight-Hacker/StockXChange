@@ -5,4 +5,4 @@
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>
-<!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/menu/menu_splash.xml -->
+<!-- From: file:/home/sash/AndroidStudioProjects/StockXChange/app/src/main/res/menu/menu_splash.xml -->

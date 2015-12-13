@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.galadar.example.stockxchange.R;
+
 import java.util.ArrayList;
 
 public class MessagesActivity extends AppCompatActivity {

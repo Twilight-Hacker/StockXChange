@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.galadar.example.stockxchange.R;
+
 public class NewsActivity extends Activity {
 
     boolean playSound;

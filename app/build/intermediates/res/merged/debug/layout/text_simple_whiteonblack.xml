@@ -11,4 +11,4 @@
         android:textColor="@color/white"
         android:text="@string/Zero" />
 
-</LinearLayout><!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/src/main/res/layout/text_simple_whiteonblack.xml -->
+</LinearLayout><!-- From: file:/home/sash/AndroidStudioProjects/StockXChange/app/src/main/res/layout/text_simple_whiteonblack.xml -->
