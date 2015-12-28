@@ -49,8 +49,7 @@ public class MainActivity extends AppCompatActivity {
     static int eventGen;
     static ArrayList<Event> Events = new ArrayList<>();
     static boolean playSound;
-    static boolean dayOpen = false;
-    static boolean gaming = false;
+    static boolean dayOpen;
     static double infoGen;
     static long nextInvite;
     static ArrayList<String> Infos = new ArrayList<>();
@@ -78,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         UpdateTopBar(topBarPlayer, topBarDaytime);
+        UpdateCommandsUI();
     }
 
     public int getNextLevelPreq(){
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent i = new Intent("DayReset");
                     dialog.dismiss();
                     LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcast(i);
-                    gaming = true;
+                    startRepTask();
                 }
             });
 
@@ -463,10 +463,12 @@ public class MainActivity extends AppCompatActivity {
             f = new Finance(DBHandler, 5);
             p = new Gamer(DBHandler);
         } else {
-            time = new Daytime(LocalBroadcastManager.getInstance(MainActivity.this.getApplicationContext()), DBHandler.getTerm(), DBHandler.getDay());
+            time = new Daytime(LocalBroadcastManager.getInstance(MainActivity.this.getApplicationContext()), DBHandler.getTerm(), DBHandler.getDay(), DBHandler.getHour(), DBHandler.getMin());
             f = new Finance(DBHandler);
             p = new Gamer(DBHandler.getPlayerMoney(), DBHandler.getLevel(), DBHandler.getAssets(), DBHandler.getFame());
         }
+
+        dayOpen = time.getOpenDay();
 
         playSound = DBHandler.PlaySound();
         infoGen = 0;
@@ -522,33 +524,6 @@ public class MainActivity extends AppCompatActivity {
                 BgHandler.postDelayed(this, 10000);
             }
         };
-
-        //from here on is layout controls so set layout to main
-        //setContentView(R.layout.activity_main);
-        setContentView(R.layout.activity_main);
-
-
-        topBarPlayer = (TextView) findViewById(R.id.PlayerDataInfo);
-        topBarDaytime = (TextView) findViewById(R.id.DaytimeInfo);
-
-        if (fullGame) {
-            nextInvite = DBHandler.getNextInviteTime();
-            if (nextInvite == 0) {
-                nextInvite = Math.round(System.currentTimeMillis() / 1000);
-                nextInvite += 82800;
-                DBHandler.setNextInviteTime(nextInvite);
-            } else {
-                long temp = Math.round(System.currentTimeMillis() / 1000);
-                if (temp >= nextInvite) {
-                    callInvite(p.getLevel());
-                    nextInvite = temp + 82800;
-                    DBHandler.setNextInviteTime(nextInvite);
-                }
-            }
-        } else nextInvite = 0;
-
-        UpdateTopBar(topBarPlayer, topBarDaytime);
-        UpdateCentralUI();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(DayStartedMessageRec, new IntentFilter("DayStarted"));
         LocalBroadcastManager.getInstance(this).registerReceiver(SharesTransactionedRec, new IntentFilter("SharesTransaction"));
@@ -661,9 +636,35 @@ public class MainActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(AdvanceTime, new IntentFilter("TimeForwarded"));
 
+
+        //from here on is layout controls so set layout to main
+        //setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
+
+        topBarPlayer = (TextView) findViewById(R.id.PlayerDataInfo);
+        topBarDaytime = (TextView) findViewById(R.id.DaytimeInfo);
+
+        if (fullGame) {
+            nextInvite = DBHandler.getNextInviteTime();
+            if (nextInvite == 0) {
+                nextInvite = Math.round(System.currentTimeMillis() / 1000);
+                nextInvite += 82800;
+                DBHandler.setNextInviteTime(nextInvite);
+            } else {
+                long temp = Math.round(System.currentTimeMillis() / 1000);
+                if (temp >= nextInvite) {
+                    callInvite(p.getLevel());
+                    nextInvite = temp + 82800;
+                    DBHandler.setNextInviteTime(nextInvite);
+                }
+            }
+        } else nextInvite = 0;
+
+        UpdateTopBar(topBarPlayer, topBarDaytime);
+        UpdateCentralUI();
+
         callforMeetings();
 
-        gaming = true;
         startRepTask();
     }
 
@@ -674,7 +675,6 @@ public class MainActivity extends AppCompatActivity {
     private void stopRepTask(){
         BgHandler.removeCallbacks(r);
     }
-
 
     private EconomyState getEconomyState(double EconomyOutlook) {
         if(EconomyOutlook>0.75)return EconomyState.Boom;
@@ -750,13 +750,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void callforMeetings(){
         if(!fullGame)return;
-        gaming=false;
+        stopRepTask();
 
         Meeting today = getMeetingbyDay(time.totalDays());
         if(today!=null){
             LaunchMeeting(today.getMeetingTitle(), today.getMeetingSpeech());
         }
-        gaming=true;
+        startRepTask();
     }
 
     private void LaunchMeeting(String title, ArrayList<String> speech) {
@@ -770,7 +770,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void UpdateCentralUI() {
-        //ScrollView centermain = (ScrollView)findViewById(R.id.scroll);
         LinearLayout parentLayout = (LinearLayout)findViewById(R.id.Main_CentralLayout);
         LayoutInflater layoutInflater = getLayoutInflater();
         View view;
@@ -821,19 +820,27 @@ public class MainActivity extends AppCompatActivity {
 
             parentLayout.addView(shareData);
         }
-        //centermain.addView(parentLayout);
-        //setContentView(R.layout.activity_main);
     }
 
     private BroadcastReceiver AdvanceTime = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, final Intent intent) {
-            if(gaming) {
-                time.increment(10);
-                UpdateTopBar(topBarPlayer, topBarDaytime);
-                callforTransactions();
-                callInfoGen();
-                f.revenue(DBHandler);
+            UpdateTopBar(topBarPlayer, topBarDaytime);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    time.increment(10);
+                    callforTransactions();
+                    callInfoGen();
+                    f.revenue();
+                }
+            }
+            ).start();
+            if (fullGame) {
+                DBHandler.setHour(time.getHour(), time.getMin());
+                for (int i = 0; i < f.getNumComp(); i++) {
+                    DBHandler.setCompRevenue(i, f.getCompRevenue(i));
+                }
             }
         }
     };
@@ -1077,7 +1084,7 @@ public class MainActivity extends AppCompatActivity {
                 f.setSectorEventOutlook(f.getSectorOutlookIndex( "Tourism"), -2*(double)magnitude/100);
                 editNews(150, getString(R.string.NewsWarTitle), getString(R.string.NewsWar));
                 break;
-            default: //Unknown event, assume eartquake
+            default: //Unknown event, assume earthquake
                 f.setSectorEventOutlook(f.getSectorOutlookIndex("Constr"), 2*(double)magnitude/100);
                 f.setSectorEventOutlook(f.getSectorOutlookIndex("Defence"), 2*(double)magnitude/100);
                 f.setSectorEventOutlook(f.getSectorOutlookIndex("Educ"), 2*(double)magnitude/100);
@@ -1424,7 +1431,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if((p.getMoney()+f.NetWorth())<-10000000) {
-                gaming = false;
+                stopRepTask();
                 if (p.getAssets() > 0) {
                     p.setAssets(p.getAssets() - 1);
                     if(fullGame)DBHandler.setAssets(p.getAssets());
@@ -1472,7 +1479,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             UpdateCommandsUI();
-            gaming = true;
+            startRepTask();
         }
     };
 
@@ -1538,7 +1545,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver TermEndedMessageRec = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            gaming = false;
+            stopRepTask();
             new UpdateTerm().execute();
         }
     };
@@ -1941,7 +1948,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton(getString(R.string.MessageGo), new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                gaming = false;
+                stopRepTask();
                 DBHandler.close();
                 dayOpen = false;
                 fullGame = false;
@@ -1952,7 +1959,7 @@ public class MainActivity extends AppCompatActivity {
                 UpdateCentralUI();
                 UpdateTopBar(topBarPlayer, topBarDaytime);
                 dialog.dismiss();
-                gaming = true;
+                startRepTask();
             }
 
         });
@@ -1971,11 +1978,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void ExitClicked() {
-        if(fullGame)DBHandler.close();
         stopRepTask();
+        if(fullGame)DBHandler.close();
         if(playSound)soundplayer.release();
         MainActivity.this.finish();
-        android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(1);
     }
 
@@ -1988,7 +1994,7 @@ public class MainActivity extends AppCompatActivity {
             builder.setPositiveButton(getString(R.string.NewGameTitle), new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
-                    gaming = false;
+                    stopRepTask();
                     dayOpen = false;
                     boolean a = DBHandler.PlaySound();
                     int sound;
@@ -2007,7 +2013,7 @@ public class MainActivity extends AppCompatActivity {
                     dialog.dismiss();
                     UpdateCentralUI();
                     UpdateTopBar(topBarPlayer, topBarDaytime);
-                    gaming = true;
+                    startRepTask();
                 }
             });
 

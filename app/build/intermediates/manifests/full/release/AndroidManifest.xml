@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.galadar.example.stockxchange"
-    android:versionCode="1"
-    android:versionName="0.8" >
+    android:versionCode="2"
+    android:versionName="0.8.1" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -125,13 +125,19 @@
             android:name="com.galadar.example.stockxchange.StockXChange2"
             android:label="@string/app_name"
             android:noHistory="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme" >
+            android:screenOrientation="portrait" >
             <intent-filter android:label="@string/AppName" >
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.galadar.example.stockxchange.StockXChange2p"
+            android:label="@string/title_activity_stock_xchange2p"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" >
         </activity>
     </application>
 

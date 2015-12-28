@@ -22,11 +22,11 @@ public class Daytime{
         this.context = context;
     }
 
-    public Daytime(LocalBroadcastManager context, int term, int day) {
+    public Daytime(LocalBroadcastManager context, int term, int day, int hour, int min) {
         this.term =term;
         this.day = day;
-        this.hour = 8;
-        this.min = 40;
+        this.hour = hour;
+        this.min = min;
         this.context = context;
     }
 
@@ -92,6 +92,21 @@ public class Daytime{
 
     public void setDay(int day) {
         this.day = day;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public boolean getOpenDay() {
+        if(this.hour<9)return false;
+        else if(this.hour<15) return true;
+        else if(this.min<30) return true;
+        else return false;
     }
 
 /*

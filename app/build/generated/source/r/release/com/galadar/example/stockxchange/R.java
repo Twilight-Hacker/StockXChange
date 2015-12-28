@@ -1833,25 +1833,27 @@ containing a value of this type.
         public static final int activity_sell=0x7f040021;
         public static final int activity_share=0x7f040022;
         public static final int activity_splash=0x7f040023;
-        public static final int main_share=0x7f040024;
-        public static final int notification_media_action=0x7f040025;
-        public static final int notification_media_cancel_action=0x7f040026;
-        public static final int notification_template_big_media=0x7f040027;
-        public static final int notification_template_big_media_narrow=0x7f040028;
-        public static final int notification_template_lines=0x7f040029;
-        public static final int notification_template_media=0x7f04002a;
-        public static final int notification_template_part_chronometer=0x7f04002b;
-        public static final int notification_template_part_time=0x7f04002c;
-        public static final int select_dialog_item_material=0x7f04002d;
-        public static final int select_dialog_multichoice_material=0x7f04002e;
-        public static final int select_dialog_singlechoice_material=0x7f04002f;
-        public static final int support_simple_spinner_dropdown_item=0x7f040030;
-        public static final int text_simple_whiteonblack=0x7f040031;
+        public static final int activity_stock_xchange2p=0x7f040024;
+        public static final int main_share=0x7f040025;
+        public static final int notification_media_action=0x7f040026;
+        public static final int notification_media_cancel_action=0x7f040027;
+        public static final int notification_template_big_media=0x7f040028;
+        public static final int notification_template_big_media_narrow=0x7f040029;
+        public static final int notification_template_lines=0x7f04002a;
+        public static final int notification_template_media=0x7f04002b;
+        public static final int notification_template_part_chronometer=0x7f04002c;
+        public static final int notification_template_part_time=0x7f04002d;
+        public static final int select_dialog_item_material=0x7f04002e;
+        public static final int select_dialog_multichoice_material=0x7f04002f;
+        public static final int select_dialog_singlechoice_material=0x7f040030;
+        public static final int support_simple_spinner_dropdown_item=0x7f040031;
+        public static final int text_simple_whiteonblack=0x7f040032;
     }
     public static final class menu {
         public static final int menu_main=0x7f0e0000;
         public static final int menu_nonmain=0x7f0e0001;
         public static final int menu_splash=0x7f0e0002;
+        public static final int menu_stock_xchange2p=0x7f0e0003;
     }
     public static final class mipmap {
         public static final int ic_launcher=0x7f030000;
@@ -2044,7 +2046,8 @@ containing a value of this type.
         public static final int title_activity_sell=0x7f0700b4;
         public static final int title_activity_share=0x7f0700b5;
         public static final int title_activity_splash=0x7f0700b6;
-        public static final int title_activity_welcome=0x7f0700b7;
+        public static final int title_activity_stock_xchange2p=0x7f0700b7;
+        public static final int title_activity_welcome=0x7f0700b8;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f09007c;

@@ -165,5 +165,6 @@
     <string name="ReportTitle">Report a Scam</string>
     <string name="ReportBody">Reporting a possible scam to the authorities cancels the scams and all its effects. The report will cost you 1 full asset.  If there is a Scam, you get the asset back immediately, otherwise you lose it. You are not informed officially of the investigation result for safety reasons.</string>
     <string name="ReportYes">Report</string>
+    <string name="title_activity_stock_xchange2p">StockXChange2p</string>
 
 </resources>

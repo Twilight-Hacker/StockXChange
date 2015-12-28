@@ -1852,6 +1852,7 @@ containing a value of this type.
         public static final int menu_main=0x7f0e0000;
         public static final int menu_nonmain=0x7f0e0001;
         public static final int menu_splash=0x7f0e0002;
+        public static final int menu_stock_xchange2p=0x7f0e0003;
     }
     public static final class mipmap {
         public static final int ic_launcher=0x7f030000;
@@ -2044,7 +2045,8 @@ containing a value of this type.
         public static final int title_activity_sell=0x7f0700b4;
         public static final int title_activity_share=0x7f0700b5;
         public static final int title_activity_splash=0x7f0700b6;
-        public static final int title_activity_welcome=0x7f0700b7;
+        public static final int title_activity_stock_xchange2p=0x7f0700b7;
+        public static final int title_activity_welcome=0x7f0700b8;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f09007c;

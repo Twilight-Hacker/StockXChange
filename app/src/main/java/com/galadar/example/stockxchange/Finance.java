@@ -132,7 +132,7 @@ public class Finance {
             Companies[i][5] = DBHandler.getInvestment(name);
             Companies[i][6] = Math.round(DBHandler.getCompMarketShare(name) * 1000);
             Companies[i][7] = DBHandler.getCompCurrValue(name);
-            Shares[i][0] = DBHandler.getDBLastClose(i);
+            Shares[i][0] = DBHandler.getDBCurrPrice(i);
             Shares[i][1] = DBHandler.getOwnedShare(i);
             Shares[i][2] = DBHandler.getTotalShares(i);
             Shares[i][3] = DBHandler.getDBLastClose(i);
@@ -605,7 +605,7 @@ public class Finance {
         return count;
     }
 
-    public void revenue(MemoryDB DBHandler) {
+    public void revenue() {
         double upper, lower;
 
         switch (MainActivity.getEconomyState()){
@@ -637,7 +637,7 @@ public class Finance {
             upper += 2*getCompOutlook(i)+getSectorOutlook(getCompSectorInt(i)+1);
             lower += 2*getCompOutlook(i)+getSectorOutlook(getCompSectorInt(i) + 1);
             UpdateCompRevenue(i, Math.round(marketSize*getMarketShare(i)*(RangedRandom(upper, lower)) ));
-            DBHandler.setCompRevenue(i, getCompRevenue(i));
+
         }
     }
 
