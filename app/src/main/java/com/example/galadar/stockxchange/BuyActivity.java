@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.galadar.example.stockxchange.R;
+
 public class BuyActivity extends AppCompatActivity {
 
     static int amount;
