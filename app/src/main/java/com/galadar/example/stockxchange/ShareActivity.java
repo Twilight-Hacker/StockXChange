@@ -223,7 +223,7 @@ public class ShareActivity extends AppCompatActivity {
         data.putBoolean("playSound", playSound);
         data.putString("Sname", name);
         data.putInt("Sprice", price);
-        data.putInt("owned", owned);
+        data.putInt("Owned", owned);
         data.putInt("level", level);
         data.putInt("assets", assets);
         intent.putExtras(data);

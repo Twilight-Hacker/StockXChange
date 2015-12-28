@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class MemoryDB extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "Galadar.DBStockXChange.db";
-    public static final int DATABASE_VER = 10;
+    public static final int DATABASE_VER = 9;
     public static final String ALL_TABLES_COLUMN_ID = "_id";
 
     public static final String COMPANIES_TABLE_NAME = "Companies";
@@ -165,16 +165,6 @@ public class MemoryDB extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(oldVersion<=9){
-            ContentValues values = new ContentValues();
-            values.put(DATA_COLUMN_ENTRY_NAME, "hour");
-            values.put(DATA_COLUMN_ENTRY_VALUE, 8);
-            db.insert(DATA_TABLE_NAME, null, values);
-            values.clear();
-            values.put(DATA_COLUMN_ENTRY_NAME, "min");
-            values.put(DATA_COLUMN_ENTRY_VALUE, 40);
-            db.insert(DATA_TABLE_NAME, null, values);
-        }
     }
 
     public void addScam(int sid, int type, int totalDays){
@@ -781,14 +771,6 @@ public class MemoryDB extends SQLiteOpenHelper {
         values.put(DATA_COLUMN_ENTRY_VALUE, 1);
         db.insert(DATA_TABLE_NAME, null, values);
         values = new ContentValues();
-        values.put(DATA_COLUMN_ENTRY_NAME, "hour");
-        values.put(DATA_COLUMN_ENTRY_VALUE, 8);
-        db.insert(DATA_TABLE_NAME, null, values);
-        values.clear();
-        values.put(DATA_COLUMN_ENTRY_NAME, "min");
-        values.put(DATA_COLUMN_ENTRY_VALUE, 40);
-        db.insert(DATA_TABLE_NAME, null, values);
-        values.clear();
         values.put(DATA_COLUMN_ENTRY_NAME, "sound");
         values.put(DATA_COLUMN_ENTRY_VALUE, sound);
         db.insert(DATA_TABLE_NAME, null, values);
@@ -1051,38 +1033,6 @@ public class MemoryDB extends SQLiteOpenHelper {
         return term;
     }
 
-    public int getHour() {
-        int term = 1;
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"hour\" ;", null);
-        c.moveToFirst();
-        while (!c.isAfterLast()){
-            term = c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
-            c.moveToNext();
-        }
-        c.close();
-        db.close();
-
-        return term;
-    }
-
-    public int getMin() {
-        int term = 1;
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c =  db.rawQuery("select * from " + DATA_TABLE_NAME + " where " + DATA_COLUMN_ENTRY_NAME + " = \"min\" ;", null);
-        c.moveToFirst();
-        while (!c.isAfterLast()){
-            term = c.getInt(c.getColumnIndex(DATA_COLUMN_ENTRY_VALUE));
-            c.moveToNext();
-        }
-        c.close();
-        db.close();
-
-        return term;
-    }
-
     public void setTerm(int newTerm){
         SQLiteDatabase db = this.getWritableDatabase();
         String where = DATA_COLUMN_ENTRY_NAME+"=?";
@@ -1090,20 +1040,6 @@ public class MemoryDB extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(DATA_COLUMN_ENTRY_VALUE, newTerm);
         db.update(DATA_TABLE_NAME, values, where, args);
-        db.close();
-    }
-
-    public void setHour(int newHour, int newMin){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String where = DATA_COLUMN_ENTRY_NAME+"=?";
-        String[] args = {"hour"};
-        ContentValues values = new ContentValues();
-        values.put(DATA_COLUMN_ENTRY_VALUE, newHour);
-        db.update(DATA_TABLE_NAME, values, where, args);
-        String[] args2 = {"min"};
-        values.clear();
-        values.put(DATA_COLUMN_ENTRY_VALUE, newMin);
-        db.update(DATA_TABLE_NAME, values, where, args2);
         db.close();
     }
 

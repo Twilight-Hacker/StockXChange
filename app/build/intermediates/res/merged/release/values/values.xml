@@ -411,7 +411,6 @@
     <string name="title_activity_sell">"Sell"</string>
     <string name="title_activity_share">"Share Analysis"</string>
     <string name="title_activity_splash">"SplashActivity"</string>
-    <string name="title_activity_stock_xchange2p">StockXChange2p</string>
     <string name="title_activity_welcome">"WelcomeActivity"</string>
     <!-- From: file:/C:/Users/Galadar/AndroidStudioProjects/StockXchange2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>

@@ -8,14 +8,10 @@ public class StockXChange2 extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        setContentView(R.layout.activity_splash);
-
-        startActivity(new Intent(this, MainActivity.class));
-
         super.onCreate(savedInstanceState);
 
-        this.finish();
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
     }
