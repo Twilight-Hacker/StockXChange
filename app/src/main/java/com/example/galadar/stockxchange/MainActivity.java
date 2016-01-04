@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -22,9 +23,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.galadar.example.stockxchange.R;
+
 import java.util.ArrayList;
 import java.util.Random;
-import android.os.Handler;
 
 /*
 Specific View IDs for editing textViews

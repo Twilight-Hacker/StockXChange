@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.galadar.example.stockxchange.R;
+
 public class ShareActivity extends AppCompatActivity {
 
     static Daytime time;
